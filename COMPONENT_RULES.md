@@ -1,71 +1,80 @@
 # Component Library Rules
 
-You are building styled components using **Base UI** primitives with **Tailwind CSS v4** and custom design tokens.
-
-## Core Principles
-
-1. **Base UI for behavior** – All interactive components must use `@base-ui/react` primitives
-2. **Tailwind for styling** – Use only Tailwind classes with the project's custom theme
-3. **Design tokens only** – Never use arbitrary values; always use configured theme variables
-4. **CVA for variants** – All component variants managed through `class-variance-authority`
+> **You are building styled components using Base UI primitives with Tailwind CSS v4 and Supernova.io design tokens.**
 
 ---
 
-## Imports
+## Core Principles
+
+1. **Base UI for behavior** — All interactive components use `@base-ui/react` primitives
+2. **Tailwind for styling** — Use only Tailwind classes with design tokens
+3. **Design tokens only** — NEVER use arbitrary values; always use configured theme variables
+4. **CVA for variants** — All component variants managed via `class-variance-authority`
+
+---
+
+## Required Imports
 
 ```tsx
 // Base UI - import specific components
-import { Button } from '@base-ui/react/button'
-import { Dialog } from '@base-ui/react/dialog'
-import { Select } from '@base-ui/react/select'
+import { Button } from "@base-ui/react/button";
+import { Dialog } from "@base-ui/react/dialog";
+import { Select } from "@base-ui/react/select";
 
 // Styling utilities
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 ```
 
 ---
 
-## Component Pattern
+## Component Template
 
-Every styled component follows this structure:
+Every component MUST follow this structure:
 
 ```tsx
-'use client'
+"use client";
 
-import * as React from 'react'
-import { Button as BaseButton } from '@base-ui/react/button'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { Button as BaseButton } from "@base-ui/react/button";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  // Base styles array
+  // Base styles
   [
-    'inline-flex items-center justify-center',
-    'font-medium rounded-md',
-    'transition-colors',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-    'disabled:pointer-events-none disabled:opacity-50',
+    "inline-flex items-center justify-center",
+    "font-medium rounded-[--radius-border-radius-sm]",
+    "transition-colors",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+    "disabled:pointer-events-none disabled:opacity-50",
   ],
   {
     variants: {
       variant: {
-        primary: 'bg-primary-600 text-white hover:bg-primary-700',
-        secondary: 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200',
-        ghost: 'bg-transparent hover:bg-neutral-100',
+        primary:
+          "bg-[--color-brand-primary] text-[--color-fg-on-brand] hover:bg-[--color-brand-strong]",
+        secondary:
+          "bg-[--bg-color-secondary] text-[--color-fg-primary] hover:bg-[--bg-color-muted]",
+        ghost: "bg-transparent hover:bg-[--bg-color-subtle]",
+        positive:
+          "bg-[--color-positive-primary] text-[--color-fg-on-accent] hover:bg-[--color-positive-strong]",
+        negative:
+          "bg-[--color-negative-primary] text-[--color-fg-on-accent] hover:bg-[--color-negative-strong]",
       },
       size: {
-        sm: 'h-7 px-3 text-xs',
-        md: 'h-8 px-4 text-sm',
-        lg: 'h-10 px-5 text-base',
+        xs: "h-[--spacing-size-3-xs] px-[--spacing-space-50] text-[length:--text-label-fixed-x-small]",
+        sm: "h-[--spacing-size-xs] px-[--spacing-space-75] text-[length:--text-label-fixed-small]",
+        md: "h-[--spacing-size-sm] px-[--spacing-space-100] text-[length:--text-label-fixed-medium]",
+        lg: "h-[--spacing-size-lg] px-[--spacing-space-125] text-[length:--text-label-fixed-large]",
       },
     },
     defaultVariants: {
-      variant: 'primary',
-      size: 'md',
+      variant: "primary",
+      size: "md",
     },
   }
-)
+);
 
 export interface ButtonProps
   extends React.ComponentPropsWithoutRef<typeof BaseButton>,
@@ -79,93 +88,143 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       {...props}
     />
   )
-)
-Button.displayName = 'Button'
+);
+Button.displayName = "Button";
 ```
 
 ---
 
-## Styling Rules
+## Design Token Reference
 
-### Use Theme Variables Only
+### Colors (from `tailwind.colors.css`)
+
+| Category       | Token                      | Use For              |
+| -------------- | -------------------------- | -------------------- |
+| **Brand**      | `--color-brand-primary`    | Primary actions      |
+|                | `--color-brand-strong`     | Hover states         |
+|                | `--color-brand-emphasis`   | Active states        |
+|                | `--color-brand-weak`       | Subtle backgrounds   |
+| **Positive**   | `--color-positive-primary` | Success states       |
+| **Negative**   | `--color-negative-primary` | Error states         |
+| **Warning**    | `--color-warning-primary`  | Warning states       |
+| **Info**       | `--color-info-primary`     | Informational        |
+| **Foreground** | `--color-fg-primary`       | Primary text         |
+|                | `--color-fg-secondary`     | Secondary text       |
+|                | `--color-fg-tertiary`      | Muted text           |
+|                | `--color-fg-on-brand`      | Text on brand colors |
+| **Background** | `--bg-color-surface`       | Card backgrounds     |
+|                | `--bg-color-canvas`        | Page background      |
+|                | `--bg-color-subtle`        | Hover backgrounds    |
+| **Border**     | `--border-color-subtle`    | Default borders      |
+|                | `--border-color-strong`    | Emphasis borders     |
+
+### Spacing (from `tailwind.desktop.css`)
+
+| Token                 | Value | Common Use       |
+| --------------------- | ----- | ---------------- |
+| `--spacing-space-25`  | 4px   | Tight gaps       |
+| `--spacing-space-50`  | 8px   | Small padding    |
+| `--spacing-space-75`  | 12px  | Default gap      |
+| `--spacing-space-100` | 16px  | Standard padding |
+| `--spacing-space-125` | 20px  | Medium padding   |
+| `--spacing-space-150` | 24px  | Large padding    |
+| `--spacing-space-200` | 32px  | Section spacing  |
+
+### Component Sizes
+
+| Token                 | Value | Use For          |
+| --------------------- | ----- | ---------------- |
+| `--spacing-size-3-xs` | 16px  | XS components    |
+| `--spacing-size-2-xs` | 20px  | 2XS components   |
+| `--spacing-size-xs`   | 24px  | Small components |
+| `--spacing-size-sm`   | 32px  | Default size     |
+| `--spacing-size-md`   | 36px  | Medium size      |
+| `--spacing-size-lg`   | 40px  | Large size       |
+| `--spacing-size-xl`   | 48px  | XL components    |
+
+### Border Radius
+
+| Token                         | Value  | Use For          |
+| ----------------------------- | ------ | ---------------- |
+| `--radius-border-radius-xxs`  | 4px    | Small elements   |
+| `--radius-border-radius-xs`   | 6px    | Buttons, inputs  |
+| `--radius-border-radius-sm`   | 8px    | Cards            |
+| `--radius-border-radius-md`   | 10px   | Modals           |
+| `--radius-border-radius-lg`   | 12px   | Large containers |
+| `--radius-border-radius-pill` | 1000px | Pills, badges    |
+
+### Typography Classes
+
+Use these pre-built classes from `tailwind.desktop.css`:
 
 ```tsx
-// ✅ Correct - theme colors
-className="bg-primary-600 text-neutral-900 border-neutral-200"
+// Headings
+className = "heading-h1"; // 56px, semibold
+className = "heading-h2"; // 48px
+className = "heading-h3"; // 40px
+className = "heading-h4"; // 32px
+className = "heading-h5"; // 24px
+className = "heading-h6"; // 20px
 
-// ❌ Wrong - arbitrary or default Tailwind colors
-className="bg-[#0ea5e9] text-gray-900 border-slate-200"
+// Labels (for buttons, form labels)
+className = "label-fixed-small"; // 14px, medium weight
+className = "label-fixed-medium"; // 16px
+className = "label-fixed-large"; // 18px
+
+// Body text
+className = "body-fixed-small"; // 14px, regular
+className = "body-fixed-base"; // 15px
+className = "body-fixed-medium"; // 16px
 ```
 
-### Use Data Attributes for States
+---
 
-Base UI exposes state via data attributes. Style them with Tailwind's `data-*` modifier:
+## Styling States with Data Attributes
+
+Base UI exposes state via `data-*` attributes. Use Tailwind's data modifier:
 
 ```tsx
 className={cn(
-  'bg-neutral-100',
-  'data-[checked]:bg-primary-600',
+  'bg-[--bg-color-subtle]',
+  'data-[checked]:bg-[--color-brand-primary]',
   'data-[disabled]:opacity-50',
-  'data-[highlighted]:bg-neutral-200',
-  'data-[open]:bg-neutral-100',
+  'data-[highlighted]:bg-[--bg-color-muted]',
+  'data-[open]:bg-[--bg-color-secondary]',
+  'data-[focus-visible]:ring-2 data-[focus-visible]:ring-[--color-brand-primary]',
 )}
 ```
 
 **Common data attributes:**
+
 - `data-checked` / `data-unchecked`
 - `data-disabled`
 - `data-highlighted`
 - `data-open` / `data-closed`
-- `data-popup-open`
 - `data-focus-visible`
 - `data-starting-style` / `data-ending-style` (animations)
-
-### Use CSS Variables for Dynamic Values
-
-Base UI exposes positioning variables on popups:
-
-```tsx
-className="origin-[var(--transform-origin)] max-h-[var(--available-height)]"
-```
 
 ---
 
 ## Required Practices
 
 1. **Always use `cn()` for className merging**
-   ```tsx
-   className={cn(variants({ variant, size }), className)}
-   ```
-
-2. **Always forward refs**
-   ```tsx
-   export const Component = React.forwardRef<HTMLElement, Props>(...)
-   Component.displayName = 'Component'
-   ```
-
-3. **Always export types**
-   ```tsx
-   export interface ComponentProps
-     extends React.ComponentPropsWithoutRef<typeof BaseComponent>,
-       VariantProps<typeof componentVariants> {}
-   ```
-
-4. **Always use Base UI for interactive elements**
-   - Buttons, inputs, selects, checkboxes, switches
-   - Dialogs, popovers, menus, tooltips
-   - Tabs, accordions, sliders
+2. **Always forward refs with `React.forwardRef`**
+3. **Always set `displayName`**
+4. **Always export TypeScript interface**
+5. **Always use Base UI for interactive elements**
 
 ---
 
 ## Forbidden
 
-- ❌ Arbitrary values: `h-[32px]`, `text-[#000]`, `bg-[rgb(...)]`
-- ❌ Default Tailwind colors: `bg-blue-500`, `text-gray-600`, `border-slate-300`
-- ❌ Inline styles: `style={{ ... }}`
-- ❌ Template literal className: `` className={`${a} ${b}`} ``
-- ❌ Native elements for interactive components: `<button>`, `<select>`, `<input type="checkbox">`
-- ❌ Missing displayName on forwardRef components
-- ❌ Missing ref forwarding
+| ❌ Never Do                     | ✅ Instead                    |
+| ------------------------------- | ----------------------------- |
+| `h-[32px]` arbitrary values     | `h-[--spacing-size-sm]` token |
+| `bg-blue-500` Tailwind defaults | `bg-[--color-info-primary]`   |
+| `style={{ ... }}` inline        | Tailwind classes              |
+| `` className={`${a} ${b}`} ``   | `cn(a, b)`                    |
+| `<button>` native elements      | `<Button>` from Base UI       |
+| Missing `displayName`           | Always set after forwardRef   |
 
 ---
 
@@ -185,7 +244,7 @@ src/components/ui/
 
 ## Reference
 
-- Base UI: https://base-ui.com/react/overview/quick-start
-- Base UI Styling: https://base-ui.com/react/handbook/styling
-- Base UI for LLMs: https://base-ui.com/llms.txt
-- CVA: https://cva.style/docs
+- [Base UI Docs](https://base-ui.com/react/overview/quick-start)
+- [Base UI Styling](https://base-ui.com/react/handbook/styling)
+- [Base UI for LLMs](https://base-ui.com/llms.txt)
+- [CVA Docs](https://cva.style/docs)
