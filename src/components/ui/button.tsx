@@ -18,10 +18,10 @@ const buttonVariants = tv({
   variants: {
     variant: {
       primary: [
-        'bg-primary-inverse text-fg-on-brand',
+        'bg-inverse-primary text-fg-inverse-primary',
         'hover:bg-brand-primary',
         'active:bg-brand-emphasis',
-        'focus-visible:ring-brand-primary',
+        'focus-visible:ring-inverse-primary',
       ],
       secondary: [
         'bg-bg-secondary text-fg-primary',
@@ -37,25 +37,25 @@ const buttonVariants = tv({
         'focus-visible:ring-fg-tertiary',
       ],
       positive: [
-        'bg-positive-primary text-fg-on-accent',
+        'bg-positive-primary text-on-accent',
         'hover:bg-positive-strong',
         'active:bg-positive-emphasis',
         'focus-visible:ring-positive-primary',
       ],
       negative: [
-        'bg-negative-primary text-fg-on-accent',
+        'bg-negative-primary text-on-accent',
         'hover:bg-negative-strong',
         'active:bg-negative-emphasis',
         'focus-visible:ring-negative-primary',
       ],
       warning: [
-        'bg-warning-primary text-fg-on-accent',
+        'bg-warning-primary text-on-accent',
         'hover:bg-warning-strong',
         'active:bg-warning-emphasis',
         'focus-visible:ring-warning-primary',
       ],
       info: [
-        'bg-info-primary text-fg-on-accent',
+        'bg-info-primary text-on-accent',
         'hover:bg-info-strong',
         'active:bg-info-emphasis',
         'focus-visible:ring-info-primary',

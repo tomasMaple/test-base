@@ -3,58 +3,66 @@
 @import "../../tailwind.desktop.css";
 
 @theme {
-  /* Colors - Brand */
-  --color-brand-emphasis: var(--color-brand-emphasis);
-  --color-brand-primary: var(--color-brand-primary);
-  --color-brand-strong: var(--color-brand-strong);
-  --color-brand-muted: var(--color-brand-muted);
-  --color-brand-weak: var(--color-brand-weak);
-  --color-brand-subtle: var(--color-brand-subtle);
-  --color-brand-on-weak: var(--color-brand-on-weak);
+  /* ============================================
+     BASE COLORS (Explicit prefixes for different bg/fg values)
+     ============================================ */
+  
+  /* Backgrounds - use bg- prefix */
+  --color-primary: var(--bg-color-primary);
+  --color-secondary: var(--bg-color-secondary);
+  --color-canvas: var(--bg-color-canvas);
+  --color-surface: var(--bg-color-surface);
+  --color-surface-raised: var(--bg-color-surface-raised);
+  --color-subtle: var(--bg-color-subtle);
+  --color-muted: var(--bg-color-muted);
+  --color-strong: var(--bg-color-strong);
+  --color-inverse-primary: var(--bg-color-inverse-primary);
 
-
-  /* Colors - Functional */
+  /* Foreground/Text - use fg- prefix */
   --color-fg-primary: var(--color-fg-primary);
   --color-fg-secondary: var(--color-fg-secondary);
   --color-fg-tertiary: var(--color-fg-tertiary);
+  --color-fg-muted: var(--color-fg-muted);
+  --color-fg-subtle: var(--color-fg-subtle);
   --color-fg-on-brand: var(--color-fg-on-brand);
   --color-fg-on-accent: var(--color-fg-on-accent);
+  --color-fg-inverse-primary: var(--color-fg-inverse-primary);
 
-  --color-bg-primary: var(--bg-color-primary);
-  --color-bg-secondary: var(--bg-color-secondary);
-  --color-bg-subtle: var(--bg-color-subtle);
-  --color-bg-muted: var(--bg-color-muted);
-  --color-bg-strong: var(--bg-color-strong);
-  --color-bg-canvas: var(--bg-color-canvas);
-  --color-bg-surface: var(--bg-color-surface);
-  --color-bg-surface-raised: var(--bg-color-surface-raised);
-
-  /* Short aliases for easy usage */
-  --color-primary: var(--bg-color-primary);
-  --color-primary-inverse: var(--bg-color-inverse-primary);
-  --color-secondary: var(--bg-color-secondary);
-
+  /* Borders */
   --color-border-weak: var(--border-color-weak);
   --color-border-subtle: var(--border-color-subtle);
   --color-border-strong: var(--border-color-strong);
   --color-border-inverse: var(--border-color-inverse-primary);
 
-  /* Inverse FG */
-  --color-fg-inverse: var(--color-fg-inverse-primary);
+  /* ============================================
+     BRAND & SEMANTIC COLORS (Clean names - same value for bg/text/border)
+     ============================================ */
+  
+  /* Brand */
+  --color-brand-primary: var(--color-brand-primary);
+  --color-brand-strong: var(--color-brand-strong);
+  --color-brand-emphasis: var(--color-brand-emphasis);
+  --color-brand-muted: var(--color-brand-muted);
+  --color-brand-subtle: var(--color-brand-subtle);
+  --color-brand-weak: var(--color-brand-weak);
+  --color-brand-on-weak: var(--color-brand-on-weak);
 
-  /* Colors - Semantic */
+  /* Positive */
   --color-positive-primary: var(--color-positive-primary);
   --color-positive-strong: var(--color-positive-strong);
   --color-positive-emphasis: var(--color-positive-emphasis);
 
+  /* Negative */
   --color-negative-primary: var(--color-negative-primary);
   --color-negative-strong: var(--color-negative-strong);
   --color-negative-emphasis: var(--color-negative-emphasis);
 
+  /* Warning */
   --color-warning-primary: var(--color-warning-primary);
   --color-warning-strong: var(--color-warning-strong);
   --color-warning-emphasis: var(--color-warning-emphasis);
 
+  /* Info */
   --color-info-primary: var(--color-info-primary);
   --color-info-strong: var(--color-info-strong);
   --color-info-emphasis: var(--color-info-emphasis);
@@ -80,7 +88,19 @@
   --color-lime-emphasis: var(--color-support-lime-emphasis);
   --color-lime-subtle: var(--color-support-lime-subtle);
 
-  /* Spacing */
+  /* ============================================
+     CONTEXTUAL SHORTCUTS (Common patterns)
+     ============================================ */
+  
+  --color-inverse: var(--bg-color-inverse-primary);     /* Dark background */
+  --color-on-brand: var(--color-fg-on-brand);           /* Text on brand colors */
+  --color-on-accent: var(--color-fg-on-accent);         /* Text on accent colors */
+
+  /* ============================================
+     SPACING & SIZING
+     ============================================ */
+  
+  /* Standard Spacing */
   --spacing-0: var(--spacing-space-0);
   --spacing-6: var(--spacing-space-6);
   --spacing-12: var(--spacing-space-12);
@@ -101,7 +121,7 @@
   --spacing-350: var(--spacing-space-350);
   --spacing-400: var(--spacing-space-400);
 
-  /* Sizes (Heights/Widths) */
+  /* Component Sizes (Heights/Widths) */
   --spacing-size-3xs: var(--spacing-size-3-xs);
   --spacing-size-2xs: var(--spacing-size-2-xs);
   --spacing-size-xs: var(--spacing-size-xs);
@@ -110,7 +130,10 @@
   --spacing-size-lg: var(--spacing-size-lg);
   --spacing-size-xl: var(--spacing-size-xl);
 
-  /* Border Radius */
+  /* ============================================
+     BORDER RADIUS
+     ============================================ */
+  
   --radius-none: var(--radius-border-radius-none);
   --radius-xs: var(--radius-border-radius-xxs);
   --radius-sm: var(--radius-border-radius-xs);
