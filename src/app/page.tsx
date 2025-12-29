@@ -2,7 +2,7 @@ import { Button } from '@/components/ui'
 
 export default function Home() {
   return (
-    <div className="min-h-screen p-200">
+    <div className="min-h-screen p-200 bg-surface">
       <main className="mx-auto max-w-4xl space-y-200">
         {/* Header */}
         <header className="space-y-50">

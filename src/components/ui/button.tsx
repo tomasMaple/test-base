@@ -27,20 +27,20 @@ const buttonVariants = tv({
       secondary: [
         'bg-surface text-fg-primary',
         'border border-border-subtle',
-        'hover:bg-bg-secondary',
-        'active:bg-bg-muted',
+        'hover:bg-primary',
+        'active:bg-secondary',
         'focus-visible:ring-border-strong',
       ],
       tertiary: [
-        'bg-bg-primary text-fg-primary',
-        'hover:bg-bg-secondary',
-        'active:bg-bg-muted',
+        'bg-primary text-fg-primary',
+        'hover:bg-secondary',
+        'active:bg-muted',
         'focus-visible:ring-fg-tertiary',
       ],
       ghost: [
         'bg-transparent text-fg-primary',
-        'hover:bg-bg-subtle',
-        'active:bg-bg-muted',
+        'hover:bg-primary',
+        'active:bg-secondary',
         'focus-visible:ring-fg-tertiary',
       ],
       negative: [
@@ -77,7 +77,7 @@ const buttonVariants = tv({
       ],
       '2x-large': [
         'h-size-2xl',
-        'px-125',
+        'px-75',
         'gap-25',
         'label-fixed-medium',
       ],
@@ -89,8 +89,26 @@ const buttonVariants = tv({
   },
   defaultVariants: {
     variant: 'primary',
-    size: '2x-large',
+    size: 'medium',
     fullWidth: false,
+  },
+})
+
+/**
+ * Text padding variants based on button size
+ */
+const textPaddingVariants = tv({
+  variants: {
+    size: {
+      small: 'px-25',
+      medium: 'px-25',
+      large: 'px-25',
+      'x-large': 'px-25',
+      '2x-large': 'px-25',
+    },
+  },
+  defaultVariants: {
+    size: 'medium',
   },
 })
 
@@ -103,13 +121,24 @@ export type ButtonProps = React.ComponentPropsWithoutRef<typeof BaseButton> &
  * with Tailwind Variants and Supernova design tokens.
  */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size,  fullWidth, ...props }, ref) => (
-    <BaseButton
-      ref={ref}
-      className={cn(buttonVariants({ variant, size, fullWidth }), className)}
-      {...props}
-    />
-  )
+  ({ className, variant, size, fullWidth, children, ...props }, ref) => {
+    // Wrap text content in a span with size-specific padding
+    const content = typeof children === 'string' ? (
+      <span className={textPaddingVariants({ size })}>{children}</span>
+    ) : (
+      children
+    )
+
+    return (
+      <BaseButton
+        ref={ref}
+        className={cn(buttonVariants({ variant, size, fullWidth }), className)}
+        {...props}
+      >
+        {content}
+      </BaseButton>
+    )
+  }
 )
 Button.displayName = 'Button'
 
