@@ -129,6 +129,7 @@
   --spacing-size-md: var(--spacing-size-md);
   --spacing-size-lg: var(--spacing-size-lg);
   --spacing-size-xl: var(--spacing-size-xl);
+  --spacing-size-2xl: var(--spacing-size-2-xl);
 
   /* ============================================
      BORDER RADIUS

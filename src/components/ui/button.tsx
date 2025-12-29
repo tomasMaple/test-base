@@ -22,13 +22,20 @@ const buttonVariants = tv({
         'hover:bg-brand-primary',
         'active:bg-brand-emphasis',
         'focus-visible:ring-inverse-primary',
+        'text-on-brand',
       ],
       secondary: [
-        'bg-bg-secondary text-fg-primary',
+        'bg-surface text-fg-primary',
         'border border-border-subtle',
-        'hover:bg-bg-muted',
-        'active:bg-bg-strong',
-        'focus-visible:ring-fg-secondary',
+        'hover:bg-bg-secondary',
+        'active:bg-bg-muted',
+        'focus-visible:ring-border-strong',
+      ],
+      tertiary: [
+        'bg-bg-primary text-fg-primary',
+        'hover:bg-bg-secondary',
+        'active:bg-bg-muted',
+        'focus-visible:ring-fg-tertiary',
       ],
       ghost: [
         'bg-transparent text-fg-primary',
@@ -36,56 +43,43 @@ const buttonVariants = tv({
         'active:bg-bg-muted',
         'focus-visible:ring-fg-tertiary',
       ],
-      positive: [
-        'bg-positive-primary text-on-accent',
-        'hover:bg-positive-strong',
-        'active:bg-positive-emphasis',
-        'focus-visible:ring-positive-primary',
-      ],
       negative: [
         'bg-negative-primary text-on-accent',
         'hover:bg-negative-strong',
         'active:bg-negative-emphasis',
         'focus-visible:ring-negative-primary',
       ],
-      warning: [
-        'bg-warning-primary text-on-accent',
-        'hover:bg-warning-strong',
-        'active:bg-warning-emphasis',
-        'focus-visible:ring-warning-primary',
-      ],
-      info: [
-        'bg-info-primary text-on-accent',
-        'hover:bg-info-strong',
-        'active:bg-info-emphasis',
-        'focus-visible:ring-info-primary',
-      ],
     },
     size: {
-      xs: [
-        'h-size-3xs',
-        'px-50',
+      small: [
+        'h-size-sm',
+        'px-75',
+        'gap-0',
         'label-fixed-x-small',
       ],
-      sm: [
-        'h-size-xs',
+      medium: [
+        'h-size-md',
         'px-75',
-        'label-fixed-small',
+        'gap-12',
+        'label-fixed-x-small',
       ],
-      md: [
-        'h-size-sm',
-        'px-100',
-        'label-fixed-small',
-      ],
-      lg: [
+      large: [
         'h-size-lg',
-        'px-125',
+        'px-75',
+        'gap-12',
+        'label-fixed-small',
+      ],
+      'x-large': [
+        'h-size-xl',
+        'px-75',
+        'gap-12',
         'label-fixed-medium',
       ],
-      xl: [
-        'h-size-xl',
-        'px-150',
-        'label-fixed-large',
+      '2x-large': [
+        'h-size-2xl',
+        'px-125',
+        'gap-25',
+        'label-fixed-medium',
       ],
     },
     fullWidth: {
@@ -95,7 +89,7 @@ const buttonVariants = tv({
   },
   defaultVariants: {
     variant: 'primary',
-    size: 'md',
+    size: '2x-large',
     fullWidth: false,
   },
 })

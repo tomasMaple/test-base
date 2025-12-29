@@ -18,11 +18,9 @@ export default function Home() {
           <div className="flex flex-wrap gap-75">
             <Button variant="primary">Primary</Button>
             <Button variant="secondary">Secondary</Button>
+            <Button variant="tertiary">Tertiary</Button>
             <Button variant="ghost">Ghost</Button>
-            <Button variant="positive">Positive</Button>
             <Button variant="negative">Negative</Button>
-            <Button variant="warning">Warning</Button>
-            <Button variant="info">Info</Button>
           </div>
         </section>
 
@@ -30,11 +28,11 @@ export default function Home() {
         <section className="space-y-100">
           <h2 className="heading-h5">Button Sizes</h2>
           <div className="flex flex-wrap items-center gap-75">
-            <Button size="xs">Extra Small</Button>
-            <Button size="sm">Small</Button>
-            <Button size="md">Medium</Button>
-            <Button size="lg">Large</Button>
-            <Button size="xl">Extra Large</Button>
+            <Button size="small">Small</Button>
+            <Button size="medium">Medium</Button>
+            <Button size="large">Large</Button>
+            <Button size="x-large">X-Large</Button>
+            <Button size="2x-large">2X-Large</Button>
           </div>
         </section>
 
@@ -52,13 +50,13 @@ export default function Home() {
         <section className="space-y-100">
           <h2 className="heading-h5">Combined Variants</h2>
           <div className="flex flex-wrap gap-75">
-            <Button variant="positive" size="lg"    >
-              Large Pill Positive
+            <Button variant="secondary" size="large">
+              Large Secondary
             </Button>
-            <Button variant="secondary" size="sm">
-              Small Secondary
+            <Button variant="tertiary" size="small">
+              Small Tertiary
             </Button>
-            <Button variant="negative" size="xl">
+            <Button variant="negative" size="x-large">
               XL Negative
             </Button>
           </div>
