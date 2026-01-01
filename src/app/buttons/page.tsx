@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui'
+import { AddFill, ArrowRightFill, SearchFill } from '@/icons'
 
 export default function ButtonsPage() {
   return (
@@ -11,6 +12,22 @@ export default function ButtonsPage() {
             Explore all button variants, sizes, and states
           </p>
         </header>
+
+        {/* Icons */}
+        <section className="space-y-100">
+          <h2 className="heading-h5">Buttons with Icons</h2>
+          <div className="flex flex-wrap items-center gap-75">
+            <Button beforeIcon={<AddFill />}>Before Icon</Button>
+            <Button afterIcon={<ArrowRightFill />}>After Icon</Button>
+            <Button beforeIcon={<AddFill />} afterIcon={<ArrowRightFill />}>
+              Both Icons
+            </Button>
+            <Button variant="secondary" beforeIcon={<SearchFill />}>
+              Search
+            </Button>
+            <Button variant="ghost" beforeIcon={<AddFill />} />
+          </div>
+        </section>
 
         {/* Variants */}
         <section className="space-y-100">
@@ -65,3 +82,4 @@ export default function ButtonsPage() {
     </div>
   )
 }
+

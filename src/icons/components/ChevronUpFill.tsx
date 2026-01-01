@@ -1,0 +1,18 @@
+import type { SVGProps } from "react";
+const SvgChevronUpFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M16.0398 15.8002C16.4817 16.3306 17.2699 16.4022 17.8003 15.9603C18.3306 15.5183 18.4023 14.7301 17.9603 14.1998L12.9603 8.19977C12.7228 7.91478 12.371 7.75 12 7.75C11.6291 7.75 11.2772 7.91478 11.0398 8.19977L6.03975 14.1998C5.5978 14.7301 5.66945 15.5183 6.1998 15.9603C6.73015 16.4022 7.51835 16.3306 7.96031 15.8002L12 10.9526L16.0398 15.8002Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgChevronUpFill;

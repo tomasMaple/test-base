@@ -1,0 +1,15 @@
+import type { SVGProps } from "react";
+const SvgDotDivider = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <circle cx={12} cy={12} r={2} fill="currentColor" />
+  </svg>
+);
+export default SvgDotDivider;

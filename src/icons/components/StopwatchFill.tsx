@@ -1,0 +1,24 @@
+import type { SVGProps } from "react";
+const SvgStopwatchFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M15 2C15.5523 2 16 1.55228 16 1C16 0.447715 15.5523 0 15 0H9C8.44771 0 8 0.447715 8 1C8 1.55228 8.44771 2 9 2H15Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M12 3C6.47715 3 2 7.47715 2 13C2 18.5228 6.47715 23 12 23C17.5228 23 22 18.5228 22 13C22 10.855 21.3246 8.86773 20.175 7.23924L21.7071 5.70711C22.0976 5.31658 22.0976 4.68342 21.7071 4.29289C21.3166 3.90237 20.6834 3.90237 20.2929 4.29289L18.8609 5.72484C17.0703 4.03551 14.6561 3 12 3ZM13 9C13 8.44771 12.5523 8 12 8C11.4477 8 11 8.44771 11 9V13C11 13.5523 11.4477 14 12 14C12.5523 14 13 13.5523 13 13V9Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgStopwatchFill;

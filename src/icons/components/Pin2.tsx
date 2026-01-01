@@ -1,0 +1,26 @@
+import type { SVGProps } from "react";
+const SvgPin2 = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M15 4C13.3431 4 12 5.34315 12 7C12 8.65685 13.3431 10 15 10C16.6568 10 18 8.65685 18 7C18 5.34315 16.6568 4 15 4ZM9.99999 7C9.99999 4.23858 12.2386 2 15 2C17.7614 2 20 4.23858 20 7C20 9.76142 17.7614 12 15 12C12.2386 12 9.99999 9.76142 9.99999 7Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M13.0812 9.68627C13.5306 10.0073 13.6347 10.6318 13.3137 11.0812L5.81372 21.5812C5.49271 22.0307 4.86816 22.1347 4.41875 21.8137C3.96934 21.4927 3.86524 20.8682 4.18625 20.4188L11.6863 9.91876C12.0073 9.46935 12.6318 9.36526 13.0812 9.68627Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgPin2;

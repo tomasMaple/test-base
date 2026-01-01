@@ -131,6 +131,14 @@
   --spacing-size-xl: var(--spacing-size-xl);
   --spacing-size-2xl: var(--spacing-size-2-xl);
 
+  /* Icon Spacing Tokens */
+  --spacing-icon-sm: var(--icon-size-sm);
+  --spacing-icon-md: var(--icon-size-md);
+  --spacing-icon-lg: var(--icon-size-lg);
+  --spacing-icon-xl: var(--icon-size-xl);
+  --spacing-icon-2xl: var(--icon-size-2xl);
+  --spacing-icon-3xl: var(--icon-size-3xl);
+
   /* ============================================
      BORDER RADIUS
      ============================================ */
@@ -142,6 +150,21 @@
   --radius-lg: var(--radius-border-radius-md);
   --radius-xl: var(--radius-border-radius-lg);
   --radius-pill: var(--radius-border-radius-pill);
+
+  /* Transitions & Animation */
+  --duration-fast: 150ms;
+  --duration-standard: 250ms;
+  --duration-slow: 400ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Opacity */
+  --opacity-disabled: 0.5;
+
+  /* Focus Outlines */
+  --spacing-focus-outline: 2px;
+  --spacing-focus-offset: 2px;
 }
 
 
@@ -190,6 +213,14 @@
   --radius-border-radius-3xl: 24px;
   --radius-border-radius-4xl: 32px;
   --radius-border-radius-pill: 1000px;
+
+  /* Icon Sizes for Buttons */
+  --icon-size-sm: 12px;
+  --icon-size-md: 14px;
+  --icon-size-lg: 16px;
+  --icon-size-xl: 18px;
+  --icon-size-2xl: 20px;
+  --icon-size-3xl: 24px;
 
   /* Typography - Font Sizes */
   --text-heading-h1: 56px;

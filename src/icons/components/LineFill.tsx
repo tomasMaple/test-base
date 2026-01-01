@@ -1,0 +1,18 @@
+import type { SVGProps } from "react";
+const SvgLineFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M21.8839 3.88388C22.372 3.39573 22.372 2.60427 21.8839 2.11612C21.3957 1.62796 20.6043 1.62796 20.1161 2.11612L2.11612 20.1161C1.62796 20.6043 1.62796 21.3957 2.11612 21.8839C2.60427 22.372 3.39573 22.372 3.88388 21.8839L21.8839 3.88388Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgLineFill;

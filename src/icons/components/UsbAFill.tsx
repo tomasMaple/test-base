@@ -1,0 +1,22 @@
+import type { SVGProps } from "react";
+const SvgUsbAFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path d="M9 8H11V6H9V8Z" fill="currentColor" />
+    <path d="M16 8H14V6H16V8Z" fill="currentColor" />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M7 2C6.44772 2 6 2.44772 6 3V9C5.44772 9 5 9.44772 5 10V15C5 15.2652 5.10536 15.5196 5.29289 15.7071L8 18.4142V21C8 21.5523 8.44772 22 9 22H16C16.5523 22 17 21.5523 17 21V18.5352L19.5547 16.8321C19.8329 16.6466 20 16.3344 20 16V10C20 9.44772 19.5523 9 19 9V3C19 2.44772 18.5523 2 18 2H7ZM17 9V4H8V9H17Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgUsbAFill;

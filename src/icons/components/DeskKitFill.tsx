@@ -1,0 +1,24 @@
+import type { SVGProps } from "react";
+const SvgDeskKitFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M4 2C2.34315 2 1 3.34315 1 5V19C1 20.6569 2.34315 22 4 22H12C13.6569 22 15 20.6569 15 19V5C15 3.34315 13.6569 2 12 2H4Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M19 2C17.3431 2 16 3.34315 16 5V18C16 18.2339 16.082 18.4605 16.2318 18.6402L18.7318 21.6402C18.9219 21.8683 19.2035 22.0001 19.5005 22C19.7974 21.9999 20.079 21.8677 20.2689 21.6394L22.7638 18.6394C22.9132 18.4598 22.995 18.2336 22.995 18V7.10068C22.9983 7.06757 23 7.03398 23 7C23 6.96602 22.9983 6.93243 22.995 6.89932V5C22.995 3.34315 21.6518 2 19.995 2H19ZM19.4992 19.437L20.995 17.6385V8H18V17.6379L19.4992 19.437Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgDeskKitFill;

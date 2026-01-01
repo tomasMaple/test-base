@@ -1,0 +1,28 @@
+import type { SVGProps } from "react";
+const SvgEjectSquare = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M8.89791 11.5898C8.68038 11.1834 8.70423 10.6902 8.95994 10.3066L10.9599 7.30662C11.1918 6.95888 11.5821 6.75 12 6.75C12.4179 6.75 12.8082 6.95888 13.0401 7.30662L15.0401 10.3066C15.2958 10.6902 15.3196 11.1834 15.1021 11.5898C14.8846 11.9963 14.461 12.25 14 12.25H10C9.53901 12.25 9.11543 11.9963 8.89791 11.5898Z"
+      fill="currentColor"
+    />
+    <path
+      d="M9 15C9 14.4477 9.44772 14 10 14H14C14.5523 14 15 14.4477 15 15C15 15.5523 14.5523 16 14 16H10C9.44772 16 9 15.5523 9 15Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M7 2C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2H7ZM4 7C4 5.34315 5.34315 4 7 4H17C18.6569 4 20 5.34315 20 7V17C20 18.6569 18.6569 20 17 20H7C5.34315 20 4 18.6569 4 17V7Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgEjectSquare;

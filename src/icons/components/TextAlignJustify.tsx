@@ -1,0 +1,30 @@
+import type { SVGProps } from "react";
+const SvgTextAlignJustify = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M20 5C20.5523 5 21 5.44772 21 6C21 6.55228 20.5523 7 20 7H4C3.44772 7 3 6.55228 3 6C3 5.44772 3.44772 5 4 5H20Z"
+      fill="currentColor"
+    />
+    <path
+      d="M21 10C21 10.5523 20.5523 11 20 11L4 11C3.44771 11 3 10.5523 3 10C3 9.44772 3.44771 9 4 9L20 9C20.5523 9 21 9.44772 21 10Z"
+      fill="currentColor"
+    />
+    <path
+      d="M20 13C20.5523 13 21 13.4477 21 14C21 14.5523 20.5523 15 20 15H4C3.44772 15 3 14.5523 3 14C3 13.4477 3.44772 13 4 13H20Z"
+      fill="currentColor"
+    />
+    <path
+      d="M20 19C20.5523 19 21 18.5523 21 18C21 17.4477 20.5523 17 20 17H4C3.44771 17 3 17.4477 3 18C3 18.5523 3.44771 19 4 19H20Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgTextAlignJustify;

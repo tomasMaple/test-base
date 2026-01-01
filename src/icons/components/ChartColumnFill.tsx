@@ -1,0 +1,26 @@
+import type { SVGProps } from "react";
+const SvgChartColumnFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M23 19C23 20.6569 21.6569 22 20 22C18.3431 22 17 20.6569 17 19V5C17 3.34315 18.3431 2 20 2C21.6569 2 23 3.34315 23 5V19Z"
+      fill="currentColor"
+    />
+    <path
+      d="M12 22C13.6569 22 15 20.6569 15 19V11C15 9.34315 13.6569 8 12 8C10.3431 8 9 9.34315 9 11V19C9 20.6569 10.3431 22 12 22Z"
+      fill="currentColor"
+    />
+    <path
+      d="M4 22C5.65685 22 7 20.6569 7 19V15C7 13.3431 5.65685 12 4 12C2.34315 12 1 13.3431 1 15V19C1 20.6569 2.34315 22 4 22Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgChartColumnFill;

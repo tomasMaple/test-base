@@ -1,0 +1,26 @@
+import type { SVGProps } from "react";
+const SvgShapeBoundaryFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M6 5C5.44772 5 5 5.44772 5 6V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V6C19 5.44772 18.5523 5 18 5H6Z"
+      fill="currentColor"
+    />
+    <path d="M7 2H5V4H7V2Z" fill="currentColor" />
+    <path d="M5 22V20H7V22H5Z" fill="currentColor" />
+    <path d="M17 20V22H19V20H17Z" fill="currentColor" />
+    <path d="M17 2H19V4H17V2Z" fill="currentColor" />
+    <path d="M20 19H22V17H20V19Z" fill="currentColor" />
+    <path d="M20 5H22V7H20V5Z" fill="currentColor" />
+    <path d="M2 19H4V17H2V19Z" fill="currentColor" />
+    <path d="M2 5H4V7H2V5Z" fill="currentColor" />
+  </svg>
+);
+export default SvgShapeBoundaryFill;

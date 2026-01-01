@@ -1,0 +1,20 @@
+import type { SVGProps } from "react";
+const SvgPlayStore = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M8.55491 2.98498C6.55559 1.77327 4 3.21273 4 5.55057V18.3331C4 20.7077 6.62778 22.141 8.6242 20.8554L18.8503 14.2705C20.7145 13.07 20.6772 10.3318 18.781 9.18259L8.55491 2.98498ZM6.00181 5.48874C6.00061 5.50913 6 5.52974 6 5.55057V18.3331C6 18.3899 6.00451 18.4451 6.01313 18.4985L11.921 11.9998L6.00181 5.48874ZM8.89353 18.3032L14.4176 14.7461L13.2724 13.4864L8.89353 18.3032ZM16.1224 13.6482L17.7675 12.5889C18.3889 12.1888 18.3764 11.2761 17.7444 10.893L16.3812 10.0668L14.6239 11.9998L16.1224 13.6482ZM14.6384 9.01061L8.55427 5.32323L13.2724 10.5132L14.6384 9.01061Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgPlayStore;

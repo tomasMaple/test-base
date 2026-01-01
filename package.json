@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "icons:build": "svgr --out-dir src/icons/components --ext tsx -- src/icons/svg",
+    "icons:index": "node scripts/generate-icons.js",
+    "icons:generate": "npm run icons:build && npm run icons:index"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
@@ -19,6 +22,7 @@
     "tailwind-variants": "^3.2.2"
   },
   "devDependencies": {
+    "@svgr/cli": "^8.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

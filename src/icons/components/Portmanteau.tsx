@@ -1,0 +1,26 @@
+import type { SVGProps } from "react";
+const SvgPortmanteau = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M2 10C2 7.79086 3.79086 6 6 6H18C20.2091 6 22 7.79086 22 10V18C22 20.2091 20.2091 22 18 22H6C3.79086 22 2 20.2091 2 18V10ZM6 8C4.89543 8 4 8.89543 4 10V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V10C20 8.89543 19.1046 8 18 8H6Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M10 4C9.44772 4 9 4.44772 9 5V22H7V5C7 3.34315 8.34315 2 10 2H14C15.6569 2 17 3.34315 17 5V22H15V5C15 4.44772 14.5523 4 14 4H10Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgPortmanteau;

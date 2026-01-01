@@ -1,0 +1,44 @@
+import type { SVGProps } from "react";
+const SvgCalendarToday = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M7 0C7.55228 0 8 0.447715 8 1V5C8 5.55228 7.55228 6 7 6C6.44772 6 6 5.55228 6 5V1C6 0.447715 6.44772 0 7 0Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M17 0C17.5523 0 18 0.447715 18 1V5C18 5.55228 17.5523 6 17 6C16.4477 6 16 5.55228 16 5V1C16 0.447715 16.4477 0 17 0Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M2 8H22V10H2V8Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M2 7C2 4.23858 4.23858 2 7 2H17C19.7614 2 22 4.23858 22 7V17C22 19.7614 19.7614 22 17 22H7C4.23858 22 2 19.7614 2 17V7ZM7 4C5.34315 4 4 5.34315 4 7V17C4 18.6569 5.34315 20 7 20H17C18.6569 20 20 18.6569 20 17V7C20 5.34315 18.6569 4 17 4H7Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M15.5 13C15.5 12.1716 16.1716 11.5 17 11.5C17.8284 11.5 18.5001 12.1716 18.5001 13C18.5001 13.8284 17.8285 14.5 17.0001 14.5C16.1717 14.5 15.5 13.8284 15.5 13Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgCalendarToday;

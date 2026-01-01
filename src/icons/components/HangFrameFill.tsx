@@ -1,0 +1,24 @@
+import type { SVGProps } from "react";
+const SvgHangFrameFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M4 7C4 6.44772 4.44772 6 5 6H19C19.5523 6 20 6.44772 20 7V17C20 17.5523 19.5523 18 19 18H5C4.44772 18 4 17.5523 4 17V7Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M12.5146 0.142507C12.198 -0.0475024 11.8023 -0.0475024 11.4857 0.142507L6.72317 3H4C2.34315 3 1 4.34315 1 6V18C1 19.6569 2.34315 21 4 21H20C21.6569 21 23 19.6569 23 18V6C23 4.34315 21.6569 3 20 3H17.2771L12.5146 0.142507ZM16.9818 5C16.9934 5.0002 17.005 5.0002 17.0166 5H20C20.5523 5 21 5.44772 21 6V18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5H6.98371C6.99529 5.0002 7.00688 5.0002 7.01848 5H16.9818ZM13.3898 3L12.0002 2.16619L10.6105 3H13.3898Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgHangFrameFill;

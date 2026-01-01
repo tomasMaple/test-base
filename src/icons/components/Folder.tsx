@@ -1,0 +1,24 @@
+import type { SVGProps } from "react";
+const SvgFolder = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M1 4H20C21.6569 4 23 5.34315 23 7V17C23 18.6569 21.6569 20 20 20H4C2.34315 20 1 18.6569 1 17V4ZM3 6V17C3 17.5523 3.44772 18 4 18H20C20.5523 18 21 17.5523 21 17V7C21 6.44772 20.5523 6 20 6H3Z"
+      fill="currentColor"
+    />
+    <path
+      d="M4 1C2.34315 1 1 2.34315 1 4H10C10 2.34315 8.65685 1 7 1H4Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgFolder;

@@ -1,0 +1,18 @@
+import type { SVGProps } from "react";
+const SvgSliderLeftFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M22.0002 12C22.0002 11.4477 21.5525 11 21.0002 11H13.9002C13.437 8.71776 11.4192 7 9.00024 7C6.58129 7 4.56353 8.71776 4.10026 11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H4.10026C4.56353 15.2822 6.58129 17 9.00024 17C11.4192 17 13.437 15.2822 13.9002 13H21.0002C21.5525 13 22.0002 12.5523 22.0002 12Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgSliderLeftFill;

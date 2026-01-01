@@ -1,0 +1,18 @@
+import type { SVGProps } from "react";
+const SvgEggFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M8.79915 3.28587C9.72741 2.53177 10.8187 2 12 2C13.1813 2 14.2726 2.53177 15.2008 3.28587C16.1337 4.04369 16.9699 5.07871 17.6678 6.23056C19.0564 8.52244 20 11.4495 20 14C20 18.4223 16.4223 22 12 22C7.57772 22 4 18.4223 4 14C4 11.4495 4.94362 8.52244 6.33224 6.23056C7.03012 5.07871 7.86631 4.04369 8.79915 3.28587Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+export default SvgEggFill;
