@@ -21,7 +21,7 @@ const radioVariants = tv({
       'data-[checked]:bg-brand-primary data-[checked]:border-brand-primary',
     ],
     indicator: [
-      'size-[8px] rounded-full bg-on-brand-primary',
+      'size-[8px] rounded-full bg-fg-on-brand',
       'transition-all duration-standard ease-default',
       'data-[unchecked]:hidden',
     ],
