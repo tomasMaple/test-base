@@ -100,7 +100,7 @@
      SPACING & SIZING
      ============================================ */
   
-  /* Standard Spacing */
+  /* Standard Spacing - use as mb-67, pt-400, gap-1600, etc. */
   --spacing-0: var(--spacing-space-0);
   --spacing-6: var(--spacing-space-6);
   --spacing-12: var(--spacing-space-12);
@@ -120,24 +120,89 @@
   --spacing-300: var(--spacing-space-300);
   --spacing-350: var(--spacing-space-350);
   --spacing-400: var(--spacing-space-400);
+  --spacing-450: var(--spacing-space-450);
+  --spacing-500: var(--spacing-space-500);
+  --spacing-600: var(--spacing-space-600);
+  --spacing-700: var(--spacing-space-700);
+  --spacing-800: var(--spacing-space-800);
+  --spacing-900: var(--spacing-space-900);
+  --spacing-1000: var(--spacing-space-1000);
+  --spacing-1100: var(--spacing-space-1100);
+  --spacing-1200: var(--spacing-space-1200);
+  --spacing-1300: var(--spacing-space-1300);
+  --spacing-1400: var(--spacing-space-1400);
+  --spacing-1500: var(--spacing-space-1500);
+  --spacing-1600: var(--spacing-space-1600);
 
-  /* Component Sizes (Heights/Widths) */
-  --spacing-size-3xs: var(--spacing-size-3-xs);
-  --spacing-size-2xs: var(--spacing-size-2-xs);
-  --spacing-size-xs: var(--spacing-size-xs);
-  --spacing-size-sm: var(--spacing-size-sm);
-  --spacing-size-md: var(--spacing-size-md);
-  --spacing-size-lg: var(--spacing-size-lg);
-  --spacing-size-xl: var(--spacing-size-xl);
-  --spacing-size-2xl: var(--spacing-size-2-xl);
+  /* Component Sizes - dual namespace for h-*, w-*, and size-* utilities */
+  /* For h-sm, w-md, etc. */
+  --spacing-3xs: var(--spacing-size-3-xs);
+  --spacing-2xs: var(--spacing-size-2-xs);
+  --spacing-xs: var(--spacing-size-xs);
+  --spacing-sm: var(--spacing-size-sm);
+  --spacing-md: var(--spacing-size-md);
+  --spacing-lg: var(--spacing-size-lg);
+  --spacing-xl: var(--spacing-size-xl);
+  --spacing-2xl: var(--spacing-size-2-xl);
+  
+  /* For size-sm, size-md, etc. */
+  --size-3xs: var(--spacing-size-3-xs);
+  --size-2xs: var(--spacing-size-2-xs);
+  --size-xs: var(--spacing-size-xs);
+  --size-sm: var(--spacing-size-sm);
+  --size-md: var(--spacing-size-md);
+  --size-lg: var(--spacing-size-lg);
+  --size-xl: var(--spacing-size-xl);
+  --size-2xl: var(--spacing-size-2-xl);
 
-  /* Icon Spacing Tokens */
+  /* Numeric sizes - mapping same values as --spacing- scale */
+  --size-0: var(--spacing-space-0);
+  --size-6: var(--spacing-space-6);
+  --size-12: var(--spacing-space-12);
+  --size-25: var(--spacing-space-25);
+  --size-37: var(--spacing-space-37);
+  --size-50: var(--spacing-space-50);
+  --size-67: var(--spacing-space-67);
+  --size-75: var(--spacing-space-75);
+  --size-87: var(--spacing-space-87);
+  --size-100: var(--spacing-space-100);
+  --size-125: var(--spacing-space-125);
+  --size-150: var(--spacing-space-150);
+  --size-175: var(--spacing-space-175);
+  --size-200: var(--spacing-space-200);
+  --size-225: var(--spacing-space-225);
+  --size-250: var(--spacing-space-250);
+  --size-300: var(--spacing-space-300);
+  --size-350: var(--spacing-space-350);
+  --size-400: var(--spacing-space-400);
+  --size-450: var(--spacing-space-450);
+  --size-500: var(--spacing-space-500);
+  --size-600: var(--spacing-space-600);
+  --size-700: var(--spacing-space-700);
+  --size-800: var(--spacing-space-800);
+  --size-900: var(--spacing-space-900);
+  --size-1000: var(--spacing-space-1000);
+  --size-1100: var(--spacing-space-1100);
+  --size-1200: var(--spacing-space-1200);
+  --size-1300: var(--spacing-space-1300);
+  --size-1400: var(--spacing-space-1400);
+  --size-1500: var(--spacing-space-1500);
+  --size-1600: var(--spacing-space-1600);
+  
+  /* Icon Sizes - dual namespace */
   --spacing-icon-sm: var(--icon-size-sm);
   --spacing-icon-md: var(--icon-size-md);
   --spacing-icon-lg: var(--icon-size-lg);
   --spacing-icon-xl: var(--icon-size-xl);
   --spacing-icon-2xl: var(--icon-size-2xl);
   --spacing-icon-3xl: var(--icon-size-3xl);
+  
+  --size-icon-sm: var(--icon-size-sm);
+  --size-icon-md: var(--icon-size-md);
+  --size-icon-lg: var(--icon-size-lg);
+  --size-icon-xl: var(--icon-size-xl);
+  --size-icon-2xl: var(--icon-size-2xl);
+  --size-icon-3xl: var(--icon-size-3xl);
 
   /* ============================================
      BORDER RADIUS
@@ -190,6 +255,15 @@
   --spacing-space-300: 48px;
   --spacing-space-350: 56px;
   --spacing-space-400: 64px;
+  --spacing-space-450: 72px;
+  --spacing-space-500: 80px;
+  --spacing-space-600: 96px;
+  --spacing-space-700: 112px;
+  --spacing-space-800: 128px;
+  --spacing-space-900: 144px;
+  --spacing-space-1000: 160px;
+  --spacing-space-1100: 176px;
+  --spacing-space-1200: 192px;
 
   /* Sizes */
   --spacing-size-3-xs: 16px;

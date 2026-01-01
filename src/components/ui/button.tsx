@@ -52,31 +52,31 @@ const buttonVariants = tv({
     },
     size: {
       small: [
-        'h-size-sm',
+        'h-sm',
         'px-75',
         'gap-0',
         'label-fixed-x-small',
       ],
       medium: [
-        'h-size-md',
+        'h-md',
         'px-75',
         'gap-12',
         'label-fixed-x-small',
       ],
       large: [
-        'h-size-lg',
+        'h-lg',
         'px-75',
         'gap-12',
         'label-fixed-small',
       ],
       'x-large': [
-        'h-size-xl',
+        'h-xl',
         'px-75',
         'gap-12',
         'label-fixed-medium',
       ],
       '2x-large': [
-        'h-size-2xl',
+        'h-2xl',
         'px-75',
         'gap-25',
         'label-fixed-medium',

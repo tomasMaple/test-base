@@ -12,7 +12,7 @@ import { Check } from '@/icons'
 const checkboxVariants = tv({
   slots: {
     root: [
-      'group flex size-size-2xs items-center justify-center rounded-sm',
+      'group flex size-2xs items-center justify-center rounded-sm',
       'transition-all duration-standard ease-default cursor-pointer',
       'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary',
       'disabled:pointer-events-none disabled:opacity-disabled',

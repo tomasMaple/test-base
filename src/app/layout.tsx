@@ -22,6 +22,7 @@ const navigationItems: SidebarItemType[] = [
   { href: '/buttons', label: 'Button' },
   { href: '/button-examples', label: 'Button Examples' },
   { href: '/checkbox', label: 'Checkbox' },
+  { href: '/radio', label: 'Radio' },
   { href: '/placeholder', label: 'Placeholder' },
 ]
 
