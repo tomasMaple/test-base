@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui'
-import { AddFill, ArrowRightFill, SearchFill } from '@/icons'
+import { Plus, ArrowRight, Search } from 'lucide-react'
 
 export default function ButtonsPage() {
   return (
@@ -17,15 +17,15 @@ export default function ButtonsPage() {
         <section className="space-y-100">
           <h2 className="heading-h5">Buttons with Icons</h2>
           <div className="flex flex-wrap items-center gap-75">
-            <Button beforeIcon={<AddFill />}>Before Icon</Button>
-            <Button afterIcon={<ArrowRightFill />}>After Icon</Button>
-            <Button beforeIcon={<AddFill />} afterIcon={<ArrowRightFill />}>
+            <Button beforeIcon={<Plus />}>Before Icon</Button>
+            <Button afterIcon={<ArrowRight />}>After Icon</Button>
+            <Button beforeIcon={<Plus />} afterIcon={<ArrowRight />}>
               Both Icons
             </Button>
-            <Button variant="secondary" beforeIcon={<SearchFill />}>
+            <Button variant="secondary" beforeIcon={<Search />}>
               Search
             </Button>
-            <Button variant="ghost" beforeIcon={<AddFill />} />
+            <Button variant="ghost" beforeIcon={<Plus />} />
           </div>
         </section>
 

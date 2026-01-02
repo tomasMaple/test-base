@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Sidebar, type SidebarItemType } from "@/components/ui/sidebar";
+import { ToastProvider } from "@/components/ui/toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,10 +22,17 @@ export const metadata: Metadata = {
 const navigationItems: SidebarItemType[] = [
   { href: '/buttons', label: 'Button' },
   { href: '/button-examples', label: 'Button Examples' },
+  { href: '/avatar', label: 'Avatar' },
   { href: '/checkbox', label: 'Checkbox' },
   { href: '/radio', label: 'Radio' },
+  { href: '/switch', label: 'Switch' },
+  { href: '/progress', label: 'Progress' },
+  { href: '/toast', label: 'Toast' },
+  { href: '/toggle', label: 'Toggle' },
+  { href: '/select', label: 'Select' },
   { href: '/placeholder', label: 'Placeholder' },
 ]
+
 
 export default function RootLayout({
   children,
@@ -36,12 +44,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} theme-light theme-desktop antialiased bg-surface text-fg-primary`}
       >
-        <div className="flex min-h-screen">
-          <Sidebar items={navigationItems} />
-          <main className="flex-1 overflow-auto">
-            {children}
-          </main>
-        </div>
+        <ToastProvider>
+          <div className="flex min-h-screen">
+            <Sidebar items={navigationItems} />
+            <main className="flex-1 overflow-auto">
+              {children}
+            </main>
+          </div>
+        </ToastProvider>
       </body>
     </html>
   );

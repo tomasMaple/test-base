@@ -1,13 +1,12 @@
 import { Button } from '@/components/ui/button'
 import {
-  Add,
+  Plus,
   ArrowRight,
   Check,
   Download,
   Heart,
   Search,
-  AddFill,
-} from '@/icons'
+} from 'lucide-react'
 
 /**
  * Example page demonstrating button component with icon support
@@ -28,19 +27,19 @@ export default function ButtonExamplesPage() {
       <section className="space-y-50">
         <h2 className="text-[var(--text-heading-h6)] font-medium">Before Icon</h2>
         <div className="flex flex-wrap gap-50">
-          <Button variant="primary" size="small" beforeIcon={<Add />}>
+          <Button variant="primary" size="small" beforeIcon={<Plus />}>
             Add Item
           </Button>
-          <Button variant="primary" size="medium" beforeIcon={<Add />} afterIcon={<AddFill />}>
+          <Button variant="primary" size="medium" beforeIcon={<Plus />} afterIcon={<Plus />}>
            hello
           </Button>
-          <Button variant="primary" size="large" beforeIcon={<Add />}>
+          <Button variant="primary" size="large" beforeIcon={<Plus />}>
             Add Item
           </Button>
-          <Button variant="primary" size="x-large" beforeIcon={<Add />}>
+          <Button variant="primary" size="x-large" beforeIcon={<Plus />}>
             Add Item
           </Button>
-          <Button variant="primary" size="2x-large" beforeIcon={<Add />}>
+          <Button variant="primary" size="2x-large" beforeIcon={<Plus />}>
             Add Item
           </Button>
         </div>
@@ -75,7 +74,7 @@ export default function ButtonExamplesPage() {
           <Button
             variant="primary"
             size="medium"
-            beforeIcon={<Add />}
+            beforeIcon={<Plus />}
             afterIcon={<ArrowRight />}
           >
             Add & Continue
@@ -101,7 +100,7 @@ export default function ButtonExamplesPage() {
           <Button variant="ghost" beforeIcon={<Heart />}>
             Ghost
           </Button>
-          <Button variant="negative" beforeIcon={<Add />}>
+          <Button variant="negative" beforeIcon={<Plus />}>
             Negative
           </Button>
         </div>
@@ -111,11 +110,11 @@ export default function ButtonExamplesPage() {
       <section className="space-y-50">
         <h2 className="text-[var(--text-heading-h6)] font-medium">Icon Only Buttons</h2>
         <div className="flex flex-wrap gap-50">
-          <Button variant="primary" size="small" beforeIcon={<Add />} />
-          <Button variant="primary" size="medium" beforeIcon={<Add />} />
-          <Button variant="primary" size="large" beforeIcon={<Add />} />
-          <Button variant="primary" size="x-large" beforeIcon={<Add />} />
-          <Button variant="primary" size="2x-large" beforeIcon={<Add />} />
+          <Button variant="primary" size="small" beforeIcon={<Plus />} />
+          <Button variant="primary" size="medium" beforeIcon={<Plus />} />
+          <Button variant="primary" size="large" beforeIcon={<Plus />} />
+          <Button variant="primary" size="x-large" beforeIcon={<Plus />} />
+          <Button variant="primary" size="2x-large" beforeIcon={<Plus />} />
         </div>
       </section>
 
@@ -123,7 +122,7 @@ export default function ButtonExamplesPage() {
       <section className="space-y-50">
         <h2 className="text-[var(--text-heading-h6)] font-medium">Full Width with Icons</h2>
         <div className="space-y-50 max-w-md">
-          <Button variant="primary" fullWidth beforeIcon={<Add />}>
+          <Button variant="primary" fullWidth beforeIcon={<Plus />}>
             Add New Item
           </Button>
           <Button variant="secondary" fullWidth afterIcon={<ArrowRight />}>

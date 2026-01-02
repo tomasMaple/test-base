@@ -52,31 +52,31 @@ const buttonVariants = tv({
     },
     size: {
       small: [
-        'h-sm',
+        'h-ui-sm',
         'px-75',
         'gap-0',
         'label-fixed-x-small',
       ],
       medium: [
-        'h-md',
+        'h-ui-md',
         'px-75',
         'gap-12',
         'label-fixed-x-small',
       ],
       large: [
-        'h-lg',
+        'h-ui-lg',
         'px-75',
         'gap-12',
         'label-fixed-small',
       ],
       'x-large': [
-        'h-xl',
+        'h-ui-xl',
         'px-75',
         'gap-12',
         'label-fixed-medium',
       ],
       '2x-large': [
-        'h-2xl',
+        'h-ui-2xl',
         'px-75',
         'gap-25',
         'label-fixed-medium',
@@ -142,17 +142,15 @@ export type ButtonProps = React.ComponentPropsWithoutRef<typeof BaseButton> &
  * 
  * @example
  * ```tsx
- * import AddIcon from '@/icons/add-fill.svg'
- * import ArrowIcon from '@/icons/arrow-right-fill.svg'
+ * import { Plus, ArrowRight } from 'lucide-react'
  * 
- * // With before icon
- * <Button beforeIcon={<AddIcon />}>Add Item</Button>
- * 
- * // With after icon
- * <Button afterIcon={<ArrowIcon />}>Next</Button>
- * 
- * // With both icons
- * <Button beforeIcon={<AddIcon />} afterIcon={<ArrowIcon />}>Add and Continue</Button>
+ * <Button 
+ *   variant="primary" 
+ *   beforeIcon={<Plus />} 
+ *   afterIcon={<ArrowRight />}
+ * >
+ *   Action
+ * </Button>
  * ```
  */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -171,10 +169,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       // Handle React elements (components)
       if (React.isValidElement(icon)) {
         return (
-          <span className={cn(sizeClass, 'shrink-0')}>
+          <span className={cn(sizeClass, 'shrink-0 flex items-center justify-center')}>
             {React.cloneElement(icon as React.ReactElement<{ className?: string }>, {
               className: cn(
-                'w-full h-full fill-current stroke-current', 
                 (icon.props as { className?: string })?.className
               ),
             })}

@@ -1,5 +1,20 @@
 # Agent Rules
 
+You are a world-class software engineer and software architect.
+
+Your motto is:
+
+> **Every mission assigned is delivered with 100% quality and state-of-the-art execution — no hacks, no workarounds, no partial deliverables and no mock-driven confidence. Mocks/stubs may exist in unit tests for I/O boundaries, but final validation must rely on real integration and end-to-end tests.**
+
+You always:
+
+- Deliver end-to-end, production-like solutions with clean, modular, and maintainable architecture.
+- Take full ownership of the task: you do not abandon work because it is complex or tedious; you only pause when requirements are truly contradictory or when critical clarification is needed.
+- Are proactive and efficient: you avoid repeatedly asking for confirmation like “Can I proceed?” and instead move logically to next steps, asking focused questions only when they unblock progress.
+- Follow the full engineering cycle for significant tasks: **understand → design → implement → (conceptually) test → refine → document**, using all relevant tools and environment capabilities appropriately.
+- Respect both functional and non-functional requirements and, when the user’s technical ideas are unclear or suboptimal, you propose better, modern, state-of-the-art alternatives that still satisfy their business goals.
+- Manage context efficiently and avoid abrupt, low-value interruptions; when you must stop due to platform limits, you clearly summarize what was done and what remains.
+
 > **This file provides instructions for AI agents building styled BaseUI components.**
 
 ---
@@ -33,12 +48,12 @@ npm run dev
 
 ## Design Token Files
 
-All styling MUST use tokens from these Supernova.io-generated files:
+All styling MUST use tokens which are defined directly in **`src/app/globals.css`**.
 
-| File                   | Contains                                 |
-| ---------------------- | ---------------------------------------- |
-| `tailwind.colors.css`  | Semantic colors, shadows, brand colors   |
-| `tailwind.desktop.css` | Typography, spacing, sizes, border radii |
+> [!IMPORTANT]
+> The `packages/ui` directory mentioned in some older documentation **DOES NOT EXIST** in this repo.
+> **DO NOT** add `@import` statements for `tailwind.colors.css` or `tailwind.desktop.css`.
+> Use the CSS variables directly as they are already defined in `globals.css`.
 
 **Theme classes required on root:**
 
@@ -95,9 +110,10 @@ app/
 ├── globals.css       # Global styles
 ├── layout.tsx        # Root layout with theme classes
 
-# Design tokens (Supernova.io generated)
-├── tailwind.colors.css
-├── tailwind.desktop.css
+packages/ui/src/
+├── tailwind.colors.css       # Design tokens (Supernova.io generated)
+├── tailwind.desktop.css      # Design tokens (Supernova.io generated)
+└── styles.css                # Package styles
 ```
 
 ---

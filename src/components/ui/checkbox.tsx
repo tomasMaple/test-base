@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Checkbox as BaseCheckbox } from '@base-ui/react/checkbox'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
-import { Check } from '@/icons'
+import { Check } from 'lucide-react'
 
 /**
  * Checkbox variants using Tailwind Variants with Supernova design tokens
@@ -23,7 +23,7 @@ const checkboxVariants = tv({
       'data-[unchecked]:hidden',
       'animate-in zoom-in-75 fade-in duration-standard',
     ],
-    icon: 'size-icon-md fill-current transition-transform duration-standard',
+    icon: 'size-icon-md transition-transform duration-standard',
   },
   variants: {
     variant: {

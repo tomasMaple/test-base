@@ -1,6 +1,5 @@
 @import "tailwindcss";
-@import "../../tailwind.colors.css";
-@import "../../tailwind.desktop.css";
+
 
 @theme {
   /* ============================================
@@ -135,15 +134,15 @@
   --spacing-1600: var(--spacing-space-1600);
 
   /* Component Sizes - dual namespace for h-*, w-*, and size-* utilities */
-  /* For h-sm, w-md, etc. */
-  --spacing-3xs: var(--spacing-size-3-xs);
-  --spacing-2xs: var(--spacing-size-2-xs);
-  --spacing-xs: var(--spacing-size-xs);
-  --spacing-sm: var(--spacing-size-sm);
-  --spacing-md: var(--spacing-size-md);
-  --spacing-lg: var(--spacing-size-lg);
-  --spacing-xl: var(--spacing-size-xl);
-  --spacing-2xl: var(--spacing-size-2-xl);
+  /* For h-ui-sm, w-ui-md, etc. */
+  --spacing-ui-3xs: var(--spacing-size-3-xs);
+  --spacing-ui-2xs: var(--spacing-size-2-xs);
+  --spacing-ui-xs: var(--spacing-size-xs);
+  --spacing-ui-sm: var(--spacing-size-sm);
+  --spacing-ui-md: var(--spacing-size-md);
+  --spacing-ui-lg: var(--spacing-size-lg);
+  --spacing-ui-xl: var(--spacing-size-xl);
+  --spacing-ui-2xl: var(--spacing-size-2-xl);
   
   /* For size-sm, size-md, etc. */
   --size-3xs: var(--spacing-size-3-xs);
