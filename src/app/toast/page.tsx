@@ -44,7 +44,6 @@ function ToastDemo() {
           <h2 className="text-heading-h6">Default Appearance</h2>
           <div className="flex flex-wrap gap-200">
             <Button onClick={() => triggerToast('default', 'primary')} variant="secondary">Primary</Button>
-            <Button onClick={() => triggerToast('default', 'secondary')} variant="secondary">Secondary</Button>
             <Button onClick={() => triggerToast('default', 'brand')} variant="secondary">Brand</Button>
             <Button onClick={() => triggerToast('default', 'negative')} variant="secondary">Negative</Button>
             <Button onClick={() => triggerToast('default', 'positive')} variant="secondary">Positive</Button>
@@ -57,7 +56,6 @@ function ToastDemo() {
           <h2 className="text-heading-h6">Subtle Appearance</h2>
           <div className="flex flex-wrap gap-200">
             <Button onClick={() => triggerToast('subtle', 'primary')} variant="secondary">Primary</Button>
-            <Button onClick={() => triggerToast('subtle', 'secondary')} variant="secondary">Secondary</Button>
             <Button onClick={() => triggerToast('subtle', 'brand')} variant="secondary">Brand</Button>
             <Button onClick={() => triggerToast('subtle', 'negative')} variant="secondary">Negative</Button>
             <Button onClick={() => triggerToast('subtle', 'positive')} variant="secondary">Positive</Button>

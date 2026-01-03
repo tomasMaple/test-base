@@ -11,7 +11,7 @@ const popoverContentVariants = tv({
     'z-50 min-w-[12rem] overflow-hidden rounded-lg',
     'border border-border-subtle bg-surface text-fg-primary',
     'shadow-300',
-    'px-150 py-100',
+    'px-100 py-75',
     'transition-[transform,opacity] duration-fast ease-default absolute', // Absolute usually needed for positioner
     'data-[starting-style]:scale-90 data-[starting-style]:opacity-0',
     'data-[ending-style]:scale-90 data-[ending-style]:opacity-0',
