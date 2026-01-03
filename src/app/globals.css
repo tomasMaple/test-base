@@ -318,49 +318,49 @@
      ========================================== */
 
   /* Pink */
-  --sem-pink: oklch(59.26% 0.227 349.53);
-  --sem-pink-strong: oklch(65.87% 0.204 349.76);
-  --sem-pink-emphasis: oklch(74.19% 0.166 349.7);
-  --sem-pink-muted: oklch(43.04% 0.177 350.17);
-  --sem-pink-subtle: oklch(33.84% 0.106 352.52);
-  --sem-pink-weak: oklch(27.12% 0.049 354.31);
-  --sem-pink-on-weak: oklch(74.19% 0.166 349.7);
+  --sem-pink: oklch(57.02% 0.206 2.4);
+  --sem-pink-strong: oklch(53.69% 0.198 4.2);
+  --sem-pink-emphasis: oklch(45.72% 0.168 4.19);
+  --sem-pink-muted: oklch(85.22% 0.082 347.91);
+  --sem-pink-subtle: oklch(95.69% 0.023 345.55);
+  --sem-pink-weak: oklch(97.85% 0.012 342.22);
+  --sem-pink-on-weak: oklch(57.02% 0.206 2.4);
 
   /* Fuchsia */
-  --sem-fuchsia: oklch(59.48% 0.221 308.71);
-  --sem-fuchsia-strong: oklch(66.09% 0.197 308.63);
-  --sem-fuchsia-emphasis: oklch(74.63% 0.156 308.72);
-  --sem-fuchsia-muted: oklch(43.46% 0.171 308.59);
-  --sem-fuchsia-subtle: oklch(34.19% 0.103 308.63);
-  --sem-fuchsia-weak: oklch(27.33% 0.048 308.44);
-  --sem-fuchsia-on-weak: oklch(74.63% 0.156 308.72);
+  --sem-fuchsia: oklch(57.7% 0.252 320.14);
+  --sem-fuchsia-strong: oklch(54.12% 0.242 319.36);
+  --sem-fuchsia-emphasis: oklch(46.16% 0.205 319.23);
+  --sem-fuchsia-muted: oklch(85.66% 0.105 322.18);
+  --sem-fuchsia-subtle: oklch(95.79% 0.029 322.26);
+  --sem-fuchsia-weak: oklch(97.89% 0.015 322.06);
+  --sem-fuchsia-on-weak: oklch(57.7% 0.252 320.14);
 
   /* Violet */
-  --sem-violet: oklch(54.65% 0.243 289.2);
-  --sem-violet-strong: oklch(62.13% 0.211 289.18);
-  --sem-violet-emphasis: oklch(71.49% 0.156 288.8);
-  --sem-violet-muted: oklch(41.22% 0.186 289.15);
-  --sem-violet-subtle: oklch(33.22% 0.108 288.68);
-  --sem-violet-weak: oklch(27.02% 0.049 289.16);
-  --sem-violet-on-weak: oklch(71.49% 0.156 288.8);
+  --sem-violet: oklch(51.69% 0.231 287);
+  --sem-violet-strong: oklch(44.51% 0.227 282.52);
+  --sem-violet-emphasis: oklch(37.97% 0.192 282.82);
+  --sem-violet-muted: oklch(84.56% 0.083 298.56);
+  --sem-violet-subtle: oklch(95.49% 0.023 299.25);
+  --sem-violet-weak: oklch(97.99% 0.011 297.38);
+  --sem-violet-on-weak: oklch(48.22% 0.232 284.44);
 
   /* Teal */
-  --sem-teal: oklch(69.94% 0.103 182.72);
-  --sem-teal-strong: oklch(74.59% 0.094 181.03);
-  --sem-teal-emphasis: oklch(80.86% 0.077 180.07);
-  --sem-teal-muted: oklch(54.82% 0.107 184.04);
-  --sem-teal-subtle: oklch(40.14% 0.073 186.75);
-  --sem-teal-weak: oklch(30.47% 0.035 194.77);
-  --sem-teal-on-weak: oklch(80.86% 0.077 180.07);
+  --sem-teal: oklch(65.9% 0.118 179.6);
+  --sem-teal-strong: oklch(60.56% 0.111 177.37);
+  --sem-teal-emphasis: oklch(51.63% 0.093 178.22);
+  --sem-teal-muted: oklch(87.5% 0.063 187.44);
+  --sem-teal-subtle: oklch(96.23% 0.019 189.07);
+  --sem-teal-weak: oklch(98.18% 0.009 188.67);
+  --sem-teal-on-weak: oklch(63.82% 0.116 178.36);
 
   /* Lime */
-  --sem-lime: oklch(79.26% 0.161 130.85);
-  --sem-lime-strong: oklch(82.36% 0.137 131.34);
-  --sem-lime-emphasis: oklch(86.28% 0.103 132.31);
-  --sem-lime-muted: oklch(63.82% 0.175 130.29);
-  --sem-lime-subtle: oklch(45.45% 0.112 131.75);
-  --sem-lime-weak: oklch(32.68% 0.052 139.22);
-  --sem-lime-on-weak: oklch(86.28% 0.103 132.31);
+  --sem-lime: oklch(71.56% 0.2 133.54);
+  --sem-lime-strong: oklch(65.18% 0.187 134.98);
+  --sem-lime-emphasis: oklch(55.79% 0.16 135);
+  --sem-lime-muted: oklch(90.58% 0.096 125.99);
+  --sem-lime-subtle: oklch(97.07% 0.028 124.88);
+  --sem-lime-weak: oklch(98.63% 0.012 121.95);
+  --sem-lime-on-weak: oklch(69.07% 0.196 134.31);
 
   /* ==========================================
      SEMANTIC: PARTNER COLORS
@@ -369,21 +369,21 @@
 
   /* Aave */
   --sem-partner-aave: oklch(69.83% 0.146 282.84);
-  --sem-partner-aave-strong: oklch(77.06% 0.108 284.17);
-  --sem-partner-aave-emphasis: oklch(85.64% 0.069 285.74);
-  --sem-partner-aave-muted: oklch(47.26% 0.224 274.55);
-  --sem-partner-aave-subtle: oklch(39.73% 0.158 277.29);
-  --sem-partner-aave-weak: oklch(36.03% 0.073 284.2);
-  --sem-partner-aave-on-weak: oklch(76.21% 0.121 283.68);
+  --sem-partner-aave-strong: oklch(56.3% 0.191 279.37);
+  --sem-partner-aave-emphasis: oklch(46.48% 0.207 275.42);
+  --sem-partner-aave-muted: oklch(88.59% 0.052 286.46);
+  --sem-partner-aave-subtle: oklch(93.46% 0.03 285.76);
+  --sem-partner-aave-weak: oklch(96.73% 0.015 286);
+  --sem-partner-aave-on-weak: oklch(51.44% 0.204 277.14);
 
   /* CoW Swap */
   --sem-partner-cowswap: oklch(79.57% 0.138 225.3);
-  --sem-partner-cowswap-strong: oklch(86.26% 0.098 220.9);
-  --sem-partner-cowswap-emphasis: oklch(91.75% 0.06 219.15);
-  --sem-partner-cowswap-muted: oklch(66.76% 0.134 230.7);
-  --sem-partner-cowswap-subtle: oklch(58.39% 0.117 230.19);
-  --sem-partner-cowswap-weak: oklch(37.82% 0.041 220.68);
-  --sem-partner-cowswap-on-weak: oklch(79.57% 0.138 225.3);
+  --sem-partner-cowswap-strong: oklch(66.02% 0.123 233.06);
+  --sem-partner-cowswap-emphasis: oklch(56.04% 0.105 233.49);
+  --sem-partner-cowswap-muted: oklch(93.11% 0.05 218.75);
+  --sem-partner-cowswap-subtle: oklch(95.97% 0.029 218.3);
+  --sem-partner-cowswap-weak: oklch(97.55% 0.017 219.85);
+  --sem-partner-cowswap-on-weak: oklch(70.53% 0.125 231.64);
 
   /* Fluid */
   --sem-partner-fluid: oklch(100% 0 263.28);

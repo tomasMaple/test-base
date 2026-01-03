@@ -5,7 +5,7 @@ import { Avatar } from '@/components/ui/avatar'
 
 export default function AvatarPage() {
   return (
-    <div className="p-300">
+    <div className="p-300 bg-surface">
       <div className="mb-300">
         <h1 className="text-heading-h2 mb-100">Avatar</h1>
         <p className="text-body-fixed-base text-secondary-fg">
