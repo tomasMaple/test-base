@@ -27,9 +27,14 @@ const navigationItems: SidebarItemType[] = [
   { href: '/radio', label: 'Radio' },
   { href: '/switch', label: 'Switch' },
   { href: '/progress', label: 'Progress' },
+  { href: '/popover', label: 'Popover' },
   { href: '/toast', label: 'Toast' },
   { href: '/toggle', label: 'Toggle' },
   { href: '/select', label: 'Select' },
+  { href: '/tabs', label: 'Tabs' },
+  { href: '/scroll-area', label: 'Scroll Area' },
+  { href: '/tooltip', label: 'Tooltip' },
+  { href: '/number-field', label: 'Number Field' },
   { href: '/placeholder', label: 'Placeholder' },
 ]
 
@@ -42,7 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} theme-light theme-desktop antialiased bg-surface text-fg-primary`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-surface text-primary-fg`}
       >
         <ToastProvider>
           <div className="flex min-h-screen">
