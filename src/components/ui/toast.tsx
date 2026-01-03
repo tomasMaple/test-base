@@ -13,90 +13,126 @@ import { cn, tv } from '@/lib/utils'
 const toastVariants = tv({
   base: [
     'group relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all',
-    'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full',
+    'data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none',
+    'data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 data-[starting-style]:translate-y-2',
+    'transition-all duration-300 ease-out',
   ],
   variants: {
-    variant: {
-      default: 'border bg-surface text-fg-primary',
-      destructive:
-        'destructive group border-negative bg-negative text-fg-on-accent',
+    appearance: {
+      default: 'border',
+      subtle: 'border-transparent',
+    },
+    type: {
+      primary: [],
+      secondary: [],
+      brand: [],
+      negative: [],
+      positive: [],
+      warning: [],
     },
   },
+  compoundVariants: [
+    // Default (Solid/Strong/Card-like)
+    { appearance: 'default', type: 'primary', class: 'bg-surface text-fg-primary border-border-subtle' },
+    { appearance: 'default', type: 'secondary', class: 'bg-secondary text-fg-secondary border-border-subtle' },
+    { appearance: 'default', type: 'brand', class: 'bg-brand text-fg-on-brand border-brand' },
+    { appearance: 'default', type: 'negative', class: 'bg-negative text-fg-on-accent border-negative' },
+    { appearance: 'default', type: 'positive', class: 'bg-positive text-fg-on-accent border-positive' },
+    { appearance: 'default', type: 'warning', class: 'bg-warning text-fg-on-accent border-warning' },
+
+    // Subtle (Soft background)
+    { appearance: 'subtle', type: 'primary', class: 'bg-subtle text-fg-primary' },
+    { appearance: 'subtle', type: 'secondary', class: 'bg-muted text-fg-secondary' },
+    { appearance: 'subtle', type: 'brand', class: 'bg-brand-weak text-brand-strong' },
+    { appearance: 'subtle', type: 'negative', class: 'bg-negative-weak text-negative-strong' },
+    { appearance: 'subtle', type: 'positive', class: 'bg-positive-weak text-positive-strong' },
+    { appearance: 'subtle', type: 'warning', class: 'bg-warning-weak text-warning-strong' },
+  ],
   defaultVariants: {
-    variant: 'default',
+    appearance: 'default',
+    type: 'primary',
   },
 })
 
 // =============================================================================
-// COMPONENT
+// TYPE DEFINITIONS
+// =============================================================================
+
+export interface ToastData {
+  title?: string
+  description?: string
+  appearance?: 'default' | 'subtle'
+  type?: 'primary' | 'secondary' | 'brand' | 'negative' | 'positive' | 'warning'
+}
+
+// =============================================================================
+// COMPONENTS
 // =============================================================================
 
 const ToastProvider = BaseToast.Provider
 const ToastViewport = BaseToast.Viewport
+const ToastPortal = BaseToast.Portal
 
-const Toast = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseToast.Root> &
-    VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
+// Hook to manage toasts - re-export for convenience
+const useToastManager = BaseToast.useToastManager
+
+// ToastList component that renders toasts from the manager
+function ToastList({ className }: { className?: string }) {
+  const { toasts } = BaseToast.useToastManager()
+
   return (
-    <BaseToast.Root
-      ref={ref}
-      className={cn(toastVariants({ variant }), className)}
-      {...props}
-    />
+    <>
+      {toasts.map((toast) => (
+        <BaseToast.Root
+          key={toast.id}
+          toast={toast}
+          className={cn(
+            toastVariants({
+              appearance: toast.data?.appearance ?? 'default',
+              type: toast.data?.type ?? 'primary',
+            }),
+            className
+          )}
+        >
+          <BaseToast.Content className="flex-1 grid gap-1">
+            <BaseToast.Title className="text-sm font-semibold" />
+            <BaseToast.Description className="text-sm opacity-90" />
+          </BaseToast.Content>
+          <BaseToast.Close
+            className="absolute right-2 top-2 rounded-md p-1 opacity-50 transition-opacity hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2"
+            aria-label="Close"
+          >
+            <XIcon className="h-4 w-4" />
+          </BaseToast.Close>
+        </BaseToast.Root>
+      ))}
+    </>
   )
-})
-Toast.displayName = 'Toast'
+}
 
-const ToastClose = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentPropsWithoutRef<typeof BaseToast.Close>
+// Styled Viewport
+const StyledToastViewport = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<typeof BaseToast.Viewport>
 >(({ className, ...props }, ref) => (
-  <BaseToast.Close
+  <BaseToast.Viewport
     ref={ref}
     className={cn(
-      'absolute right-2 top-2 rounded-md p-1 text-fg-primary/50 opacity-0 transition-opacity hover:text-fg-primary focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600',
+      'fixed bottom-0 right-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px] gap-2',
       className
     )}
-    toast-close=""
-    {...props}
-  >
-    <XIcon className="h-4 w-4" />
-  </BaseToast.Close>
-))
-ToastClose.displayName = 'ToastClose'
-
-const ToastTitle = React.forwardRef<
-  HTMLHeadingElement,
-  React.ComponentPropsWithoutRef<typeof BaseToast.Title>
->(({ className, ...props }, ref) => (
-  <BaseToast.Title
-    ref={ref}
-    className={cn('text-sm font-semibold', className)}
     {...props}
   />
 ))
-ToastTitle.displayName = 'ToastTitle'
-
-const ToastDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.ComponentPropsWithoutRef<typeof BaseToast.Description>
->(({ className, ...props }, ref) => (
-  <BaseToast.Description
-    ref={ref}
-    className={cn('text-sm opacity-90', className)}
-    {...props}
-  />
-))
-ToastDescription.displayName = 'ToastDescription'
+StyledToastViewport.displayName = 'StyledToastViewport'
 
 export {
   ToastProvider,
   ToastViewport,
-  Toast,
-  ToastClose,
-  ToastTitle,
-  ToastDescription,
+  ToastPortal,
+  ToastList,
+  StyledToastViewport,
+  useToastManager,
   toastVariants,
 }
+export type { ToastData as ToastProps }
