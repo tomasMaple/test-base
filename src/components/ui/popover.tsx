@@ -4,53 +4,7 @@ import * as React from 'react'
 import { Popover as BasePopover } from '@base-ui-components/react/popover'
 import { type VariantProps } from 'tailwind-variants'
 import { cn, tv } from '@/lib/utils'
-
-// =============================================================================
-// VARIANTS
-// =============================================================================
-
-const popoverTriggerVariants = tv({
-  base: [
-    'inline-flex items-center justify-center gap-50 rounded-pill',
-    'font-medium transition-colors duration-standard ease-default cursor-pointer',
-    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
-    'disabled:pointer-events-none disabled:opacity-disabled',
-    'data-[popup-open]:bg-secondary',
-  ],
-  variants: {
-    variant: {
-      solid: [
-        'bg-secondary text-fg-primary',
-        'border border-border-subtle',
-        'hover:bg-primary',
-        'active:bg-secondary',
-        'focus-visible:outline-border-strong',
-      ],
-      outline: [
-        'bg-surface text-fg-primary',
-        'border border-border-strong',
-        'hover:bg-primary',
-        'active:bg-secondary',
-        'focus-visible:outline-border-strong',
-      ],
-      ghost: [
-        'bg-transparent text-fg-primary',
-        'hover:bg-primary',
-        'active:bg-secondary',
-        'focus-visible:outline-fg-tertiary',
-      ],
-    },
-    size: {
-      sm: ['h-control-sm', 'px-75', 'text-label-xs'],
-      md: ['h-control-md', 'px-75', 'text-label-sm'],
-      lg: ['h-control-lg', 'px-75', 'text-label-sm'],
-    },
-  },
-  defaultVariants: {
-    variant: 'solid',
-    size: 'md',
-  },
-})
+import { Button, type ButtonProps } from '@/components/ui/button'
 
 const popoverContentVariants = tv({
   base: [
@@ -78,19 +32,16 @@ const PopoverRoot = BasePopover.Root
 const PopoverPortal = BasePopover.Portal
 const PopoverClose = BasePopover.Close
 
-const PopoverTrigger = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentPropsWithoutRef<typeof BasePopover.Trigger> &
-    VariantProps<typeof popoverTriggerVariants>
->(({ className, variant, size, children, ...props }, ref) => (
-  <BasePopover.Trigger
-    ref={ref}
-    className={cn(popoverTriggerVariants({ variant, size }), className)}
-    {...props}
-  >
-    {children}
-  </BasePopover.Trigger>
-))
+const PopoverTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = 'secondary', ...props }, ref) => {
+    return (
+      <BasePopover.Trigger
+        ref={ref}
+        render={<Button variant={variant} className={className} {...props} />}
+      />
+    )
+  }
+)
 PopoverTrigger.displayName = 'PopoverTrigger'
 
 const PopoverContent = React.forwardRef<
@@ -150,5 +101,4 @@ export {
   PopoverTitle,
   PopoverDescription,
   PopoverClose,
-  popoverTriggerVariants,
 }

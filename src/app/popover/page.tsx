@@ -28,7 +28,7 @@ export default function PopoverPage() {
           <div className="flex flex-wrap items-start gap-100">
             <Popover>
               <PopoverTrigger>
-                <Bell className="size-icon-lg" />
+                <Bell />
                 <span>Notifications</span>
               </PopoverTrigger>
               <PopoverContent>
@@ -46,16 +46,16 @@ export default function PopoverPage() {
           <h2 className="heading-h5">Trigger Variants</h2>
           <div className="flex flex-wrap items-start gap-75">
             <div className="space-y-25">
-              <p className="label-fixed-x-small text-fg-secondary">Solid (Default)</p>
+              <p className="label-fixed-x-small text-fg-secondary">Solid (Secondary)</p>
               <Popover>
-                <PopoverTrigger variant="solid">
-                  <Info className="size-icon-lg" />
-                  <span>Solid</span>
+                <PopoverTrigger variant="secondary">
+                  <Info />
+                  <span>Secondary</span>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <PopoverTitle>Solid Variant</PopoverTitle>
+                  <PopoverTitle>Secondary Variant</PopoverTitle>
                   <PopoverDescription>
-                    This popover uses a solid trigger button.
+                    This popover uses a secondary trigger button.
                   </PopoverDescription>
                 </PopoverContent>
               </Popover>
@@ -65,7 +65,7 @@ export default function PopoverPage() {
               <p className="label-fixed-x-small text-fg-secondary">Outline</p>
               <Popover>
                 <PopoverTrigger variant="outline">
-                  <Info className="size-icon-lg" />
+                  <Info />
                   <span>Outline</span>
                 </PopoverTrigger>
                 <PopoverContent>
@@ -81,7 +81,7 @@ export default function PopoverPage() {
               <p className="label-fixed-x-small text-fg-secondary">Ghost</p>
               <Popover>
                 <PopoverTrigger variant="ghost">
-                  <Info className="size-icon-lg" />
+                  <Info />
                   <span>Ghost</span>
                 </PopoverTrigger>
                 <PopoverContent>
@@ -103,7 +103,7 @@ export default function PopoverPage() {
               <p className="label-fixed-x-small text-fg-secondary">Small</p>
               <Popover>
                 <PopoverTrigger size="sm">
-                  <Settings className="size-icon-md" />
+                  <Settings />
                   <span>Small</span>
                 </PopoverTrigger>
                 <PopoverContent>
@@ -119,7 +119,7 @@ export default function PopoverPage() {
               <p className="label-fixed-x-small text-fg-secondary">Medium (Default)</p>
               <Popover>
                 <PopoverTrigger size="md">
-                  <Settings className="size-icon-md" />
+                  <Settings />
                   <span>Medium</span>
                 </PopoverTrigger>
                 <PopoverContent>
@@ -135,7 +135,7 @@ export default function PopoverPage() {
               <p className="label-fixed-x-small text-fg-secondary">Large</p>
               <Popover>
                 <PopoverTrigger size="lg">
-                  <Settings className="size-icon-lg" />
+                  <Settings />
                   <span>Large</span>
                 </PopoverTrigger>
                 <PopoverContent>
@@ -155,7 +155,7 @@ export default function PopoverPage() {
           <div className="flex flex-wrap items-start gap-100">
             <Popover>
               <PopoverTrigger>
-                <Info className="size-icon-lg" />
+                <Info />
                 <span>Click for details</span>
               </PopoverTrigger>
               <PopoverContent className="pr-250">
@@ -176,7 +176,7 @@ export default function PopoverPage() {
           <div className="flex flex-wrap items-start gap-100">
             <Popover>
               <PopoverTrigger>
-                <Info className="size-icon-lg" />
+                <Info />
                 <span>No Arrow</span>
               </PopoverTrigger>
               <PopoverContent showArrow={false}>
