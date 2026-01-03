@@ -6,27 +6,92 @@ import { type VariantProps } from 'tailwind-variants'
 import { cn, tv } from '@/lib/utils'
 
 // =============================================================================
+// CONTEXT
+// =============================================================================
+
+type TabsVariant = 'canvas' | 'primary' | 'secondary'
+type TabsPadding = 'noPadding' | 'withPadding'
+
+interface TabsContextValue {
+  variant: TabsVariant
+  padding: TabsPadding
+}
+
+const TabsContext = React.createContext<TabsContextValue>({
+  variant: 'canvas',
+  padding: 'noPadding',
+})
+
+// =============================================================================
 // VARIANTS
 // =============================================================================
 
 const tabsListVariants = tv({
   base: [
-    'inline-flex items-center justify-center rounded-lg bg-surface p-50 text-fg-secondary',
-    'shadow-200 border border-border-subtle',
+    'inline-flex items-center justify-center rounded-pill',
+    'border border-border-subtle',
   ],
+  variants: {
+    padding: {
+      noPadding: 'p-0',
+      withPadding: 'p-50 gap-25',
+    },
+    variant: {
+      canvas: 'bg-canvas',
+      primary: 'bg-primary',
+      secondary: 'bg-secondary',
+    },
+  },
+  defaultVariants: {
+    padding: 'noPadding',
+    variant: 'canvas',
+  },
 })
 
 const tabsTriggerVariants = tv({
   base: [
-    'inline-flex items-center justify-center whitespace-nowrap px-75 py-25 text-label-sm font-medium transition-all duration-fast',
-    'rounded-md cursor-pointer',
+    'inline-flex items-center justify-center whitespace-nowrap px-100 py-50 text-label-sm font-medium transition-all duration-fast',
+    'rounded-pill cursor-pointer',
     'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
     'disabled:pointer-events-none disabled:opacity-disabled',
-    'bg-transparent text-fg-secondary',
-    'data-[selected]:bg-inverse data-[selected]:text-fg-inverse data-[selected]:shadow-100',
-    'hover:data-[selected]:bg-inverse',
-    'hover:bg-subtle hover:text-fg-primary',
   ],
+  variants: {
+    variant: {
+      canvas: [
+        // Inactive state
+        'bg-transparent text-fg-secondary',
+        // Hover state (inactive)
+        'hover:bg-primary hover:text-fg-primary',
+        // Selected state
+        'data-[selected]:bg-brand data-[selected]:text-fg-primary data-[selected]:shadow-200',
+        // Hover while selected
+        'hover:data-[selected]:bg-surface',
+      ],
+      primary: [
+        // Inactive state
+        'bg-transparent text-fg-secondary',
+        // Hover state (inactive)
+        'hover:bg-secondary hover:text-fg-primary',
+        // Selected state
+        'data-[selected]:bg-surface data-[selected]:text-fg-primary data-[selected]:shadow-200',
+        // Hover while selected
+        'hover:data-[selected]:bg-surface',
+      ],
+      secondary: [
+        // Inactive state
+        'bg-transparent text-fg-secondary',
+        // Hover state (inactive)
+        'hover:bg-muted hover:text-fg-primary',
+        // Selected state
+        'data-[selected]:bg-surface data-[selected]:text-fg-primary data-[selected]:shadow-200',
+        // Hover while selected
+        'hover:data-[selected]:bg-surface',
+      ],
+    },
+  },
+  defaultVariants: {
+    variant: 'canvas',
+  },
 })
 
 const tabsPanelVariants = tv({
@@ -39,33 +104,50 @@ const tabsPanelVariants = tv({
 })
 
 // =============================================================================
+// TYPE EXPORTS
+// =============================================================================
+
+export type TabsListVariantProps = VariantProps<typeof tabsListVariants>
+
+// =============================================================================
 // COMPOUND PARTS
 // =============================================================================
 
 const TabsRoot = BaseTabs.Root
 
-const TabsList = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseTabs.List>
->(({ className, ...props }, ref) => (
-  <BaseTabs.List
-    ref={ref}
-    className={cn(tabsListVariants(), className)}
-    {...props}
-  />
-))
+interface TabsListProps
+  extends React.ComponentPropsWithoutRef<typeof BaseTabs.List>,
+    TabsListVariantProps {}
+
+const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
+  ({ className, padding = 'noPadding', variant = 'canvas', children, ...props }, ref) => (
+    <TabsContext.Provider value={{ variant, padding }}>
+      <BaseTabs.List
+        ref={ref}
+        className={cn(tabsListVariants({ padding, variant }), className)}
+        {...props}
+      >
+        {children}
+      </BaseTabs.List>
+    </TabsContext.Provider>
+  )
+)
 TabsList.displayName = 'TabsList'
 
 const TabsTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<typeof BaseTabs.Tab>
->(({ className, ...props }, ref) => (
-  <BaseTabs.Tab
-    ref={ref}
-    className={cn(tabsTriggerVariants(), className)}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  const { variant } = React.useContext(TabsContext)
+  
+  return (
+    <BaseTabs.Tab
+      ref={ref}
+      className={cn(tabsTriggerVariants({ variant }), className)}
+      {...props}
+    />
+  )
+})
 TabsTrigger.displayName = 'TabsTrigger'
 
 const TabsPanel = React.forwardRef<
@@ -78,7 +160,7 @@ const TabsPanel = React.forwardRef<
     {...props}
   />
 ))
-TabsPanel.displayName = 'TabsContent' // Shadcn/common naming, Base UI calls it Panel
+TabsPanel.displayName = 'TabsContent'
 
 // =============================================================================
 // EXPORTS

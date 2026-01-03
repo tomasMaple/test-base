@@ -2,9 +2,16 @@
 
 import * as React from 'react'
 import { Select as BaseSelect } from '@base-ui-components/react/select'
+import { Field } from '@base-ui-components/react/field'
 import { type VariantProps } from 'tailwind-variants'
 import { ChevronDown, Check } from 'lucide-react'
 import { cn, tv } from '@/lib/utils'
+
+// =============================================================================
+// TYPES
+// =============================================================================
+
+type SelectSize = 'xs' | 'sm' | 'md' | 'lg'
 
 // =============================================================================
 // VARIANTS
@@ -12,7 +19,7 @@ import { cn, tv } from '@/lib/utils'
 
 const selectTriggerVariants = tv({
   base: [
-    'flex items-center justify-between',
+    'flex items-center justify-between w-full',
     'rounded-md border',
     'transition-colors duration-standard ease-default',
     'cursor-pointer',
@@ -32,14 +39,94 @@ const selectTriggerVariants = tv({
       ],
     },
     size: {
-      xs: 'h-control-xs px-25 text-label-xs min-w-control-xs',
-      sm: 'h-control-sm px-50 text-label-xs min-w-control-sm',
-      md: 'h-control-md px-75 text-label-sm min-w-control-md',
-      lg: 'h-control-lg px-100 text-label-sm min-w-control-lg',
+      xs: 'h-control-xs px-25 text-label-xs',
+      sm: 'h-control-sm px-50 text-label-xs',
+      md: 'h-control-md px-75 text-label-sm',
+      lg: 'h-control-lg px-100 text-label-sm',
+    },
+    error: {
+      true: 'border-negative focus-visible:outline-negative',
+      false: '',
     },
   },
   defaultVariants: {
     variant: 'primary',
+    size: 'md',
+    error: false,
+  },
+})
+
+const selectFieldVariants = tv({
+  base: 'flex flex-col gap-25',
+  variants: {
+    size: {
+      xs: 'min-w-[120px]',
+      sm: 'min-w-[160px]',
+      md: 'min-w-[200px]',
+      lg: 'min-w-[240px]',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
+
+const selectLabelVariants = tv({
+  base: 'font-medium text-fg-primary',
+  variants: {
+    size: {
+      xs: 'text-label-2xs',
+      sm: 'text-label-xs',
+      md: 'text-label-sm',
+      lg: 'text-label-sm',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
+
+const selectDescriptionVariants = tv({
+  base: 'text-fg-secondary',
+  variants: {
+    size: {
+      xs: 'text-body-xs',
+      sm: 'text-body-xs',
+      md: 'text-body-xs',
+      lg: 'text-body-sm',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
+
+const selectHelperTextVariants = tv({
+  base: 'text-fg-muted',
+  variants: {
+    size: {
+      xs: 'text-body-xs',
+      sm: 'text-body-xs',
+      md: 'text-body-xs',
+      lg: 'text-body-sm',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
+
+const selectErrorVariants = tv({
+  base: 'text-negative',
+  variants: {
+    size: {
+      xs: 'text-body-xs',
+      sm: 'text-body-xs',
+      md: 'text-body-xs',
+      lg: 'text-body-sm',
+    },
+  },
+  defaultVariants: {
     size: 'md',
   },
 })
@@ -61,13 +148,92 @@ const selectItemVariants = tv({
 })
 
 // =============================================================================
+// FIELD COMPONENTS
+// =============================================================================
+
+interface SelectFieldProps extends React.ComponentPropsWithoutRef<typeof Field.Root> {
+  size?: SelectSize
+}
+
+const SelectField = React.forwardRef<HTMLDivElement, SelectFieldProps>(
+  ({ className, size = 'md', ...props }, ref) => (
+    <Field.Root
+      ref={ref}
+      className={cn(selectFieldVariants({ size }), className)}
+      {...props}
+    />
+  )
+)
+SelectField.displayName = 'SelectField'
+
+interface SelectLabelProps extends React.ComponentPropsWithoutRef<typeof Field.Label> {
+  size?: SelectSize
+}
+
+const SelectLabel = React.forwardRef<HTMLLabelElement, SelectLabelProps>(
+  ({ className, size = 'md', ...props }, ref) => (
+    <Field.Label
+      ref={ref}
+      className={cn(selectLabelVariants({ size }), className)}
+      {...props}
+    />
+  )
+)
+SelectLabel.displayName = 'SelectLabel'
+
+interface SelectDescriptionProps extends React.ComponentPropsWithoutRef<typeof Field.Description> {
+  size?: SelectSize
+}
+
+const SelectDescription = React.forwardRef<HTMLParagraphElement, SelectDescriptionProps>(
+  ({ className, size = 'md', ...props }, ref) => (
+    <Field.Description
+      ref={ref}
+      className={cn(selectDescriptionVariants({ size }), className)}
+      {...props}
+    />
+  )
+)
+SelectDescription.displayName = 'SelectDescription'
+
+interface SelectHelperTextProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  size?: SelectSize
+}
+
+const SelectHelperText = React.forwardRef<HTMLParagraphElement, SelectHelperTextProps>(
+  ({ className, size = 'md', ...props }, ref) => (
+    <p
+      ref={ref}
+      className={cn(selectHelperTextVariants({ size }), className)}
+      {...props}
+    />
+  )
+)
+SelectHelperText.displayName = 'SelectHelperText'
+
+interface SelectErrorProps extends React.HTMLAttributes<HTMLSpanElement> {
+  size?: SelectSize
+}
+
+const SelectError = React.forwardRef<HTMLSpanElement, SelectErrorProps>(
+  ({ className, size = 'md', ...props }, ref) => (
+    <span
+      ref={ref}
+      className={cn(selectErrorVariants({ size }), className)}
+      {...props}
+    />
+  )
+)
+SelectError.displayName = 'SelectError'
+
+// =============================================================================
 // COMPONENT COMPOSITION
 // =============================================================================
 
 const SelectRoot = BaseSelect.Root
 const SelectValue = BaseSelect.Value
 const SelectGroup = BaseSelect.Group
-const SelectLabel = BaseSelect.GroupLabel
+const SelectGroupLabel = BaseSelect.GroupLabel
 const SelectSeparator = BaseSelect.Separator
 
 // Re-exporting Trigger with variants
@@ -76,10 +242,10 @@ export interface SelectTriggerProps
     VariantProps<typeof selectTriggerVariants> {}
 
 const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
-  ({ className, size, variant, children, ...props }, ref) => (
+  ({ className, size, variant, error, children, ...props }, ref) => (
     <BaseSelect.Trigger
       ref={ref}
-      className={cn(selectTriggerVariants({ variant, size }), className)}
+      className={cn(selectTriggerVariants({ variant, size, error }), className)}
       {...props}
     >
       {children}
@@ -131,23 +297,44 @@ SelectItem.displayName = 'SelectItem'
 interface SelectProps extends React.ComponentProps<typeof SelectRoot> {
   options?: { value: string; label: string }[]
   placeholder?: string
-  size?: VariantProps<typeof selectTriggerVariants>['size']
+  size?: SelectSize
   variant?: VariantProps<typeof selectTriggerVariants>['variant']
   triggerClassName?: string
+  // Field props
+  label?: string
+  description?: string
+  helperText?: string
+  error?: boolean
+  errorMessage?: string
 }
 
 const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
-  ({ options, placeholder, size, variant, triggerClassName, children, ...props }, ref) => {
+  ({ 
+    options, 
+    placeholder = 'Select', 
+    size = 'md', 
+    variant, 
+    triggerClassName, 
+    label,
+    description,
+    helperText,
+    error,
+    errorMessage,
+    children, 
+    ...props 
+  }, ref) => {
     // If children provided, render as composition root (headless-like)
     if (children) {
       return <SelectRoot {...props}>{children}</SelectRoot>
     }
 
-    // Otherwise render simplified preset
-    return (
-      <SelectRoot {...props}>
-        <SelectTrigger ref={ref} className={triggerClassName} size={size} variant={variant}>
-          <SelectValue>{placeholder}</SelectValue>
+    // Determine if we should wrap with field components
+    const hasFieldElements = label || description || helperText || error
+
+    const selectContent = (
+      <>
+        <SelectTrigger ref={ref} className={triggerClassName} size={size} variant={variant} error={error}>
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           {options?.map((option) => (
@@ -156,7 +343,29 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             </SelectItem>
           ))}
         </SelectContent>
-      </SelectRoot>
+      </>
+    )
+
+    // Render without field wrapper for simple usage
+    if (!hasFieldElements) {
+      return (
+        <SelectRoot {...props}>
+          {selectContent}
+        </SelectRoot>
+      )
+    }
+
+    // Render with field wrapper
+    return (
+      <SelectField size={size}>
+        {label && <SelectLabel size={size}>{label}</SelectLabel>}
+        {description && <SelectDescription size={size}>{description}</SelectDescription>}
+        <SelectRoot {...props}>
+          {selectContent}
+        </SelectRoot>
+        {helperText && <SelectHelperText size={size}>{helperText}</SelectHelperText>}
+        {error && errorMessage && <SelectError size={size}>{errorMessage}</SelectError>}
+      </SelectField>
     )
   }
 )
@@ -171,6 +380,11 @@ export {
   SelectItem as SelectOption,
   SelectValue,
   SelectGroup,
+  SelectGroupLabel,
   SelectLabel,
   SelectSeparator,
+  SelectField,
+  SelectDescription,
+  SelectHelperText,
+  SelectError,
 }

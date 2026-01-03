@@ -8,16 +8,101 @@ export default function TabsPage() {
     <div className="p-300">
       <div className="mb-300">
         <h1 className="text-heading-h2 mb-100">Tabs</h1>
-        <p className="text-body-fixed-base text-secondary-fg">
+        <p className="text-body-base text-fg-secondary">
           A set of layered sections of content—known as tab panels—that are displayed one at a time.
         </p>
       </div>
 
       <div className="flex flex-col gap-300">
+        {/* noPadding Variants */}
         <section className="p-300 border border-border-subtle rounded-xl">
-          <h2 className="text-heading-h6 mb-200">Basic Example</h2>
+          <h2 className="text-heading-h6 mb-200">noPadding Variants</h2>
+          <div className="flex flex-col gap-200">
+            {/* noPadding + canvas */}
+            <div>
+              <p className="text-label-sm text-fg-muted mb-100">variant="canvas" (default)</p>
+              <Tabs defaultValue="tab1">
+                <TabsList padding="noPadding" variant="canvas">
+                  <TabsTrigger value="tab1">Account</TabsTrigger>
+                  <TabsTrigger value="tab2">Password</TabsTrigger>
+                  <TabsTrigger value="tab3">Settings</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+
+            {/* noPadding + primary */}
+            <div>
+              <p className="text-label-sm text-fg-muted mb-100">variant="primary"</p>
+              <Tabs defaultValue="tab1">
+                <TabsList padding="noPadding" variant="primary">
+                  <TabsTrigger value="tab1">Account</TabsTrigger>
+                  <TabsTrigger value="tab2">Password</TabsTrigger>
+                  <TabsTrigger value="tab3">Settings</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+
+            {/* noPadding + secondary */}
+            <div>
+              <p className="text-label-sm text-fg-muted mb-100">variant="secondary"</p>
+              <Tabs defaultValue="tab1">
+                <TabsList padding="noPadding" variant="secondary">
+                  <TabsTrigger value="tab1">Account</TabsTrigger>
+                  <TabsTrigger value="tab2">Password</TabsTrigger>
+                  <TabsTrigger value="tab3">Settings</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+          </div>
+        </section>
+
+        {/* withPadding Variants */}
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">withPadding Variants</h2>
+          <div className="flex flex-col gap-200">
+            {/* withPadding + canvas */}
+            <div>
+              <p className="text-label-sm text-fg-muted mb-100">variant="canvas"</p>
+              <Tabs defaultValue="tab1">
+                <TabsList padding="withPadding" variant="canvas">
+                  <TabsTrigger value="tab1">Account</TabsTrigger>
+                  <TabsTrigger value="tab2">Password</TabsTrigger>
+                  <TabsTrigger value="tab3">Settings</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+
+            {/* withPadding + primary */}
+            <div>
+              <p className="text-label-sm text-fg-muted mb-100">variant="primary"</p>
+              <Tabs defaultValue="tab1">
+                <TabsList padding="withPadding" variant="primary">
+                  <TabsTrigger value="tab1">Account</TabsTrigger>
+                  <TabsTrigger value="tab2">Password</TabsTrigger>
+                  <TabsTrigger value="tab3">Settings</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+
+            {/* withPadding + secondary */}
+            <div>
+              <p className="text-label-sm text-fg-muted mb-100">variant="secondary"</p>
+              <Tabs defaultValue="tab1">
+                <TabsList padding="withPadding" variant="secondary">
+                  <TabsTrigger value="tab1">Account</TabsTrigger>
+                  <TabsTrigger value="tab2">Password</TabsTrigger>
+                  <TabsTrigger value="tab3">Settings</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+          </div>
+        </section>
+
+        {/* With Content Example */}
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">With Content</h2>
           <Tabs defaultValue="account" className="w-[400px]">
-            <TabsList>
+            <TabsList padding="withPadding" variant="primary">
               <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="password">Password</TabsTrigger>
             </TabsList>
