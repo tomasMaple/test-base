@@ -1,111 +1,57 @@
 'use client'
 
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectLabel, SelectGroup, SelectSeparator } from '@/components/ui/select'
+import * as React from 'react'
+import { Select, SelectOption } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+
+const frameworks = [
+  { value: 'next.js', label: 'Next.js' },
+  { value: 'sveltekit', label: 'SvelteKit' },
+  { value: 'nuxt.js', label: 'Nuxt.js' },
+  { value: 'remix', label: 'Remix' },
+  { value: 'astro', label: 'Astro' },
+]
 
 export default function SelectPage() {
   return (
-    <div className="p-200">
-      <main className="mx-auto max-w-4xl space-y-200">
-        {/* Header */}
-        <header className="space-y-50">
-          <h1 className="heading-h3">Select Component</h1>
-          <p className="body-fixed-medium text-fg-secondary">
-            Displays a list of options for the user to pick from—triggered by a button.
-          </p>
-        </header>
+    <div className="p-300">
+      <div className="mb-300">
+        <h1 className="text-heading-h2 mb-100">Select</h1>
+        <p className="text-body-fixed-base text-secondary-fg">
+          Displays a list of options for the user to pick from—triggered by a button.
+        </p>
+      </div>
 
-        {/* Variants */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Select Variants</h2>
-          <div className="flex flex-wrap items-end gap-75">
-            <div className="space-y-25">
-              <p className="label-fixed-x-small text-fg-secondary">Solid (Default)</p>
-              <Select>
-                <SelectTrigger placeholder="Select an option" />
-                <SelectContent>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="orange">Orange</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-25">
-              <p className="label-fixed-x-small text-fg-secondary">Outline</p>
-              <Select>
-                <SelectTrigger variant="outline" placeholder="Select an option" />
-                <SelectContent>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="orange">Orange</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-25">
-              <p className="label-fixed-x-small text-fg-secondary">Ghost</p>
-              <Select>
-                <SelectTrigger variant="ghost" placeholder="Select an option" />
-                <SelectContent>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="orange">Orange</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      <div className="flex flex-col gap-300">
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Basic Example</h2>
+          <div className="flex gap-200">
+            <Select options={frameworks} placeholder="Select framework" />
           </div>
         </section>
 
-        {/* Groups */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Groups & Separators</h2>
-          <div className="flex flex-wrap gap-75">
-            <Select>
-              <SelectTrigger placeholder="Select a food" />
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Fruits</SelectLabel>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                </SelectGroup>
-                <SelectSeparator />
-                <SelectGroup>
-                  <SelectLabel>Vegetables</SelectLabel>
-                  <SelectItem value="carrot">Carrot</SelectItem>
-                  <SelectItem value="potato">Potato</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Sizes</h2>
+          <div className="flex flex-col gap-200">
+             <div className="flex items-center gap-100">
+               <span className="w-20 text-label-xs text-secondary-fg">XS</span>
+               <Select options={frameworks} placeholder="Select..." size="xs" />
+             </div>
+             <div className="flex items-center gap-100">
+               <span className="w-20 text-label-xs text-secondary-fg">SM</span>
+               <Select options={frameworks} placeholder="Select..." size="sm" />
+             </div>
+             <div className="flex items-center gap-100">
+               <span className="w-20 text-label-xs text-secondary-fg">MD</span>
+               <Select options={frameworks} placeholder="Select..." size="md" />
+             </div>
+             <div className="flex items-center gap-100">
+               <span className="w-20 text-label-xs text-secondary-fg">LG</span>
+               <Select options={frameworks} placeholder="Select..." size="lg" />
+             </div>
           </div>
         </section>
-
-        {/* States */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Select States</h2>
-          <div className="flex flex-wrap gap-75">
-            <div className="space-y-25">
-              <p className="label-fixed-x-small text-fg-secondary">Error State</p>
-              <Select>
-                <SelectTrigger error placeholder="Select an option" />
-                <SelectContent>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-25">
-              <p className="label-fixed-x-small text-fg-secondary">Disabled</p>
-              <Select disabled>
-                <SelectTrigger placeholder="Disabled select" />
-                <SelectContent>
-                  <SelectItem value="1">Option 1</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </section>
-      </main>
+      </div>
     </div>
   )
 }

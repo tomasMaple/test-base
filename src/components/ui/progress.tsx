@@ -1,85 +1,62 @@
 'use client'
 
 import * as React from 'react'
-import { Progress as BaseProgress } from '@base-ui/react/progress'
+import { Progress as BaseProgress } from '@base-ui-components/react/progress'
 import { type VariantProps } from 'tailwind-variants'
 import { cn, tv } from '@/lib/utils'
 
+// =============================================================================
+// VARIANTS
+// =============================================================================
+
 const progressVariants = tv({
-  slots: {
-    root: 'group flex flex-col gap-50 w-full',
-    header: 'flex items-center justify-between gap-100',
-    label: 'label-fixed-small text-primary-fg',
-    value: 'label-fixed-small text-secondary-fg tabular-nums',
-    track: 'relative overflow-hidden rounded-pill bg-strong',
-    indicator: 'h-full bg-brand transition-all duration-300 ease-default',
-  },
+  base: [
+    'relative overflow-hidden rounded-full bg-secondary',
+    'w-full',
+  ],
   variants: {
-    variant: {
-      brand: {
-        indicator: 'bg-brand',
-      },
-      positive: {
-        indicator: 'bg-positive',
-      },
-      neutral: {
-        indicator: 'bg-inverse',
-      },
-    },
     size: {
-      xs: {
-        track: 'h-6', // ~2px
-      },
-      sm: {
-        track: 'h-25', // ~4px
-      },
-      md: {
-        track: 'h-50', // ~8px
-      },
-      lg: {
-        track: 'h-75', // ~12px
-      },
+      xs: 'h-1', // 4px
+      sm: 'h-2', // 8px
+      md: 'h-3', // 12px
+      lg: 'h-4', // 16px
+    },
+    variant: {
+      default: '[&>div]:bg-brand',
+      positive: '[&>div]:bg-positive',
+      negative: '[&>div]:bg-negative',
     },
   },
   defaultVariants: {
-    variant: 'brand',
-    size: 'sm',
+    size: 'md',
+    variant: 'default',
   },
 })
 
-export type ProgressProps = BaseProgress.Root.Props &
-  VariantProps<typeof progressVariants> & {
-    label?: React.ReactNode
-    showValue?: boolean
-  }
+// =============================================================================
+// COMPONENT
+// =============================================================================
 
-export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
-  ({ className, variant, size, label, showValue, ...props }, ref) => {
-    const { root, header, label: labelStyle, value, track, indicator } = progressVariants({
-      variant,
-      size,
-    })
+export type ProgressProps = React.ComponentPropsWithoutRef<typeof BaseProgress.Root> &
+  VariantProps<typeof progressVariants>
 
-    return (
-      <BaseProgress.Root
-        ref={ref}
-        className={cn(root(), className)}
-        {...props}
-      >
-        {(label || showValue) && (
-          <div className={header()}>
-            {label && <BaseProgress.Label className={labelStyle()}>{label}</BaseProgress.Label>}
-            {showValue && <BaseProgress.Value className={value()} />}
-          </div>
-        )}
-        <BaseProgress.Track className={track()}>
-          <BaseProgress.Indicator className={indicator()} />
-        </BaseProgress.Track>
-      </BaseProgress.Root>
-    )
-  }
+const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
+  ({ className, value, size, variant, ...props }, ref) => (
+    <BaseProgress.Root
+      ref={ref}
+      value={value}
+      className={cn(progressVariants({ size, variant }), className)}
+      {...props}
+    >
+      <BaseProgress.Track className="h-full w-full bg-transparent">
+        <BaseProgress.Indicator
+          className="h-full w-full flex-1 transition-all duration-standard ease-default"
+          style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+        />
+      </BaseProgress.Track>
+    </BaseProgress.Root>
+  )
 )
-
 Progress.displayName = 'Progress'
 
-export { progressVariants }
+export { Progress, progressVariants }

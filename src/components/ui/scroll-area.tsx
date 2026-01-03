@@ -1,126 +1,67 @@
 'use client'
 
 import * as React from 'react'
-import { ScrollArea as BaseScrollArea } from '@base-ui/react/scroll-area'
-import { type VariantProps } from 'tailwind-variants'
+import { ScrollArea as BaseScrollArea } from '@base-ui-components/react/scroll-area'
 import { cn, tv } from '@/lib/utils'
 
-/**
- * ScrollArea Root - Groups all parts of the scroll area
- */
-const ScrollArea = BaseScrollArea.Root
+// =============================================================================
+// VARIANTS
+// =============================================================================
 
-/**
- * ScrollArea Viewport - The actual scrollable container
- */
-const ScrollAreaViewport = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseScrollArea.Viewport>
->(({ className, children, ...props }, ref) => (
-  <BaseScrollArea.Viewport
-    ref={ref}
-    className={cn(
-      'h-full overscroll-contain rounded-md',
-      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
-      className
-    )}
-    {...props}
-  >
-    {children}
-  </BaseScrollArea.Viewport>
-))
-ScrollAreaViewport.displayName = 'ScrollAreaViewport'
-
-/**
- * ScrollArea Content - Container for the content inside the viewport
- */
-const ScrollAreaContent = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseScrollArea.Content>
->(({ className, ...props }, ref) => (
-  <BaseScrollArea.Content
-    ref={ref}
-    className={cn('flex flex-col gap-100', className)}
-    {...props}
-  />
-))
-ScrollAreaContent.displayName = 'ScrollAreaContent'
-
-/**
- * Scrollbar variants using tailwind-variants
- */
-const scrollbarVariants = tv({
+const scrollBarVariants = tv({
   base: [
-    'flex rounded-md bg-secondary opacity-0 transition-opacity duration-standard ease-default',
-    'pointer-events-none',
-    'data-[hovering]:opacity-100 data-[hovering]:pointer-events-auto',
-    'data-[scrolling]:opacity-100 data-[scrolling]:pointer-events-auto data-[scrolling]:duration-0',
+    'flex touch-none select-none transition-colors duration-fast ease-default',
+    'data-[orientation=vertical]:w-2.5 data-[orientation=vertical]:border-l data-[orientation=vertical]:border-transparent',
+    'data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:border-t data-[orientation=horizontal]:border-transparent',
+    'bg-transparent p-[1px]',
+    'hover:bg-subtle',
   ],
-  variants: {
-    orientation: {
-      vertical: 'w-[4px] m-50',
-      horizontal: 'h-[4px] m-50',
-    },
-  },
-  defaultVariants: {
-    orientation: 'vertical',
-  },
 })
 
-export interface ScrollAreaScrollbarProps
-  extends React.ComponentPropsWithoutRef<typeof BaseScrollArea.Scrollbar>,
-    VariantProps<typeof scrollbarVariants> {}
+const scrollThumbVariants = tv({
+  base: [
+    'relative flex-1 rounded-full bg-border-strong',
+    'hover:bg-fg-tertiary', // Darker on hover
+    'transition-colors duration-fast',
+  ],
+})
 
-/**
- * ScrollArea Scrollbar - A vertical or horizontal scrollbar
- */
-const ScrollAreaScrollbar = React.forwardRef<HTMLDivElement, ScrollAreaScrollbarProps>(
-  ({ className, orientation = 'vertical', ...props }, ref) => (
-    <BaseScrollArea.Scrollbar
-      ref={ref}
-      orientation={orientation}
-      className={cn(scrollbarVariants({ orientation }), className)}
-      {...props}
-    />
-  )
-)
-ScrollAreaScrollbar.displayName = 'ScrollAreaScrollbar'
+// =============================================================================
+// COMPONENT
+// =============================================================================
 
-/**
- * ScrollArea Thumb - The draggable part of the scrollbar
- */
-const ScrollAreaThumb = React.forwardRef<
+const ScrollAreaRoot = React.forwardRef<
   HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseScrollArea.Thumb>
->(({ className, ...props }, ref) => (
-  <BaseScrollArea.Thumb
+  React.ComponentPropsWithoutRef<typeof BaseScrollArea.Root>
+>(({ className, children, ...props }, ref) => (
+  <BaseScrollArea.Root
     ref={ref}
-    className={cn('w-full rounded-md bg-tertiary-fg', className)}
+    className={cn('relative overflow-hidden h-full w-full', className)}
     {...props}
-  />
+  >
+    <BaseScrollArea.Viewport className="h-full w-full rounded-[inherit] outline-none">
+      {children}
+    </BaseScrollArea.Viewport>
+    <ScrollBar orientation="vertical" />
+    <ScrollBar orientation="horizontal" />
+    <BaseScrollArea.Corner />
+  </BaseScrollArea.Root>
 ))
-ScrollAreaThumb.displayName = 'ScrollAreaThumb'
+ScrollAreaRoot.displayName = 'ScrollArea'
 
-/**
- * ScrollArea Corner - Appears at the intersection of horizontal and vertical scrollbars
- */
-const ScrollAreaCorner = React.forwardRef<
+const ScrollBar = React.forwardRef<
   HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseScrollArea.Corner>
->(({ className, ...props }, ref) => (
-  <BaseScrollArea.Corner
+  React.ComponentPropsWithoutRef<typeof BaseScrollArea.Scrollbar>
+>(({ className, orientation = 'vertical', ...props }, ref) => (
+  <BaseScrollArea.Scrollbar
     ref={ref}
-    className={cn('bg-secondary', className)}
+    orientation={orientation}
+    className={cn(scrollBarVariants(), className)}
     {...props}
-  />
+  >
+    <BaseScrollArea.Thumb className={scrollThumbVariants()} />
+  </BaseScrollArea.Scrollbar>
 ))
-ScrollAreaCorner.displayName = 'ScrollAreaCorner'
+ScrollBar.displayName = 'ScrollBar'
 
-export {
-  ScrollArea,
-  ScrollAreaViewport,
-  ScrollAreaContent,
-  ScrollAreaScrollbar,
-  ScrollAreaThumb,
-  ScrollAreaCorner,
-}
+export { ScrollAreaRoot as ScrollArea, ScrollBar }

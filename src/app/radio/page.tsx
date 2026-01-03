@@ -1,83 +1,60 @@
 'use client'
 
-import { Radio, RadioGroup } from '@/components/ui/radio-group'
+import * as React from 'react'
+import { Radio, RadioGroup } from '@/components/ui/radio'
+import { Button } from '@/components/ui/button'
 
 export default function RadioPage() {
+  const [value, setValue] = React.useState('1')
+
   return (
-    <div className="p-200">
-      <main className="mx-auto max-w-4xl space-y-200">
-        {/* Header */}
-        <header className="space-y-50">
-          <h1 className="heading-h3">Radio Component</h1>
-          <p className="body-fixed-medium text-fg-secondary">
-            A high-quality, easily stylable radio button component.
-          </p>
-        </header>
+    <div className="p-300">
+      <div className="mb-300">
+        <h1 className="text-heading-h2 mb-100">Radio</h1>
+        <p className="text-body-fixed-base text-secondary-fg">
+          A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time.
+        </p>
+      </div>
 
-        {/* Basic Usage */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Basic Usage</h2>
-          <div className="flex flex-col gap-75">
-            <RadioGroup defaultValue="option1">
-              <Radio value="option1" label="Option 1" />
-              <Radio value="option2" label="Option 2" />
-              <Radio value="option3" label="Disabled" disabled />
-              <Radio value="option4" label="Disabled Selected" disabled />
+      <div className="flex flex-col gap-300">
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Basic Example</h2>
+          <form className="flex flex-col gap-200">
+            <RadioGroup
+              value={value}
+              onValueChange={(val: any) => setValue(val as string)}
+              className="flex flex-col gap-100"
+            >
+              <div className="flex items-center gap-100">
+                <Radio value="1" id="r1" />
+                <label className="text-label-sm cursor-pointer" htmlFor="r1">Default</label>
+              </div>
+              <div className="flex items-center gap-100">
+                <Radio value="2" id="r2" />
+                <label className="text-label-sm cursor-pointer" htmlFor="r2">Comfortable</label>
+              </div>
+              <div className="flex items-center gap-100">
+                <Radio value="3" id="r3" />
+                <label className="text-label-sm cursor-pointer" htmlFor="r3">Compact</label>
+              </div>
             </RadioGroup>
-            <RadioGroup defaultValue="disabled-selected">
-              <Radio value="disabled-selected" label="Disabled Selected" disabled />
+          </form>
+        </section>
+
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Disabled</h2>
+             <RadioGroup defaultValue="2" className="flex flex-col gap-100">
+              <div className="flex items-center gap-100">
+                <Radio value="1" id="rd1" disabled />
+                <label className="text-label-sm text-tertiary-fg" htmlFor="rd1">Option 1</label>
+              </div>
+              <div className="flex items-center gap-100">
+                <Radio value="2" id="rd2" disabled />
+                <label className="text-label-sm text-tertiary-fg" htmlFor="rd2">Option 2</label>
+              </div>
             </RadioGroup>
-          </div>
         </section>
-
-        {/* States and Interactions */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">States & Interactions</h2>
-          <div className="p-100 border border-border-subtle rounded-md bg-surface space-y-100">
-            <p className="label-fixed-small text-fg-secondary italic">
-              Try interacting with these radio buttons to see focus and active states.
-            </p>
-            <div className="grid grid-cols-2 gap-100">
-              <div className="space-y-50">
-                <h3 className="label-fixed-base font-bold">Unselected</h3>
-                <RadioGroup>
-                  <Radio value="focus" label="Focus me via Tab" />
-                  <Radio value="hover" label="Hover over me" />
-                </RadioGroup>
-              </div>
-              <div className="space-y-50">
-                <h3 className="label-fixed-base font-bold">Selected</h3>
-                <RadioGroup defaultValue="selected">
-                  <Radio value="selected" label="Already selected" />
-                  <Radio value="select-me" label="Select me" />
-                </RadioGroup>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Integration Example */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Form Integration Preview</h2>
-          <div className="max-w-md p-100 border border-border-subtle rounded-md space-y-100">
-            <form className="space-y-100" onSubmit={(e) => e.preventDefault()}>
-              <div className="space-y-50">
-                <h3 className="label-fixed-medium font-bold">Preferred Contact Method</h3>
-                <RadioGroup defaultValue="email" name="contact">
-                  <Radio value="email" label="Email" />
-                  <Radio value="phone" label="Phone" />
-                  <Radio value="mail" label="Mail" disabled />
-                </RadioGroup>
-              </div>
-              <div className="pt-50">
-                <button className="bg-inverse-primary text-on-inverse px-100 py-50 rounded-pill label-fixed-small font-medium">
-                  Save Settings
-                </button>
-              </div>
-            </form>
-          </div>
-        </section>
-      </main>
+      </div>
     </div>
   )
 }

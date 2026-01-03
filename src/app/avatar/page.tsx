@@ -1,97 +1,53 @@
-import { Avatar } from '@/components/ui'
-import { User, Shield, Star, Heart } from 'lucide-react'
+'use client'
+
+import * as React from 'react'
+import { Avatar } from '@/components/ui/avatar'
 
 export default function AvatarPage() {
   return (
-    <div className="p-200">
-      <main className="mx-auto max-w-4xl space-y-200">
-        {/* Header */}
-        <header className="space-y-50">
-          <h1 className="heading-h3">Avatar Component</h1>
-          <p className="body-fixed-medium text-fg-secondary">
-            Explore colorful avatar variants, sizes, and fallback content.
-          </p>
-        </header>
+    <div className="p-300">
+      <div className="mb-300">
+        <h1 className="text-heading-h2 mb-100">Avatar</h1>
+        <p className="text-body-fixed-base text-secondary-fg">
+          An image element with a fallback for representing the user.
+        </p>
+      </div>
 
-        {/* Color Variants */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Color Variants</h2>
-          <div className="flex flex-wrap gap-100 p-100 bg-surface rounded-md border border-border-subtle">
-            <div className="space-y-25 text-center">
-              <Avatar fallback="N" variant="neutral" size="xl" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">Neutral</p>
+      <div className="flex flex-col gap-300">
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Sizes</h2>
+          <div className="flex flex-wrap items-end gap-200">
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback="XS" size="xs" />
+               <span className="text-label-xs text-secondary-fg">XS</span>
             </div>
-            <div className="space-y-25 text-center">
-              <Avatar fallback="B" variant="brand" size="xl" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">Brand</p>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback="SM" size="sm" />
+               <span className="text-label-xs text-secondary-fg">SM</span>
             </div>
-            <div className="space-y-25 text-center">
-              <Avatar fallback="P" variant="pink" size="xl" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">Pink</p>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback="MD" size="md" />
+               <span className="text-label-xs text-secondary-fg">MD</span>
             </div>
-            <div className="space-y-25 text-center">
-              <Avatar fallback="V" variant="violet" size="xl" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">Violet</p>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback="LG" size="lg" />
+               <span className="text-label-xs text-secondary-fg">LG</span>
             </div>
-            <div className="space-y-25 text-center">
-              <Avatar fallback="T" variant="teal" size="xl" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">Teal</p>
-            </div>
-            <div className="space-y-25 text-center">
-              <Avatar fallback="L" variant="lime" size="xl" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">Lime</p>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback="XL" size="xl" />
+               <span className="text-label-xs text-secondary-fg">XL</span>
             </div>
           </div>
         </section>
 
-        {/* Sizes */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Sizes</h2>
-          <div className="flex flex-wrap items-end gap-100">
-            <div className="space-y-25 text-center">
-              <Avatar fallback="SM" size="sm" variant="brand" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">SM</p>
-            </div>
-            <div className="space-y-25 text-center">
-              <Avatar fallback="MD" size="md" variant="brand" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">MD</p>
-            </div>
-            <div className="space-y-25 text-center">
-              <Avatar fallback="LG" size="lg" variant="brand" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">LG</p>
-            </div>
-            <div className="space-y-25 text-center">
-              <Avatar fallback="XL" size="xl" variant="brand" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">XL</p>
-            </div>
-            <div className="space-y-25 text-center">
-              <Avatar fallback="2XL" size="2xl" variant="brand" />
-              <p className="label-fixed-2-x-small text-fg-subtle uppercase">2XL</p>
-            </div>
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Image vs Fallback</h2>
+          <div className="flex gap-200">
+             <Avatar src="https://github.com/shadcn.png" alt="@shadcn" size="md" />
+             <Avatar fallback="CN" size="md" />
           </div>
         </section>
-
-        {/* Icons Support */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Icon Fallbacks</h2>
-          <div className="flex flex-wrap gap-75">
-            <Avatar fallback={<User className="size-1/2" />} variant="neutral" size="lg" />
-            <Avatar fallback={<Shield className="size-1/2" />} variant="brand" size="lg" />
-            <Avatar fallback={<Star className="size-1/2" />} variant="pink" size="lg" />
-            <Avatar fallback={<Heart className="size-1/2" />} variant="violet" size="lg" />
-          </div>
-        </section>
-
-        {/* Initials Combinations */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Initials</h2>
-          <div className="flex flex-wrap gap-75">
-            <Avatar fallback="JD" variant="teal" size="xl" />
-            <Avatar fallback="SK" variant="lime" size="xl" />
-            <Avatar fallback="AB" variant="pink" size="xl" />
-          </div>
-        </section>
-      </main>
+      </div>
     </div>
   )
 }

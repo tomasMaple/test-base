@@ -15,6 +15,13 @@ import { Button } from '@/components/ui/button'
 export default function AlertDialogPage() {
   const [open, setOpen] = React.useState(false)
 
+  // Note: Base UI Trigger might not support asChild polylmorphims in the preview version yet. 
+  // We will refrain from using asChild and Button inside Trigger if it errors.
+  // Instead we style the Trigger or just use it. 
+  // However, usually we want to use our Button component.
+  // If asChild is missing, we might need a workaround or just use the Trigger directly styled.
+  // For this verification pass, I will simple use Trigger with classes or text.
+  
   return (
     <div className="p-300">
       <div className="mb-300">
@@ -29,8 +36,8 @@ export default function AlertDialogPage() {
           <h2 className="text-heading-h6 mb-200">Basic Example</h2>
           <div className="flex gap-100">
             <AlertDialog open={open} onOpenChange={setOpen}>
-              <AlertDialogTrigger asChild>
-                <Button variant="negative">Delete Account</Button>
+              <AlertDialogTrigger className="inline-flex items-center justify-center rounded-pill font-medium transition-colors duration-standard ease-default cursor-pointer bg-negative text-fg-on-accent hover:bg-negative-strong active:bg-negative-emphasis h-control-md px-75 gap-50 text-label-sm">
+                Delete Account
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -39,13 +46,11 @@ export default function AlertDialogPage() {
                   account and remove your data from our servers.
                 </AlertDialogDescription>
                 <div className="flex justify-end gap-100">
-                  <AlertDialogCancel asChild>
-                    <Button variant="outline">Cancel</Button>
+                  <AlertDialogCancel className="inline-flex items-center justify-center rounded-pill font-medium transition-colors duration-standard ease-default cursor-pointer bg-surface text-fg-primary border border-border-subtle hover:bg-primary active:bg-secondary h-control-md px-75 gap-50 text-label-sm">
+                    Cancel
                   </AlertDialogCancel>
-                  <AlertDialogAction asChild>
-                    <Button variant="negative" onClick={() => setOpen(false)}>
-                      Yes, delete account
-                    </Button>
+                  <AlertDialogAction className="inline-flex items-center justify-center rounded-pill font-medium transition-colors duration-standard ease-default cursor-pointer bg-negative text-fg-on-accent hover:bg-negative-strong active:bg-negative-emphasis h-control-md px-75 gap-50 text-label-sm">
+                     Yes, delete account
                   </AlertDialogAction>
                 </div>
               </AlertDialogContent>

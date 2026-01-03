@@ -1,73 +1,54 @@
 'use client'
 
 import * as React from 'react'
-import { Progress } from '@/components/ui'
+import { Progress } from '@/components/ui/progress'
 
 export default function ProgressPage() {
-  const [value, setValue] = React.useState(25)
+  const [value, setValue] = React.useState(13)
 
-  // Simulate progress
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setValue((v) => (v >= 100 ? 0 : v + 5))
-    }, 1000)
-    return () => clearInterval(interval)
+    const timer = setTimeout(() => setValue(66), 500)
+    return () => clearTimeout(timer)
   }, [])
 
   return (
-    <div className="p-200">
-      <main className="mx-auto max-w-4xl space-y-200">
-        {/* Header */}
-        <header className="space-y-50">
-          <h1 className="heading-h3">Progress Component</h1>
-          <p className="body-fixed-medium text-fg-secondary">
-            Visual indicator for tasks that take time.
-          </p>
-        </header>
+    <div className="p-300">
+      <div className="mb-300">
+        <h1 className="text-heading-h2 mb-100">Progress</h1>
+        <p className="text-body-fixed-base text-secondary-fg">
+          Displays an indicator showing the completion progress of a task.
+        </p>
+      </div>
 
-        {/* Dynamic Example */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Simulated Progress</h2>
-          <div className="p-100 bg-surface rounded-md border border-border-subtle max-w-sm">
-            <Progress 
-              value={value} 
-              label="Syncing files..." 
-              showValue 
-              variant="brand" 
-              size="md"
-            />
+      <div className="flex flex-col gap-300">
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Basic Example</h2>
+          <div className="w-[60%]">
+            <Progress value={value} />
+            <p className="mt-50 text-label-xs text-fg-secondary">
+               {value}% Complete
+            </p>
           </div>
         </section>
 
-        {/* Color Variants */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Color Variants</h2>
-          <div className="space-y-75 max-w-md">
-            <Progress value={75} label="Brand (Default)" showValue variant="brand" />
-            <Progress value={100} label="Positive" showValue variant="positive" />
-            <Progress value={45} label="Neutral" showValue variant="neutral" />
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Variants & Sizes</h2>
+          <div className="flex flex-col gap-200 w-[60%]">
+            <div className="flex flex-col gap-50">
+               <span className="text-label-xs mb-25">Default (Brand) - SM</span>
+               <Progress value={40} size="sm" />
+            </div>
+            <div className="flex flex-col gap-50">
+               <span className="text-label-xs mb-25">Positive - MD</span>
+               <Progress value={70} variant="positive" size="md" />
+            </div>
+            <div className="flex flex-col gap-50">
+               <span className="text-label-xs mb-25">Negative - LG</span>
+               <Progress value={80} variant="negative" size="lg" />
+            </div>
           </div>
         </section>
-
-        {/* Sizes */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Sizes</h2>
-          <div className="space-y-100 max-w-md">
-            <Progress value={60} label="Extra Small (xs)" size="xs" />
-            <Progress value={60} label="Small (sm)" size="sm" />
-            <Progress value={60} label="Medium (md)" size="md" />
-            <Progress value={60} label="Large (lg)" size="lg" />
-          </div>
-        </section>
-
-        {/* Indeterminate State */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Indeterminate State</h2>
-          <div className="max-w-md">
-            <Progress value={null} label="Loading something..." />
-          </div>
-        </section>
-      </main>
+      </div>
     </div>
   )
 }

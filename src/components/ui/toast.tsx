@@ -1,57 +1,25 @@
 'use client'
 
 import * as React from 'react'
-import { Toast as BaseToast } from '@base-ui/react/toast'
+import { Toast as BaseToast } from '@base-ui-components/react/toast'
 import { type VariantProps } from 'tailwind-variants'
+import { X as XIcon } from 'lucide-react'
 import { cn, tv } from '@/lib/utils'
-import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react'
+
+// =============================================================================
+// VARIANTS
+// =============================================================================
 
 const toastVariants = tv({
-  slots: {
-    root: [
-      'relative flex w-full items-start gap-75 overflow-hidden rounded-md border p-100 shadow-300 transition-all select-none',
-      'data-[ending-style]:opacity-0 data-[ending-style]:translate-x-full',
-      'data-[starting-style]:opacity-0 data-[starting-style]:translate-x-full',
-    ],
-    title: 'label-fixed-small font-medium',
-    description: 'body-fixed-small mt-25',
-    icon: 'size-icon-lg shrink-0 mt-[2px]',
-    close: [
-      'absolute top-25 right-25 rounded-xs p-25 text-tertiary-fg transition-colors',
-      'hover:bg-subtle hover:text-primary-fg',
-      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
-    ],
-  },
+  base: [
+    'group relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all',
+    'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full',
+  ],
   variants: {
     variant: {
-      default: {
-        root: 'bg-surface border-border-subtle text-primary-fg',
-        icon: 'text-primary-fg',
-        description: 'text-secondary-fg',
-      },
-      success: {
-        root: 'bg-positive-weak border-positive-subtle text-positive-strong',
-        icon: 'text-positive',
-        description: 'text-positive-emphasis',
-      },
-      error: {
-        root: 'bg-negative-weak border-negative-subtle text-negative-strong',
-        icon: 'text-negative',
-        description: 'text-negative-emphasis',
-        close: 'text-negative-emphasis hover:bg-negative-subtle hover:text-negative-strong',
-      },
-      warning: {
-        root: 'bg-warning-weak border-warning-subtle text-warning-strong',
-        icon: 'text-warning',
-        description: 'text-warning-emphasis',
-        close: 'text-warning-emphasis hover:bg-warning-subtle hover:text-warning-strong',
-      },
-      info: {
-        root: 'bg-info-weak border-info-subtle text-info-strong',
-        icon: 'text-info',
-        description: 'text-info-emphasis',
-        close: 'text-info-emphasis hover:bg-info-subtle hover:text-info-strong',
-      },
+      default: 'border bg-surface text-fg-primary',
+      destructive:
+        'destructive group border-negative bg-negative text-fg-on-accent',
     },
   },
   defaultVariants: {
@@ -59,91 +27,76 @@ const toastVariants = tv({
   },
 })
 
-const Icons = {
-  default: Info,
-  success: CheckCircle,
-  error: AlertCircle,
-  warning: AlertTriangle,
-  info: Info,
-}
+// =============================================================================
+// COMPONENT
+// =============================================================================
 
-export interface ToastProps extends VariantProps<typeof toastVariants> {
-  title?: React.ReactNode
-  description?: React.ReactNode
-  duration?: number
-}
+const ToastProvider = BaseToast.Provider
+const ToastViewport = BaseToast.Viewport
 
-interface ToastContextValue {
-  toast: (props: ToastProps) => void
-}
-
-const ToastContext = React.createContext<ToastContextValue | null>(null)
-
-export function useToast() {
-  const context = React.useContext(ToastContext)
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider')
-  }
-  return context
-}
-
-export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const toastManager = React.useMemo(() => BaseToast.createToastManager(), [])
-
-  const toast = React.useCallback(
-    (props: ToastProps) => {
-      toastManager.add(props)
-    },
-    [toastManager]
-  )
-
-  const contextValue = React.useMemo(() => ({ toast }), [toast])
-
+const Toast = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<typeof BaseToast.Root> &
+    VariantProps<typeof toastVariants>
+>(({ className, variant, ...props }, ref) => {
   return (
-    <ToastContext.Provider value={contextValue}>
-      <BaseToast.Provider toastManager={toastManager}>
-        {children}
-        <Toasts />
-      </BaseToast.Provider>
-    </ToastContext.Provider>
+    <BaseToast.Root
+      ref={ref}
+      className={cn(toastVariants({ variant }), className)}
+      {...props}
+    />
   )
-}
+})
+Toast.displayName = 'Toast'
 
-export function Toasts() {
-  const { toasts } = BaseToast.useToastManager()
-  const { root, title, description, icon, close } = toastVariants()
+const ToastClose = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentPropsWithoutRef<typeof BaseToast.Close>
+>(({ className, ...props }, ref) => (
+  <BaseToast.Close
+    ref={ref}
+    className={cn(
+      'absolute right-2 top-2 rounded-md p-1 text-fg-primary/50 opacity-0 transition-opacity hover:text-fg-primary focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600',
+      className
+    )}
+    toast-close=""
+    {...props}
+  >
+    <XIcon className="h-4 w-4" />
+  </BaseToast.Close>
+))
+ToastClose.displayName = 'ToastClose'
 
-  return (
-    <div className="fixed bottom-0 right-0 z-50 flex w-full max-w-[420px] flex-col gap-25 p-100 outline-none">
-      {toasts.map((toast) => {
-        // The toast object contains the data passed to .add() merged with internal state
-        // We cast it to access our custom props
-        const data = toast as unknown as ToastProps
-        const Icon = Icons[data.variant || 'default']
+const ToastTitle = React.forwardRef<
+  HTMLHeadingElement,
+  React.ComponentPropsWithoutRef<typeof BaseToast.Title>
+>(({ className, ...props }, ref) => (
+  <BaseToast.Title
+    ref={ref}
+    className={cn('text-sm font-semibold', className)}
+    {...props}
+  />
+))
+ToastTitle.displayName = 'ToastTitle'
 
-        return (
-          <BaseToast.Root
-            key={toast.id}
-            toast={toast}
-            className={cn(root({ variant: data.variant }))}
-          >
-            <Icon className={icon({ variant: data.variant })} />
-            <div className="flex-1 space-y-25">
-              {data.title && (
-                <BaseToast.Title className={title()}>{data.title}</BaseToast.Title>
-              )}
-              {data.description && (
-                <BaseToast.Description className={description({ variant: data.variant })}>
-                  {data.description}
-                </BaseToast.Description>
-              )}
-            </div>
-            <BaseToast.Close className={close({ variant: data.variant })}>
-              <X className="size-icon-sm" />
-            </BaseToast.Close>
-          </BaseToast.Root>
-        )
-      })}
-    </div>
-  )
+const ToastDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.ComponentPropsWithoutRef<typeof BaseToast.Description>
+>(({ className, ...props }, ref) => (
+  <BaseToast.Description
+    ref={ref}
+    className={cn('text-sm opacity-90', className)}
+    {...props}
+  />
+))
+ToastDescription.displayName = 'ToastDescription'
+
+export {
+  ToastProvider,
+  ToastViewport,
+  Toast,
+  ToastClose,
+  ToastTitle,
+  ToastDescription,
+  toastVariants,
 }

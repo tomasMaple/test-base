@@ -1,14 +1,16 @@
 'use client'
 
 import * as React from 'react'
-import { AlertDialog as BaseAlertDialog } from '@base-ui/react/alert-dialog'
-import { cn } from '@/lib/utils'
-import { tv } from 'tailwind-variants'
+import { AlertDialog as BaseAlertDialog } from '@base-ui-components/react/alert-dialog'
+import { cn, tv } from '@/lib/utils'
 
-// Variants
+// =============================================================================
+// VARIANTS
+// =============================================================================
+
 const overlayVariants = tv({
   base: [
-    'fixed inset-0 z-50 bg-black/50',
+    'fixed inset-0 z-50 bg-black/50 backdrop-blur-sm',
     'transition-opacity duration-fast ease-default',
     'data-[starting-style]:opacity-0',
     'data-[ending-style]:opacity-0',
@@ -26,10 +28,12 @@ const contentVariants = tv({
   ],
 })
 
-// Component
+// =============================================================================
+// ALIASES & WRAPPERS
+// =============================================================================
+
 const AlertDialog = BaseAlertDialog.Root
 const AlertDialogTrigger = BaseAlertDialog.Trigger
-// Keep BaseAlertDialog.Portal but don't export it directly to wrap it if needed, or just export it
 const AlertDialogPortal = BaseAlertDialog.Portal
 
 const AlertDialogOverlay = React.forwardRef<
@@ -65,7 +69,7 @@ const AlertDialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseAlertDialog.Title
     ref={ref}
-    className={cn('text-heading-h5 font-semibold text-primary-fg mb-50', className)}
+    className={cn('text-heading-h5 font-semibold text-fg-primary mb-50', className)}
     {...props}
   />
 ))
@@ -77,7 +81,7 @@ const AlertDialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseAlertDialog.Description
     ref={ref}
-    className={cn('text-body-fixed-base text-secondary-fg mb-150', className)}
+    className={cn('text-body-base text-fg-secondary mb-150', className)}
     {...props}
   />
 ))

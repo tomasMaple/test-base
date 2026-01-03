@@ -1,28 +1,27 @@
 'use client'
 
 import * as React from 'react'
-import { NumberField as BaseNumberField } from '@base-ui/react/number-field'
+import { NumberField as BaseNumberField } from '@base-ui-components/react/number-field'
 import { type VariantProps } from 'tailwind-variants'
 import { cn, tv } from '@/lib/utils'
-import { Minus, Plus } from 'lucide-react'
+import { Plus, Minus } from 'lucide-react'
 
-/**
- * NumberField Root - Groups all parts and manages state
- */
-const NumberField = BaseNumberField.Root
+const numberFieldRootVariants = tv({
+  base: 'group flex flex-col gap-25',
+})
 
-export interface NumberFieldProps extends React.ComponentPropsWithoutRef<typeof BaseNumberField.Root> {}
-
-/**
- * NumberField Group variants
- */
 const numberFieldGroupVariants = tv({
-  base: 'flex',
+  base: [
+    'flex items-center overflow-hidden',
+    'rounded-sm border border-border-subtle bg-surface transition-colors duration-standard',
+    'focus-within:border-brand focus-within:ring-1 focus-within:ring-brand',
+  ],
   variants: {
     size: {
-      sm: '',
-      md: '',
-      lg: '',
+      xs: 'h-control-xs',
+      sm: 'h-control-sm',
+      md: 'h-control-md',
+      lg: 'h-control-lg',
     },
   },
   defaultVariants: {
@@ -30,38 +29,17 @@ const numberFieldGroupVariants = tv({
   },
 })
 
-export interface NumberFieldGroupProps
-  extends React.ComponentPropsWithoutRef<typeof BaseNumberField.Group>,
-    VariantProps<typeof numberFieldGroupVariants> {}
-
-const NumberFieldGroup = React.forwardRef<HTMLDivElement, NumberFieldGroupProps>(
-  ({ className, size, ...props }, ref) => (
-    <BaseNumberField.Group
-      ref={ref}
-      className={cn(numberFieldGroupVariants({ size }), className)}
-      {...props}
-    />
-  )
-)
-NumberFieldGroup.displayName = 'NumberFieldGroup'
-
-/**
- * NumberField Input variants
- */
 const numberFieldInputVariants = tv({
   base: [
-    'border-t border-b border-border-subtle',
-    'text-center text-primary-fg tabular-nums',
-    'bg-transparent',
-    'focus:z-10 focus:outline focus:outline-2 focus:-outline-offset-1 focus:outline-brand',
-    'disabled:opacity-disabled disabled:cursor-not-allowed',
-    'data-[invalid]:border-negative',
+    'flex-1 bg-transparent px-50 text-center font-medium placeholder:text-fg-tertiary outline-none',
+    'text-fg-primary',
   ],
   variants: {
     size: {
-      sm: 'h-control-sm w-75 text-[length:var(--text-body-fixed-small)]',
-      md: 'h-control-md w-100 text-[length:var(--text-body-fixed-base)]',
-      lg: 'h-control-lg w-125 text-[length:var(--text-body-fixed-medium)]',
+      xs: 'text-label-xs',
+      sm: 'text-label-xs',
+      md: 'text-label-sm',
+      lg: 'text-label-sm',
     },
   },
   defaultVariants: {
@@ -69,44 +47,19 @@ const numberFieldInputVariants = tv({
   },
 })
 
-export interface NumberFieldInputProps
-  extends Omit<React.ComponentPropsWithoutRef<typeof BaseNumberField.Input>, 'size'>,
-    VariantProps<typeof numberFieldInputVariants> {}
-
-const NumberFieldInput = React.forwardRef<HTMLInputElement, NumberFieldInputProps>(
-  ({ className, size, ...props }, ref) => (
-    <BaseNumberField.Input
-      ref={ref}
-      className={cn(numberFieldInputVariants({ size }), className)}
-      {...props}
-    />
-  )
-)
-NumberFieldInput.displayName = 'NumberFieldInput'
-
-/**
- * Stepper button variants (shared by Increment and Decrement)
- */
-const stepperButtonVariants = tv({
+const numberFieldButtonVariants = tv({
   base: [
-    'flex items-center justify-center',
-    'border border-border-subtle bg-primary text-primary-fg',
-    'select-none cursor-pointer',
-    'transition-colors duration-standard ease-default',
-    'hover:bg-secondary',
-    'active:bg-muted',
-    'disabled:opacity-disabled disabled:cursor-not-allowed',
-    'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-brand focus-visible:z-10',
+    'flex items-center justify-center bg-transparent text-fg-secondary transition-colors',
+    'hover:bg-primary hover:text-fg-primary active:bg-secondary',
+    'disabled:pointer-events-none disabled:opacity-disabled',
+    'border-l border-r-0 first:border-r first:border-l-0 border-border-subtle',
   ],
   variants: {
     size: {
-      sm: 'size-control-sm',
-      md: 'size-control-md',
-      lg: 'size-control-lg',
-    },
-    position: {
-      left: 'rounded-l-md',
-      right: 'rounded-r-md',
+      xs: 'w-control-xs',
+      sm: 'w-control-sm',
+      md: 'w-control-md',
+      lg: 'w-control-lg',
     },
   },
   defaultVariants: {
@@ -114,103 +67,28 @@ const stepperButtonVariants = tv({
   },
 })
 
-export interface NumberFieldDecrementProps
-  extends React.ComponentPropsWithoutRef<typeof BaseNumberField.Decrement>,
-    VariantProps<typeof stepperButtonVariants> {}
+export type NumberFieldProps = React.ComponentPropsWithoutRef<typeof BaseNumberField.Root> &
+  VariantProps<typeof numberFieldGroupVariants>
 
-const NumberFieldDecrement = React.forwardRef<HTMLButtonElement, NumberFieldDecrementProps>(
-  ({ className, size, children, ...props }, ref) => (
-    <BaseNumberField.Decrement
+const NumberField = React.forwardRef<HTMLDivElement, NumberFieldProps>(
+  ({ className, size, ...props }, ref) => (
+    <BaseNumberField.Root
       ref={ref}
-      className={cn(stepperButtonVariants({ size, position: 'left' }), className)}
+      className={cn(numberFieldRootVariants(), className)}
       {...props}
     >
-      {children ?? <Minus className="size-icon-md" />}
-    </BaseNumberField.Decrement>
+      <BaseNumberField.Group className={numberFieldGroupVariants({ size })}>
+        <BaseNumberField.Decrement className={numberFieldButtonVariants({ size })}>
+          <Minus className="size-icon-sm" />
+        </BaseNumberField.Decrement>
+        <BaseNumberField.Input className={numberFieldInputVariants({ size })} />
+        <BaseNumberField.Increment className={numberFieldButtonVariants({ size })}>
+          <Plus className="size-icon-sm" />
+        </BaseNumberField.Increment>
+      </BaseNumberField.Group>
+    </BaseNumberField.Root>
   )
 )
-NumberFieldDecrement.displayName = 'NumberFieldDecrement'
+NumberField.displayName = 'NumberField'
 
-export interface NumberFieldIncrementProps
-  extends React.ComponentPropsWithoutRef<typeof BaseNumberField.Increment>,
-    VariantProps<typeof stepperButtonVariants> {}
-
-const NumberFieldIncrement = React.forwardRef<HTMLButtonElement, NumberFieldIncrementProps>(
-  ({ className, size, children, ...props }, ref) => (
-    <BaseNumberField.Increment
-      ref={ref}
-      className={cn(stepperButtonVariants({ size, position: 'right' }), className)}
-      {...props}
-    >
-      {children ?? <Plus className="size-icon-md" />}
-    </BaseNumberField.Increment>
-  )
-)
-NumberFieldIncrement.displayName = 'NumberFieldIncrement'
-
-/**
- * NumberField ScrubArea - Interactive area for click-drag value changes
- */
-const numberFieldScrubAreaVariants = tv({
-  base: 'cursor-ew-resize select-none',
-})
-
-export interface NumberFieldScrubAreaProps
-  extends React.ComponentPropsWithoutRef<typeof BaseNumberField.ScrubArea> {}
-
-const NumberFieldScrubArea = React.forwardRef<HTMLSpanElement, NumberFieldScrubAreaProps>(
-  ({ className, ...props }, ref) => (
-    <BaseNumberField.ScrubArea
-      ref={ref}
-      className={cn(numberFieldScrubAreaVariants(), className)}
-      {...props}
-    />
-  )
-)
-NumberFieldScrubArea.displayName = 'NumberFieldScrubArea'
-
-/**
- * NumberField ScrubAreaCursor - Custom cursor while scrubbing
- */
-const NumberFieldScrubAreaCursor = React.forwardRef<
-  HTMLSpanElement,
-  React.ComponentPropsWithoutRef<typeof BaseNumberField.ScrubAreaCursor>
->(({ className, children, ...props }, ref) => (
-  <BaseNumberField.ScrubAreaCursor
-    ref={ref}
-    className={cn('drop-shadow-[0_1px_1px_#0008] filter', className)}
-    {...props}
-  >
-    {children ?? <ScrubCursorIcon />}
-  </BaseNumberField.ScrubAreaCursor>
-))
-NumberFieldScrubAreaCursor.displayName = 'NumberFieldScrubAreaCursor'
-
-/**
- * Default scrub cursor icon
- */
-function ScrubCursorIcon(props: React.ComponentProps<'svg'>) {
-  return (
-    <svg
-      width="26"
-      height="14"
-      viewBox="0 0 24 14"
-      fill="currentColor"
-      stroke="white"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path d="M19.5 5.5L6.49737 5.51844V2L1 6.9999L6.5 12L6.49737 8.5L19.5 8.5V12L25 6.9999L19.5 2V5.5Z" />
-    </svg>
-  )
-}
-
-export {
-  NumberField,
-  NumberFieldGroup,
-  NumberFieldInput,
-  NumberFieldDecrement,
-  NumberFieldIncrement,
-  NumberFieldScrubArea,
-  NumberFieldScrubAreaCursor,
-}
+export { NumberField, numberFieldGroupVariants }

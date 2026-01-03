@@ -1,71 +1,70 @@
 'use client'
 
 import * as React from 'react'
-import { Switch as BaseSwitch } from '@base-ui/react/switch'
+import { Switch as BaseSwitch } from '@base-ui-components/react/switch'
 import { type VariantProps } from 'tailwind-variants'
 import { cn, tv } from '@/lib/utils'
 
 const switchVariants = tv({
-  slots: {
-    root: [
-      'group relative inline-flex items-center rounded-pill cursor-pointer transition-[background-position,box-shadow,background-color] duration-[125ms] ease-[cubic-bezier(0.26,0.75,0.38,0.45)]',
-      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
-      'disabled:pointer-events-none disabled:opacity-disabled',
-    ],
-    thumb: [
-      'pointer-events-none block rounded-full bg-white shadow-100 transition-transform duration-[150ms] ease-[cubic-bezier(0.26,0.75,0.38,0.45)]',
-      'data-[checked]:translate-x-full',
-    ],
-  },
+  base: [
+    'group relative inline-flex items-center',
+    'rounded-pill border border-transparent',
+    'transition-colors duration-standard ease-default',
+    'cursor-pointer',
+    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
+    'disabled:pointer-events-none disabled:opacity-disabled',
+    'data-[checked]:bg-inverse',
+    'data-[unchecked]:bg-base-300', // Assuming a base/muted color for unchecked track
+    'hover:data-[unchecked]:bg-base-400',
+  ],
   variants: {
-    variant: {
-      brand: {
-        root: 'bg-strong data-[checked]:bg-brand',
-      },
-      neutral: {
-        root: 'bg-strong data-[checked]:bg-inverse',
-      },
-    },
     size: {
-      sm: {
-        root: 'h-control-2xs w-7',
-        thumb: 'size-3 translate-x-0.5 data-[checked]:translate-x-[calc(100%+0.5px)]',
-      },
-      md: {
-        root: 'h-control-md w-10',
-        thumb: 'size-5 translate-x-0.5 data-[checked]:translate-x-[calc(100%+2px)]',
-      },
-      lg: {
-        root: 'h-8 w-14',
-        thumb: 'size-7 translate-x-0.5 data-[checked]:translate-x-[calc(100%+6px)]',
-      },
+      '2xs': 'h-control-2xs w-[2.25rem]',
+      xs: 'h-control-xs w-[2.75rem]',
+      sm: 'h-control-sm w-[3.25rem]',
+      md: 'h-control-md w-[3.75rem]',
     },
   },
   defaultVariants: {
-    variant: 'brand',
-    size: 'md',
+    size: 'sm',
+  },
+})
+
+const switchThumbVariants = tv({
+  base: [
+    'block rounded-pill bg-surface shadow-100',
+    'transition-all duration-standard ease-default',
+    'data-[checked]:translate-x-[100%] data-[checked]:-ml-[--thumb-size]',
+    'data-[unchecked]:translate-x-0',
+  ],
+  variants: {
+    size: {
+      '2xs': '[--thumb-size:12px] size-[--thumb-size] mx-[2px]',
+      xs: '[--thumb-size:16px] size-[--thumb-size] mx-[2px]',
+      sm: '[--thumb-size:24px] size-[--thumb-size] mx-[2px]',
+      md: '[--thumb-size:28px] size-[--thumb-size] mx-[2px]',
+    },
+  },
+  defaultVariants: {
+    size: 'sm',
   },
 })
 
 export type SwitchProps = React.ComponentPropsWithoutRef<typeof BaseSwitch.Root> &
-  VariantProps<typeof switchVariants>
+  VariantProps<typeof switchVariants> &
+  React.ComponentPropsWithoutRef<'button'>
 
-export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
-  ({ className, variant, size, ...props }, ref) => {
-    const { root, thumb } = switchVariants({ variant, size })
-
-    return (
-      <BaseSwitch.Root
-        ref={ref}
-        className={cn(root(), className)}
-        {...props}
-      >
-        <BaseSwitch.Thumb className={thumb()} />
-      </BaseSwitch.Root>
-    )
-  }
+const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
+  ({ className, size, ...props }, ref) => (
+    <BaseSwitch.Root
+      ref={ref}
+      className={cn(switchVariants({ size }), className)}
+      {...props}
+    >
+      <BaseSwitch.Thumb className={switchThumbVariants({ size })} />
+    </BaseSwitch.Root>
+  )
 )
-
 Switch.displayName = 'Switch'
 
-export { switchVariants }
+export { Switch, switchVariants }

@@ -1,74 +1,55 @@
 'use client'
 
+import * as React from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 
 export default function CheckboxPage() {
   return (
-    <div className="p-200">
-      <main className="mx-auto max-w-4xl space-y-200">
-        {/* Header */}
-        <header className="space-y-50">
-          <h1 className="heading-h3">Checkbox Component</h1>
-          <p className="body-fixed-medium text-fg-secondary">
-            A high-quality, easily stylable checkbox component.
-          </p>
-        </header>
+    <div className="p-300">
+      <div className="mb-300">
+        <h1 className="text-heading-h2 mb-100">Checkbox</h1>
+        <p className="text-body-fixed-base text-secondary-fg">
+          A control that allows the user to toggle between checked and not checked.
+        </p>
+      </div>
 
-        {/* Basic Usage */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Basic Usage</h2>
-          <div className="flex flex-col gap-75">
-            <Checkbox label="Base Checkbox" />
-            <Checkbox label="Default Checked" defaultChecked />
-            <Checkbox label="Disabled" disabled />
-            <Checkbox label="Disabled Checked" disabled defaultChecked />
-          </div>
-        </section>
-
-        {/* States and Interactions */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">States & Interactions</h2>
-          <div className="p-100 border border-border-subtle rounded-md bg-surface space-y-100">
-            <p className="label-fixed-small text-fg-secondary italic">
-              Try interacting with these checkboxes to see focus and active states.
-            </p>
-            <div className="grid grid-cols-2 gap-100">
-              <div className="space-y-50">
-                <h3 className="label-fixed-base font-bold">Unchecked</h3>
-                <Checkbox label="Focus me via Tab" />
-                <Checkbox label="Hover over me" />
-              </div>
-              <div className="space-y-50">
-                <h3 className="label-fixed-base font-bold">Checked</h3>
-                <Checkbox label="Already checked" defaultChecked />
-                <Checkbox label="Check me" />
-              </div>
+      <div className="flex flex-col gap-300">
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Basic Usage</h2>
+          <div className="flex flex-col gap-200">
+            <div className="flex items-center gap-100">
+              <Checkbox id="c1" />
+              <label htmlFor="c1" className="text-label-sm cursor-pointer select-none">Base Checkbox</label>
+            </div>
+            <div className="flex items-center gap-100">
+              <Checkbox id="c2" defaultChecked />
+              <label htmlFor="c2" className="text-label-sm cursor-pointer select-none">Default Checked</label>
+            </div>
+            <div className="flex items-center gap-100">
+               <Checkbox id="c3" disabled />
+               <label htmlFor="c3" className="text-label-sm text-fg-tertiary">Disabled</label>
+            </div>
+            <div className="flex items-center gap-100">
+               <Checkbox id="c4" defaultChecked disabled />
+               <label htmlFor="c4" className="text-label-sm text-fg-tertiary">Disabled Checked</label>
             </div>
           </div>
         </section>
 
-        {/* Integration Example */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Form Integration Preview</h2>
-          <div className="max-w-md p-100 border border-border-subtle rounded-md space-y-100">
-            <form className="space-y-100" onSubmit={(e) => e.preventDefault()}>
-              <div className="space-y-50">
-                <h3 className="label-fixed-medium font-bold">Notification Settings</h3>
-                <div className="space-y-50">
-                  <Checkbox label="Email notifications" defaultChecked />
-                  <Checkbox label="Push notifications" />
-                  <Checkbox label="Weekly digest" disabled />
-                </div>
-              </div>
-              <div className="pt-50">
-                <button className="bg-inverse-primary text-on-inverse px-100 py-50 rounded-pill label-fixed-small font-medium">
-                  Save Settings
-                </button>
-              </div>
-            </form>
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Sizes</h2>
+          <div className="flex items-center gap-200">
+            <div className="flex items-center gap-100">
+              <Checkbox id="cs1" size="3xs" />
+              <label htmlFor="cs1" className="text-label-xs">3XS</label>
+            </div>
+            <div className="flex items-center gap-100">
+              <Checkbox id="cs2" size="2xs" />
+              <label htmlFor="cs2" className="text-label-sm">2XS</label>
+            </div>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   )
 }

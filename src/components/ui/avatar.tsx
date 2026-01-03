@@ -1,117 +1,75 @@
 'use client'
 
 import * as React from 'react'
-import { Avatar as BaseAvatar } from '@base-ui/react/avatar'
 import { type VariantProps } from 'tailwind-variants'
 import { cn, tv } from '@/lib/utils'
+// Base UI might not have a dedicated Avatar primitive yet, often it's just a div with img or fallback.
+// Assuming standard accessible implementation:
 
-/**
- * Avatar variants using Tailwind Variants with Supernova design tokens.
- * Focuses on colorful backgrounds for fallback content.
- */
 const avatarVariants = tv({
-  slots: {
-    root: 'relative flex shrink-0 overflow-hidden rounded-pill select-none items-center justify-center',
-    image: 'aspect-square h-full w-full object-cover',
-    fallback: 'flex h-full w-full items-center justify-center font-medium uppercase',
-  },
+  base: [
+    'relative flex shrink-0 overflow-hidden rounded-full',
+  ],
   variants: {
-    variant: {
-      brand: {
-        fallback: 'bg-brand text-on-brand-fg',
-      },
-      pink: {
-        fallback: 'bg-pink text-on-accent-fg',
-      },
-      violet: {
-        fallback: 'bg-violet text-on-accent-fg',
-      },
-      teal: {
-        fallback: 'bg-teal text-on-accent-fg',
-      },
-      lime: {
-        fallback: 'bg-lime text-on-accent-fg',
-      },
-      neutral: {
-        fallback: 'bg-strong text-primary-fg',
-      },
-    },
     size: {
-      sm: {
-        root: 'size-control-sm',
-        fallback: 'text-label-fixed-2-x-small',
-      },
-      md: {
-        root: 'size-control-md',
-        fallback: 'text-label-fixed-x-small',
-      },
-      lg: {
-        root: 'size-control-lg',
-        fallback: 'text-label-fixed-small',
-      },
-      xl: {
-        root: 'size-control-xl',
-        fallback: 'text-label-fixed-medium',
-      },
-      '2xl': {
-        root: 'size-control-2xl',
-        fallback: 'text-label-fixed-x-large',
-      },
+      '3xs': 'size-control-3xs text-[8px]',
+      '2xs': 'size-control-2xs text-[10px]',
+      xs: 'size-control-xs text-label-xs',
+      sm: 'size-control-sm text-label-xs',
+      md: 'size-control-md text-label-sm',
+      lg: 'size-control-lg text-label-md',
+      xl: 'size-control-xl text-label-lg',
+      '2xl': 'size-control-2xl text-heading-h6',
     },
   },
   defaultVariants: {
-    variant: 'neutral',
     size: 'md',
   },
 })
 
-export type AvatarProps = React.ComponentPropsWithoutRef<typeof BaseAvatar.Root> &
-  VariantProps<typeof avatarVariants> & {
-    src?: string
-    alt?: string
-    fallback?: React.ReactNode
-    delay?: number
-  }
+const avatarImageVariants = tv({
+  base: 'aspect-square h-full w-full object-cover',
+})
 
-/**
- * Styled Avatar component using Base UI primitives
- * with Tailwind Variants and Supernova design tokens.
- *
- * @example
- * ```tsx
- * // Default with fallback
- * <Avatar fallback="JD" variant="brand" />
- * 
- * // With image
- * <Avatar src="path/to/image.jpg" alt="User Name" fallback="JD" />
- * ```
- */
-export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
-  ({ className, variant, size, src, alt, fallback, delay, ...props }, ref) => {
-    const { root, image, fallback: fallbackStyles } = avatarVariants({ variant, size })
+const avatarFallbackVariants = tv({
+  base: [
+    'flex h-full w-full items-center justify-center rounded-full',
+    'bg-secondary text-fg-secondary font-medium',
+  ],
+})
+
+export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof avatarVariants> {
+  src?: string
+  alt?: string
+  fallback?: React.ReactNode
+}
+
+const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
+  ({ className, size, src, alt, fallback, ...props }, ref) => {
+    const [imageError, setImageError] = React.useState(false)
 
     return (
-      <BaseAvatar.Root
+      <div
         ref={ref}
-        className={cn(root(), className)}
+        className={cn(avatarVariants({ size }), className)}
         {...props}
       >
-        {src && (
-          <BaseAvatar.Image
+        {src && !imageError ? (
+          <img
             src={src}
             alt={alt}
-            className={image()}
+            className={avatarImageVariants()}
+            onError={() => setImageError(true)}
           />
+        ) : (
+          <div className={avatarFallbackVariants()}>
+            {fallback || (alt ? alt.slice(0, 2).toUpperCase() : '??')}
+          </div>
         )}
-        <BaseAvatar.Fallback
-          delay={delay}
-          className={fallbackStyles()}
-        >
-          {fallback}
-        </BaseAvatar.Fallback>
-      </BaseAvatar.Root>
+      </div>
     )
   }
 )
-
 Avatar.displayName = 'Avatar'
+
+export { Avatar, avatarVariants }

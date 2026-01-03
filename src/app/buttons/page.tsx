@@ -1,85 +1,50 @@
-import { Button } from '@/components/ui'
-import { Plus, ArrowRight, Search } from 'lucide-react'
+'use client'
+
+import * as React from 'react'
+import { Button } from '@/components/ui/button'
 
 export default function ButtonsPage() {
   return (
-    <div className="p-200">
-      <main className="mx-auto max-w-4xl space-y-200">
-        {/* Header */}
-        <header className="space-y-50">
-          <h1 className="heading-h3">Button Component</h1>
-          <p className="body-fixed-medium text-fg-secondary">
-            Explore all button variants, sizes, and states
-          </p>
-        </header>
+    <div className="p-300">
+      <div className="mb-300">
+        <h1 className="text-heading-h2 mb-100">Buttons</h1>
+        <p className="text-body-fixed-base text-secondary-fg">
+          Standard button styles.
+        </p>
+      </div>
 
-        {/* Icons */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Buttons with Icons</h2>
-          <div className="flex flex-wrap items-center gap-75">
-            <Button beforeIcon={<Plus />}>Before Icon</Button>
-            <Button afterIcon={<ArrowRight />}>After Icon</Button>
-            <Button beforeIcon={<Plus />} afterIcon={<ArrowRight />}>
-              Both Icons
-            </Button>
-            <Button variant="secondary" beforeIcon={<Search />}>
-              Search
-            </Button>
-            <Button variant="ghost" beforeIcon={<Plus />} />
-          </div>
-        </section>
-
-        {/* Variants */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Button Variants</h2>
-          <div className="flex flex-wrap gap-75">
+      <div className="flex flex-col gap-300">
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Variants</h2>
+          <div className="flex flex-wrap gap-200">
             <Button variant="primary">Primary</Button>
             <Button variant="secondary">Secondary</Button>
             <Button variant="tertiary">Tertiary</Button>
             <Button variant="ghost">Ghost</Button>
             <Button variant="negative">Negative</Button>
+            <Button variant="outline">Outline</Button>
           </div>
         </section>
 
-        {/* Sizes */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Button Sizes</h2>
-          <div className="flex flex-wrap items-center gap-75">
-            <Button size="small">Small</Button>
-            <Button size="medium">Medium</Button>
-            <Button size="large">Large</Button>
-            <Button size="x-large">X-Large</Button>
-            <Button size="2x-large">2X-Large</Button>
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Sizes</h2>
+          <div className="flex flex-wrap items-center gap-200">
+            <Button size="xs">XS</Button>
+            <Button size="sm">Small</Button>
+            <Button size="md">Medium</Button>
+            <Button size="lg">Large</Button>
+            <Button size="xl">XL</Button>
           </div>
         </section>
-
-        {/* States */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Button States</h2>
-          <div className="flex flex-wrap gap-75">
-            <Button>Normal</Button>
+        
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">States</h2>
+          <div className="flex flex-wrap gap-200">
             <Button disabled>Disabled</Button>
-            <Button fullWidth>Full Width</Button>
+            <Button variant="secondary" disabled>Disabled Secondary</Button>
           </div>
         </section>
-
-        {/* Combined */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Combined Variants</h2>
-          <div className="flex flex-wrap gap-75">
-            <Button variant="secondary" size="large">
-              Large Secondary
-            </Button>
-            <Button variant="tertiary" size="small">
-              Small Tertiary
-            </Button>
-            <Button variant="negative" size="x-large">
-              XL Negative
-            </Button>
-          </div>
-        </section>
-      </main>
+      </div>
     </div>
   )
 }
-

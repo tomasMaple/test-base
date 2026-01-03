@@ -3,7 +3,32 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
+import { cn, tv } from '@/lib/utils'
+
+// =============================================================================
+// VARIANTS
+// =============================================================================
+
+const sidebarItemVariants = tv({
+  base: [
+    'flex w-full items-center gap-75 px-75 py-50 rounded-md',
+    'text-label-sm text-left transition-colors duration-fast ease-default',
+    'hover:bg-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-strong',
+  ],
+  variants: {
+    active: {
+      true: 'bg-secondary text-fg-primary font-medium',
+      false: 'text-fg-secondary hover:text-fg-primary',
+    },
+  },
+  defaultVariants: {
+    active: false,
+  },
+})
+
+// =============================================================================
+// COMPONENT
+// =============================================================================
 
 export interface SidebarItem {
   href: string
@@ -20,16 +45,9 @@ const SidebarItemComponent = ({ item, isActive }: SidebarItemProps) => {
   return (
     <Link
       href={item.href}
-      className={cn(
-        'w-full flex items-center gap-12 px-75 py-50 rounded-md',
-        'label-fixed-small text-left transition-colors',
-        'hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-strong',
-        isActive
-          ? 'bg-secondary text-primary-fg font-medium'
-          : 'text-secondary-fg hover:text-primary-fg'
-      )}
+      className={cn(sidebarItemVariants({ active: isActive }))}
     >
-      {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
+      {item.icon && <span className="flex-shrink-0 size-icon-md">{item.icon}</span>}
       <span>{item.label}</span>
     </Link>
   )
@@ -52,7 +70,7 @@ export const Sidebar = ({ items, className }: SidebarProps) => {
       )}
     >
       <div className="mb-100">
-        <h2 className="text-heading-h6 px-75">Navigation</h2>
+        <h2 className="text-heading-h6 px-75 font-semibold text-fg-primary">Navigation</h2>
       </div>
       <nav className="flex flex-col gap-12">
         {items.map((item) => (
@@ -68,4 +86,3 @@ export const Sidebar = ({ items, className }: SidebarProps) => {
 }
 
 export type { SidebarItem as SidebarItemType }
-

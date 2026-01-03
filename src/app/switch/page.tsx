@@ -1,66 +1,63 @@
-import { Switch } from '@/components/ui'
+'use client'
+
+import * as React from 'react'
+import { Switch } from '@/components/ui/switch'
 
 export default function SwitchPage() {
   return (
-    <div className="p-200">
-      <main className="mx-auto max-w-4xl space-y-200">
-        {/* Header */}
-        <header className="space-y-50">
-          <h1 className="heading-h3">Switch Component</h1>
-          <p className="body-fixed-medium text-fg-secondary">
-            Toggle switches for binary settings and preferences.
-          </p>
-        </header>
+    <div className="p-300">
+      <div className="mb-300">
+        <h1 className="text-heading-h2 mb-100">Switch</h1>
+        <p className="text-body-fixed-base text-secondary-fg">
+          A control that allows the user to toggle between checked and not checked.
+        </p>
+      </div>
 
-        {/* Variants */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Color Variants</h2>
-          <div className="flex flex-wrap gap-100">
-            <div className="flex items-center gap-50">
-              <Switch variant="brand" defaultChecked id="sw-brand" />
-              <label htmlFor="sw-brand" className="label-fixed-small">Brand Variant</label>
+      <div className="flex flex-col gap-300">
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Basic Usage</h2>
+          <div className="flex flex-col gap-200">
+            <div className="flex items-center gap-100">
+              <Switch id="s1" />
+              <label htmlFor="s1" className="text-label-sm cursor-pointer select-none">Notifications</label>
             </div>
-            <div className="flex items-center gap-50">
-              <Switch variant="neutral" defaultChecked id="sw-neutral" />
-              <label htmlFor="sw-neutral" className="label-fixed-small">Neutral Variant</label>
+            <div className="flex items-center gap-100">
+              <Switch id="s2" defaultChecked />
+              <label htmlFor="s2" className="text-label-sm cursor-pointer select-none">Airplane Mode</label>
+            </div>
+            <div className="flex items-center gap-100">
+              <Switch id="s3" disabled />
+              <label htmlFor="s3" className="text-label-sm text-fg-tertiary">Disabled</label>
+            </div>
+             <div className="flex items-center gap-100">
+              <Switch id="s4" defaultChecked disabled />
+              <label htmlFor="s4" className="text-label-sm text-fg-tertiary">Disabled Checked</label>
             </div>
           </div>
         </section>
 
-        {/* Sizes */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">Sizes</h2>
-          <div className="flex flex-col gap-75">
-            <div className="flex items-center gap-50">
-              <Switch size="sm" id="sw-sm" />
-              <label htmlFor="sw-sm" className="label-fixed-small">Small (sm)</label>
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Sizes</h2>
+          <div className="flex items-center gap-300">
+            <div className="flex flex-col gap-50">
+               <Switch size="2xs" />
+               <span className="text-label-xs text-fg-secondary">2XS</span>
             </div>
-            <div className="flex items-center gap-50">
-              <Switch size="md" id="sw-md" />
-              <label htmlFor="sw-md" className="label-fixed-small">Medium (md)</label>
+            <div className="flex flex-col gap-50">
+               <Switch size="xs" />
+               <span className="text-label-xs text-fg-secondary">XS</span>
             </div>
-            <div className="flex items-center gap-50" >
-              <Switch size="lg" id="sw-lg" />
-              <label htmlFor="sw-lg" className="label-fixed-small">Large (lg)</label>
+            <div className="flex flex-col gap-50">
+               <Switch size="sm" />
+               <span className="text-label-xs text-fg-secondary">SM</span>
             </div>
-          </div>
-        </section>
-
-        {/* States */}
-        <section className="space-y-100">
-          <h2 className="heading-h5">States</h2>
-          <div className="flex flex-wrap gap-100">
-            <div className="flex items-center gap-50 opacity-50 pointer-events-none">
-              <Switch disabled id="sw-disabled" />
-              <label htmlFor="sw-disabled" className="label-fixed-small">Disabled Unchecked</label>
-            </div>
-            <div className="flex items-center gap-50 opacity-50 pointer-events-none">
-              <Switch disabled defaultChecked id="sw-disabled-checked" />
-              <label htmlFor="sw-disabled-checked" className="label-fixed-small">Disabled Checked</label>
+            <div className="flex flex-col gap-50">
+               <Switch size="md" />
+               <span className="text-label-xs text-fg-secondary">MD</span>
             </div>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   )
 }
