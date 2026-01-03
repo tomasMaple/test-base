@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Avatar as BaseAvatar } from '@base-ui/react/avatar'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 
 /**
  * Avatar variants using Tailwind Variants with Supernova design tokens.

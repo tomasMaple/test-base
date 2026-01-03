@@ -3,8 +3,8 @@
 import * as React from 'react'
 import { Radio as BaseRadio } from '@base-ui/react/radio'
 import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 
 /**
  * Radio variants using Tailwind Variants with Supernova design tokens.

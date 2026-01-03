@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Toast as BaseToast } from '@base-ui/react/toast'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react'
 
 const toastVariants = tv({

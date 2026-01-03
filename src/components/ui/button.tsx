@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Button as BaseButton } from '@base-ui/react/button'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 
 /**
  * Button variants using Tailwind Variants with Supernova design tokens
@@ -18,11 +18,10 @@ const buttonVariants = tv({
   variants: {
     variant: {
       primary: [
-        'bg-inverse text-inverse-fg',
+        'bg-inverse text-fg-inverse',
         'hover:bg-brand',
         'active:bg-brand-emphasis',
         'focus-visible:outline-border-inverse',
-        'text-on-brand-fg',
       ],
       secondary: [
         'bg-surface text-primary-fg',
@@ -44,7 +43,7 @@ const buttonVariants = tv({
         'focus-visible:outline-tertiary-fg',
       ],
       negative: [
-        'bg-negative text-on-accent-fg',
+        'bg-negative text-fg-on-accent',
         'hover:bg-negative-strong',
         'active:bg-negative-emphasis',
         'focus-visible:outline-negative',

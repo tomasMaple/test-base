@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Progress as BaseProgress } from '@base-ui/react/progress'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 
 const progressVariants = tv({
   slots: {

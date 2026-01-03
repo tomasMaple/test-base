@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Switch as BaseSwitch } from '@base-ui/react/switch'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 
 const switchVariants = tv({
   slots: {

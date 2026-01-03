@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Select as BaseSelect } from '@base-ui/react/select'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 import { ChevronDown } from 'lucide-react'
 
 /**

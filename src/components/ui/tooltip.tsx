@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip'
-import { tv } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 
 // ============================================
 // Variants

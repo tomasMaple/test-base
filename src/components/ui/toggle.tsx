@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Toggle as BaseToggle } from '@base-ui/react/toggle'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 
 /**
  * Toggle variants using Tailwind Variants with Supernova design tokens

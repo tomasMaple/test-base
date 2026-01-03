@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { NumberField as BaseNumberField } from '@base-ui/react/number-field'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 import { Minus, Plus } from 'lucide-react'
 
 /**

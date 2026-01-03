@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Tabs as BaseTabs } from '@base-ui/react/tabs'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 
 /**
  * Tabs Root - Groups tabs and panels

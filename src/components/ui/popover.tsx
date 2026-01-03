@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Popover as BasePopover } from '@base-ui/react/popover'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import { type VariantProps } from 'tailwind-variants'
+import { cn, tv } from '@/lib/utils'
 import { X } from 'lucide-react'
 
 /**
