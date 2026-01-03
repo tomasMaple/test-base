@@ -35,6 +35,7 @@ const navigationItems: SidebarItemType[] = [
   { href: '/scroll-area', label: 'Scroll Area' },
   { href: '/tooltip', label: 'Tooltip' },
   { href: '/number-field', label: 'Number Field' },
+  { href: '/alert-dialog', label: 'Alert Dialog' },
   { href: '/placeholder', label: 'Placeholder' },
 ]
 
