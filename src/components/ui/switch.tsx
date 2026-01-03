@@ -13,20 +13,18 @@ const switchVariants = tv({
     'cursor-pointer',
     'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
     'disabled:pointer-events-none disabled:opacity-disabled',
-    'data-[checked]:bg-inverse',
-    'data-[unchecked]:bg-base-300', // Assuming a base/muted color for unchecked track
+    'data-[checked]:bg-brand',
+    'data-[unchecked]:bg-secondary', // Assuming a base/muted color for unchecked track
     'hover:data-[unchecked]:bg-base-400',
   ],
   variants: {
     size: {
-      '2xs': 'h-control-2xs w-[2.25rem]',
-      xs: 'h-control-xs w-[2.75rem]',
-      sm: 'h-control-sm w-[3.25rem]',
-      md: 'h-control-md w-[3.75rem]',
+      xs: 'h-control-xs w-[2.5rem]',
+      md: 'h-control-md w-[3.70rem]',
     },
   },
   defaultVariants: {
-    size: 'sm',
+    size: 'md',
   },
 })
 
@@ -39,14 +37,12 @@ const switchThumbVariants = tv({
   ],
   variants: {
     size: {
-      '2xs': '[--thumb-size:12px] size-[--thumb-size] mx-[2px]',
-      xs: '[--thumb-size:16px] size-[--thumb-size] mx-[2px]',
-      sm: '[--thumb-size:24px] size-[--thumb-size] mx-[2px]',
-      md: '[--thumb-size:28px] size-[--thumb-size] mx-[2px]',
+      xs: 'h-100 w-100 mx-[3px]',
+      md: 'h-150 w-150 mx-[4px]',
     },
   },
   defaultVariants: {
-    size: 'sm',
+    size: 'md',
   },
 })
 

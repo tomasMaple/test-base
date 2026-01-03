@@ -39,19 +39,11 @@ export default function SwitchPage() {
         <section className="p-300 border border-border-subtle rounded-xl">
           <h2 className="text-heading-h6 mb-200">Sizes</h2>
           <div className="flex items-center gap-300">
-            <div className="flex flex-col gap-50">
-               <Switch size="2xs" />
-               <span className="text-label-xs text-fg-secondary">2XS</span>
-            </div>
-            <div className="flex flex-col gap-50">
+           <div className="flex flex-col gap-50">
                <Switch size="xs" />
                <span className="text-label-xs text-fg-secondary">XS</span>
             </div>
-            <div className="flex flex-col gap-50">
-               <Switch size="sm" />
-               <span className="text-label-xs text-fg-secondary">SM</span>
-            </div>
-            <div className="flex flex-col gap-50">
+         <div className="flex flex-col gap-50">
                <Switch size="md" />
                <span className="text-label-xs text-fg-secondary">MD</span>
             </div>
