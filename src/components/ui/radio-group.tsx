@@ -14,19 +14,19 @@ const radioVariants = tv({
   slots: {
     group: 'flex flex-col items-start gap-50',
     root: [
-      'group flex size-2xs items-center justify-center rounded-pill border border-border-strong',
+      'group flex size-control-2xs items-center justify-center rounded-pill border border-border-strong',
       'transition-all duration-standard ease-default cursor-pointer bg-surface',
-      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary',
+      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
       'disabled:pointer-events-none disabled:opacity-disabled',
-      'data-[checked]:bg-brand-primary data-[checked]:border-brand-primary',
+      'data-[checked]:bg-brand data-[checked]:border-brand',
     ],
     indicator: [
-      'size-[8px] rounded-full bg-fg-on-brand',
+      'size-[8px] rounded-full bg-on-brand-fg',
       'transition-all duration-standard ease-default',
       'data-[unchecked]:hidden',
     ],
     labelWrapper: 'inline-flex items-center gap-75 cursor-pointer select-none',
-    labelText: 'label-fixed-small text-fg-primary group-disabled:text-fg-muted',
+    labelText: 'label-fixed-small text-primary-fg group-disabled:text-muted-fg',
   },
 })
 
@@ -47,7 +47,7 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
         {...props}
       >
         {label && (
-          <div id={id} className="label-fixed-medium font-medium text-fg-primary mb-25">
+          <div id={id} className="label-fixed-medium font-medium text-primary-fg mb-25">
             {label}
           </div>
         )}

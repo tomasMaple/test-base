@@ -25,8 +25,8 @@ const SidebarItemComponent = ({ item, isActive }: SidebarItemProps) => {
         'label-fixed-small text-left transition-colors',
         'hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-strong',
         isActive
-          ? 'bg-secondary text-fg-primary font-medium'
-          : 'text-fg-secondary hover:text-fg-primary'
+          ? 'bg-secondary text-primary-fg font-medium'
+          : 'text-secondary-fg hover:text-primary-fg'
       )}
     >
       {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
@@ -52,7 +52,7 @@ export const Sidebar = ({ items, className }: SidebarProps) => {
       )}
     >
       <div className="mb-100">
-        <h2 className="heading-h6 px-75">Navigation</h2>
+        <h2 className="text-heading-h6 px-75">Navigation</h2>
       </div>
       <nav className="flex flex-col gap-12">
         {items.map((item) => (

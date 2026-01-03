@@ -10,7 +10,7 @@
    
    Naming Conventions:
    - Backgrounds: no suffix → bg-surface, bg-canvas
-   - Foregrounds: -fg suffix → text-primary-fg, text-muted-fg
+   - Foregrounds: fg- prefix → text-fg-primary, text-fg-muted
    - Borders: border- prefix → border-border-subtle
    - Status colors: work for bg/text/border → bg-positive, text-negative
    ============================================ */
@@ -418,17 +418,17 @@
   --color-inverse: var(--sem-bg-inverse);
 
   /* ==========================================
-     COLORS: FOREGROUNDS (-fg suffix)
-     Usage: text-primary-fg, text-muted-fg
+     COLORS: FOREGROUNDS (fg- prefix)
+     Usage: text-fg-primary, text-fg-muted
      ========================================== */
-  --color-primary-fg: var(--sem-fg-primary);
-  --color-secondary-fg: var(--sem-fg-secondary);
-  --color-tertiary-fg: var(--sem-fg-tertiary);
-  --color-muted-fg: var(--sem-fg-muted);
-  --color-subtle-fg: var(--sem-fg-subtle);
-  --color-inverse-fg: var(--sem-fg-inverse);
-  --color-on-brand-fg: var(--sem-fg-on-brand);
-  --color-on-accent-fg: var(--sem-fg-on-accent);
+  --color-fg-primary: var(--sem-fg-primary);
+  --color-fg-secondary: var(--sem-fg-secondary);
+  --color-fg-tertiary: var(--sem-fg-tertiary);
+  --color-fg-muted: var(--sem-fg-muted);
+  --color-fg-subtle: var(--sem-fg-subtle);
+  --color-fg-inverse: var(--sem-fg-inverse);
+  --color-fg-on-brand: var(--sem-fg-on-brand);
+  --color-fg-on-accent: var(--sem-fg-on-accent);
 
   /* ==========================================
      COLORS: BORDERS

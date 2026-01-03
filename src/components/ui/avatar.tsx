@@ -18,43 +18,43 @@ const avatarVariants = tv({
   variants: {
     variant: {
       brand: {
-        fallback: 'bg-brand-primary text-fg-on-brand',
+        fallback: 'bg-brand text-on-brand-fg',
       },
       pink: {
-        fallback: 'bg-pink-primary text-fg-on-accent',
+        fallback: 'bg-pink text-on-accent-fg',
       },
       violet: {
-        fallback: 'bg-violet-primary text-fg-on-accent',
+        fallback: 'bg-violet text-on-accent-fg',
       },
       teal: {
-        fallback: 'bg-teal-primary text-fg-on-accent',
+        fallback: 'bg-teal text-on-accent-fg',
       },
       lime: {
-        fallback: 'bg-lime-primary text-fg-on-accent',
+        fallback: 'bg-lime text-on-accent-fg',
       },
       neutral: {
-        fallback: 'bg-surface-strong text-fg-primary',
+        fallback: 'bg-strong text-primary-fg',
       },
     },
     size: {
       sm: {
-        root: 'size-sm',
+        root: 'size-control-sm',
         fallback: 'text-label-fixed-2-x-small',
       },
       md: {
-        root: 'size-md',
+        root: 'size-control-md',
         fallback: 'text-label-fixed-x-small',
       },
       lg: {
-        root: 'size-lg',
+        root: 'size-control-lg',
         fallback: 'text-label-fixed-small',
       },
       xl: {
-        root: 'size-xl',
+        root: 'size-control-xl',
         fallback: 'text-label-fixed-medium',
       },
       '2xl': {
-        root: 'size-2xl',
+        root: 'size-control-2xl',
         fallback: 'text-label-fixed-x-large',
       },
     },

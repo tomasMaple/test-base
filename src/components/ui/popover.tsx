@@ -13,46 +13,46 @@ const popoverTriggerVariants = tv({
   base: [
     'inline-flex items-center justify-center gap-50 rounded-pill',
     'font-medium transition-colors duration-standard ease-default cursor-pointer',
-    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary',
+    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
     'disabled:pointer-events-none disabled:opacity-disabled',
     'data-[popup-open]:bg-secondary',
   ],
   variants: {
     variant: {
       solid: [
-        'bg-surface-secondary text-fg-primary',
+        'bg-secondary text-primary-fg',
         'border border-border-subtle',
         'hover:bg-primary',
         'active:bg-secondary',
         'focus-visible:outline-border-strong',
       ],
       outline: [
-        'bg-surface text-fg-primary',
+        'bg-surface text-primary-fg',
         'border border-border-strong',
         'hover:bg-primary',
         'active:bg-secondary',
         'focus-visible:outline-border-strong',
       ],
       ghost: [
-        'bg-transparent text-fg-primary',
+        'bg-transparent text-primary-fg',
         'hover:bg-primary',
         'active:bg-secondary',
-        'focus-visible:outline-fg-tertiary',
+        'focus-visible:outline-tertiary-fg',
       ],
     },
     size: {
       sm: [
-        'h-ui-sm',
+        'h-control-sm',
         'px-75',
         'label-fixed-x-small',
       ],
       md: [
-        'h-ui-md',
+        'h-control-md',
         'px-75',
         'label-fixed-x-small',
       ],
       lg: [
-        'h-ui-lg',
+        'h-control-lg',
         'px-75',
         'label-fixed-small',
       ],
@@ -68,8 +68,8 @@ const popoverTriggerVariants = tv({
 const popoverContentVariants = tv({
   base: [
     'z-50 min-w-[12rem] overflow-hidden rounded-lg',
-    'border border-border-subtle bg-surface text-fg-primary',
-    'shadow-elevation-300',
+    'border border-border-subtle bg-surface text-primary-fg',
+    'shadow-300',
     'px-150 py-100',
     'origin-[var(--transform-origin)]',
     'transition-[transform,opacity] duration-fast ease-default',
@@ -83,11 +83,11 @@ const popoverCloseVariants = tv({
   base: [
     'absolute top-50 right-50',
     'inline-flex items-center justify-center rounded-md',
-    'size-ui-xs',
-    'text-fg-tertiary hover:text-fg-primary',
+    'size-control-xs',
+    'text-tertiary-fg hover:text-primary-fg',
     'hover:bg-primary active:bg-secondary',
     'transition-colors duration-fast ease-default',
-    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary',
+    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
   ],
 })
 
@@ -174,7 +174,7 @@ const PopoverTitle = React.forwardRef<HTMLHeadingElement, React.ComponentPropsWi
   ({ className, ...props }, ref) => (
     <BasePopover.Title
       ref={ref}
-      className={cn('label-fixed-medium font-medium text-fg-primary m-0', className)}
+      className={cn('label-fixed-medium font-medium text-primary-fg m-0', className)}
       {...props}
     />
   )
@@ -185,7 +185,7 @@ const PopoverDescription = React.forwardRef<HTMLParagraphElement, React.Componen
   ({ className, ...props }, ref) => (
     <BasePopover.Description
       ref={ref}
-      className={cn('body-fixed-small text-fg-secondary m-0 mt-25', className)}
+      className={cn('body-fixed-small text-secondary-fg m-0 mt-25', className)}
       {...props}
     />
   )

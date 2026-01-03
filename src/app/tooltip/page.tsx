@@ -22,7 +22,7 @@ export default function TooltipPage() {
           <h2 className="heading-h5">Basic Usage</h2>
           <div className="flex flex-wrap gap-100">
             <Tooltip>
-              <TooltipTrigger className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}>
+              <TooltipTrigger className={cn(buttonVariants({ variant: 'secondary', size: 'small' }))}>
                 <Info className="size-icon-md" aria-label="Info" />
               </TooltipTrigger>
               <TooltipContent>
@@ -31,7 +31,7 @@ export default function TooltipPage() {
             </Tooltip>
 
             <Tooltip>
-              <TooltipTrigger className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}>
+              <TooltipTrigger className={cn(buttonVariants({ variant: 'secondary', size: 'small' }))}>
                 <HelpCircle className="size-icon-md" aria-label="Help" />
               </TooltipTrigger>
               <TooltipContent>
@@ -40,7 +40,7 @@ export default function TooltipPage() {
             </Tooltip>
 
             <Tooltip>
-              <TooltipTrigger className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}>
+              <TooltipTrigger className={cn(buttonVariants({ variant: 'secondary', size: 'small' }))}>
                 <AlertTriangle className="size-icon-md" aria-label="Warning" />
               </TooltipTrigger>
               <TooltipContent>
@@ -97,7 +97,7 @@ export default function TooltipPage() {
           <h2 className="heading-h5">Without Arrow</h2>
           <div className="flex flex-wrap gap-100">
             <Tooltip>
-              <TooltipTrigger className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}>
+              <TooltipTrigger className={cn(buttonVariants({ variant: 'secondary', size: 'small' }))}>
                 <Settings className="size-icon-md" aria-label="Settings" />
               </TooltipTrigger>
               <TooltipContent showArrow={false}>
@@ -106,7 +106,7 @@ export default function TooltipPage() {
             </Tooltip>
 
             <Tooltip>
-              <TooltipTrigger className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}>
+              <TooltipTrigger className={cn(buttonVariants({ variant: 'secondary', size: 'small' }))}>
                 <Bell className="size-icon-md" aria-label="Notifications" />
               </TooltipTrigger>
               <TooltipContent showArrow={false}>
@@ -124,7 +124,7 @@ export default function TooltipPage() {
           </p>
           <div className="inline-flex gap-25 p-50 bg-secondary rounded-md border border-border-subtle">
             <Tooltip>
-              <TooltipTrigger className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }))}>
+              <TooltipTrigger className={cn(buttonVariants({ variant: 'ghost', size: 'small' }))}>
                 <Heart className="size-icon-md" aria-label="Like" />
               </TooltipTrigger>
               <TooltipContent>
@@ -133,7 +133,7 @@ export default function TooltipPage() {
             </Tooltip>
 
             <Tooltip>
-              <TooltipTrigger className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }))}>
+              <TooltipTrigger className={cn(buttonVariants({ variant: 'ghost', size: 'small' }))}>
                 <Bell className="size-icon-md" aria-label="Notifications" />
               </TooltipTrigger>
               <TooltipContent>
@@ -142,7 +142,7 @@ export default function TooltipPage() {
             </Tooltip>
 
             <Tooltip>
-              <TooltipTrigger className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }))}>
+              <TooltipTrigger className={cn(buttonVariants({ variant: 'ghost', size: 'small' }))}>
                 <Settings className="size-icon-md" aria-label="Settings" />
               </TooltipTrigger>
               <TooltipContent>

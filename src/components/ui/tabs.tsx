@@ -27,9 +27,9 @@ const tabsListVariants = tv({
       ghost: 'gap-6',
     },
     size: {
-      sm: 'h-ui-sm',
-      md: 'h-ui-md',
-      lg: 'h-ui-lg',
+      sm: 'h-control-sm',
+      md: 'h-control-md',
+      lg: 'h-control-lg',
     },
   },
   defaultVariants: {
@@ -63,10 +63,10 @@ const tabsTabVariants = tv({
     'font-medium whitespace-nowrap cursor-pointer',
     'outline-none select-none',
     'transition-colors duration-standard ease-default',
-    'text-fg-secondary',
-    'hover:text-fg-primary',
-    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary focus-visible:rounded-sm',
-    'data-[active]:text-fg-primary',
+    'text-secondary-fg',
+    'hover:text-primary-fg',
+    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand focus-visible:rounded-sm',
+    'data-[active]:text-primary-fg',
     'disabled:pointer-events-none disabled:opacity-disabled',
   ],
   variants: {
@@ -108,9 +108,9 @@ const tabsIndicatorVariants = tv({
   ],
   variants: {
     size: {
-      sm: 'h-ui-3xs',
-      md: 'h-ui-2xs',
-      lg: 'h-ui-xs',
+      sm: 'h-control-3xs',
+      md: 'h-control-2xs',
+      lg: 'h-control-xs',
     },
   },
   defaultVariants: {
@@ -140,7 +140,7 @@ const tabsPanelVariants = tv({
   base: [
     'relative',
     'outline-none',
-    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary focus-visible:rounded-md',
+    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand focus-visible:rounded-md',
     '[&[hidden]]:hidden',
   ],
   variants: {

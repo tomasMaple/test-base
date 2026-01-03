@@ -13,52 +13,52 @@ const selectTriggerVariants = tv({
   base: [
     'inline-flex items-center justify-between gap-50 rounded-pill',
     'font-medium transition-colors duration-standard ease-default cursor-pointer',
-    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary',
+    'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
     'disabled:pointer-events-none disabled:opacity-disabled',
     'data-[popup-open]:bg-secondary', // Active state when open
   ],
   variants: {
     variant: {
       solid: [
-        'bg-surface-secondary text-fg-primary',
+        'bg-secondary text-primary-fg',
         'border border-border-subtle',
         'hover:bg-primary',
         'active:bg-secondary',
         'focus-visible:outline-border-strong',
       ],
       outline: [
-        'bg-surface text-fg-primary',
+        'bg-surface text-primary-fg',
         'border border-border-strong',
         'hover:bg-primary',
         'active:bg-secondary',
         'focus-visible:outline-border-strong',
       ],
       ghost: [
-        'bg-transparent text-fg-primary',
+        'bg-transparent text-primary-fg',
         'hover:bg-primary',
         'active:bg-secondary',
-        'focus-visible:outline-fg-tertiary',
+        'focus-visible:outline-tertiary-fg',
       ],
     },
     size: {
       sm: [
-        'h-ui-sm',
+        'h-control-sm',
         'px-75',
         'label-fixed-x-small',
       ],
       md: [
-        'h-ui-md',
+        'h-control-md',
         'px-75',
         'label-fixed-x-small',
       ],
       lg: [
-        'h-ui-lg',
+        'h-control-lg',
         'px-75',
         'label-fixed-small',
       ],
     },
     error: {
-      true: 'border-negative-primary focus-visible:outline-negative-primary',
+      true: 'border-negative focus-visible:outline-negative',
     },
   },
   defaultVariants: {
@@ -91,7 +91,7 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
         {children || placeholder}
       </BaseSelect.Value>
       <BaseSelect.Icon className="ml-2">
-        <ChevronDown className="size-icon-md text-fg-tertiary" />
+        <ChevronDown className="size-icon-md text-tertiary-fg" />
       </BaseSelect.Icon>
     </BaseSelect.Trigger>
   )
@@ -101,7 +101,7 @@ SelectTrigger.displayName = 'SelectTrigger'
 // Content variants
 const selectContentVariants = tv({
   base: [
-    'z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-subtle bg-surface text-fg-primary shadow-elevation-200',
+    'z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-subtle bg-surface text-primary-fg shadow-200',
     'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
     'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
   ],
@@ -130,7 +130,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutR
       ref={ref}
       className={cn(
         'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none transition-colors',
-        'focus:bg-primary focus:text-fg-primary',
+        'focus:bg-primary focus:text-primary-fg',
         'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
         className
       )}
@@ -139,7 +139,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutR
       <BaseSelect.ItemText>{children}</BaseSelect.ItemText>
       <BaseSelect.ItemIndicator className="absolute right-2 flex items-center justify-center">
         {/* You might want a Check icon here */}
-        <div className="size-1.5 rounded-full bg-brand-primary" /> 
+        <div className="size-1.5 rounded-full bg-brand" /> 
       </BaseSelect.ItemIndicator>
     </BaseSelect.Item>
   )
@@ -152,7 +152,7 @@ const SelectLabel = React.forwardRef<HTMLDivElement, React.ComponentPropsWithout
   ({ className, ...props }, ref) => (
     <BaseSelect.GroupLabel
       ref={ref}
-      className={cn('px-2 py-1.5 text-sm font-semibold text-fg-muted', className)}
+      className={cn('px-2 py-1.5 text-sm font-semibold text-muted-fg', className)}
       {...props}
     />
   )

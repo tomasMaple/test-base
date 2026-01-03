@@ -13,8 +13,8 @@ import { cn } from '@/lib/utils'
 const tooltipContentVariants = tv({
   base: [
     'z-50 overflow-hidden rounded-md',
-    'border border-border-subtle bg-surface text-fg-primary',
-    'shadow-elevation-200',
+    'border border-border-subtle bg-surface text-primary-fg',
+    'shadow-200',
     'px-100 py-50',
     'body-fixed-small',
     'origin-[var(--transform-origin)]',

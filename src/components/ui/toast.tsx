@@ -9,7 +9,7 @@ import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react'
 const toastVariants = tv({
   slots: {
     root: [
-      'relative flex w-full items-start gap-75 overflow-hidden rounded-md border p-100 shadow-elevation-300 transition-all select-none',
+      'relative flex w-full items-start gap-75 overflow-hidden rounded-md border p-100 shadow-300 transition-all select-none',
       'data-[ending-style]:opacity-0 data-[ending-style]:translate-x-full',
       'data-[starting-style]:opacity-0 data-[starting-style]:translate-x-full',
     ],
@@ -17,38 +17,38 @@ const toastVariants = tv({
     description: 'body-fixed-small mt-25',
     icon: 'size-icon-lg shrink-0 mt-[2px]',
     close: [
-      'absolute top-25 right-25 rounded-xs p-25 text-fg-tertiary transition-colors',
-      'hover:bg-bg-subtle hover:text-fg-primary',
-      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary',
+      'absolute top-25 right-25 rounded-xs p-25 text-tertiary-fg transition-colors',
+      'hover:bg-subtle hover:text-primary-fg',
+      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
     ],
   },
   variants: {
     variant: {
       default: {
-        root: 'bg-surface border-border-subtle text-fg-primary',
-        icon: 'text-fg-primary',
-        description: 'text-fg-secondary',
+        root: 'bg-surface border-border-subtle text-primary-fg',
+        icon: 'text-primary-fg',
+        description: 'text-secondary-fg',
       },
       success: {
         root: 'bg-positive-weak border-positive-subtle text-positive-strong',
-        icon: 'text-positive-primary',
+        icon: 'text-positive',
         description: 'text-positive-emphasis',
       },
       error: {
         root: 'bg-negative-weak border-negative-subtle text-negative-strong',
-        icon: 'text-negative-primary',
+        icon: 'text-negative',
         description: 'text-negative-emphasis',
         close: 'text-negative-emphasis hover:bg-negative-subtle hover:text-negative-strong',
       },
       warning: {
         root: 'bg-warning-weak border-warning-subtle text-warning-strong',
-        icon: 'text-warning-primary',
+        icon: 'text-warning',
         description: 'text-warning-emphasis',
         close: 'text-warning-emphasis hover:bg-warning-subtle hover:text-warning-strong',
       },
       info: {
         root: 'bg-info-weak border-info-subtle text-info-strong',
-        icon: 'text-info-primary',
+        icon: 'text-info',
         description: 'text-info-emphasis',
         close: 'text-info-emphasis hover:bg-info-subtle hover:text-info-strong',
       },

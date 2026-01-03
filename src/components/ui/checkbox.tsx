@@ -12,13 +12,13 @@ import { Check } from 'lucide-react'
 const checkboxVariants = tv({
   slots: {
     root: [
-      'group flex size-2xs items-center justify-center rounded-sm',
+      'group flex size-control-2xs items-center justify-center rounded-sm',
       'transition-all duration-standard ease-default cursor-pointer',
-      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary',
+      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
       'disabled:pointer-events-none disabled:opacity-disabled',
     ],
     indicator: [
-      'flex items-center justify-center text-fg-inverse-primary',
+      'flex items-center justify-center text-inverse-fg',
       'transition-all duration-standard ease-default',
       'data-[unchecked]:hidden',
       'animate-in zoom-in-75 fade-in duration-standard',
@@ -29,11 +29,11 @@ const checkboxVariants = tv({
     variant: {
       default: {
         root: [
-          'bg-surface-secondary text-on-surface',
+          'bg-secondary text-primary-fg',
           'border border-border-subtle',
           'hover:bg-primary',
-          'data-[checked]:bg-brand-primary data-[checked]:border-brand-primary data-[checked]:text-on-brand-primary',
-          'focus-visible:outline-brand-primary',
+          'data-[checked]:bg-brand data-[checked]:border-brand data-[checked]:text-on-brand-fg',
+          'focus-visible:outline-brand',
         ],
       },
     },
@@ -78,7 +78,7 @@ export const Checkbox = React.forwardRef<HTMLSpanElement, CheckboxProps>(
     return (
       <label className="inline-flex items-center gap-75 cursor-pointer select-none">
         {checkbox}
-        <span className="label-fixed-small text-fg-primary group-disabled:text-fg-muted">
+        <span className="label-fixed-small text-primary-fg group-disabled:text-muted-fg">
           {label}
         </span>
       </label>

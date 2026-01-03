@@ -21,7 +21,7 @@ const ScrollAreaViewport = React.forwardRef<
     ref={ref}
     className={cn(
       'h-full overscroll-contain rounded-md',
-      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary',
+      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
       className
     )}
     {...props}
@@ -95,7 +95,7 @@ const ScrollAreaThumb = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseScrollArea.Thumb
     ref={ref}
-    className={cn('w-full rounded-md bg-fg-tertiary', className)}
+    className={cn('w-full rounded-md bg-tertiary-fg', className)}
     {...props}
   />
 ))

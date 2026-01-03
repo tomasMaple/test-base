@@ -9,30 +9,30 @@ const switchVariants = tv({
   slots: {
     root: [
       'group relative inline-flex items-center rounded-pill cursor-pointer transition-[background-position,box-shadow,background-color] duration-[125ms] ease-[cubic-bezier(0.26,0.75,0.38,0.45)]',
-      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand-primary',
+      'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
       'disabled:pointer-events-none disabled:opacity-disabled',
     ],
     thumb: [
-      'pointer-events-none block rounded-full bg-white shadow-elevation-100 transition-transform duration-[150ms] ease-[cubic-bezier(0.26,0.75,0.38,0.45)]',
+      'pointer-events-none block rounded-full bg-white shadow-100 transition-transform duration-[150ms] ease-[cubic-bezier(0.26,0.75,0.38,0.45)]',
       'data-[checked]:translate-x-full',
     ],
   },
   variants: {
     variant: {
       brand: {
-        root: 'bg-strong data-[checked]:bg-brand-primary',
+        root: 'bg-strong data-[checked]:bg-brand',
       },
       neutral: {
-        root: 'bg-strong data-[checked]:bg-inverse-primary',
+        root: 'bg-strong data-[checked]:bg-inverse',
       },
     },
     size: {
       sm: {
-        root: 'h-ui-2xs w-7',
+        root: 'h-control-2xs w-7',
         thumb: 'size-3 translate-x-0.5 data-[checked]:translate-x-[calc(100%+0.5px)]',
       },
       md: {
-        root: 'h-ui-md w-10',
+        root: 'h-control-md w-10',
         thumb: 'size-5 translate-x-0.5 data-[checked]:translate-x-[calc(100%+2px)]',
       },
       lg: {

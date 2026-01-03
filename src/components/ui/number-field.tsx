@@ -51,17 +51,17 @@ NumberFieldGroup.displayName = 'NumberFieldGroup'
 const numberFieldInputVariants = tv({
   base: [
     'border-t border-b border-border-subtle',
-    'text-center text-fg-primary tabular-nums',
+    'text-center text-primary-fg tabular-nums',
     'bg-transparent',
-    'focus:z-10 focus:outline focus:outline-2 focus:-outline-offset-1 focus:outline-brand-primary',
+    'focus:z-10 focus:outline focus:outline-2 focus:-outline-offset-1 focus:outline-brand',
     'disabled:opacity-disabled disabled:cursor-not-allowed',
-    'data-[invalid]:border-negative-primary',
+    'data-[invalid]:border-negative',
   ],
   variants: {
     size: {
-      sm: 'h-ui-sm w-75 text-[length:var(--text-body-fixed-small)]',
-      md: 'h-ui-md w-100 text-[length:var(--text-body-fixed-base)]',
-      lg: 'h-ui-lg w-125 text-[length:var(--text-body-fixed-medium)]',
+      sm: 'h-control-sm w-75 text-[length:var(--text-body-fixed-small)]',
+      md: 'h-control-md w-100 text-[length:var(--text-body-fixed-base)]',
+      lg: 'h-control-lg w-125 text-[length:var(--text-body-fixed-medium)]',
     },
   },
   defaultVariants: {
@@ -70,7 +70,7 @@ const numberFieldInputVariants = tv({
 })
 
 export interface NumberFieldInputProps
-  extends React.ComponentPropsWithoutRef<typeof BaseNumberField.Input>,
+  extends Omit<React.ComponentPropsWithoutRef<typeof BaseNumberField.Input>, 'size'>,
     VariantProps<typeof numberFieldInputVariants> {}
 
 const NumberFieldInput = React.forwardRef<HTMLInputElement, NumberFieldInputProps>(
@@ -90,19 +90,19 @@ NumberFieldInput.displayName = 'NumberFieldInput'
 const stepperButtonVariants = tv({
   base: [
     'flex items-center justify-center',
-    'border border-border-subtle bg-primary text-fg-primary',
+    'border border-border-subtle bg-primary text-primary-fg',
     'select-none cursor-pointer',
     'transition-colors duration-standard ease-default',
     'hover:bg-secondary',
     'active:bg-muted',
     'disabled:opacity-disabled disabled:cursor-not-allowed',
-    'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-brand-primary focus-visible:z-10',
+    'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-brand focus-visible:z-10',
   ],
   variants: {
     size: {
-      sm: 'size-ui-sm',
-      md: 'size-ui-md',
-      lg: 'size-ui-lg',
+      sm: 'size-control-sm',
+      md: 'size-control-md',
+      lg: 'size-control-lg',
     },
     position: {
       left: 'rounded-l-md',

@@ -9,21 +9,21 @@ const progressVariants = tv({
   slots: {
     root: 'group flex flex-col gap-50 w-full',
     header: 'flex items-center justify-between gap-100',
-    label: 'label-fixed-small text-fg-primary',
-    value: 'label-fixed-small text-fg-secondary tabular-nums',
-    track: 'relative overflow-hidden rounded-pill bg-surface-strong',
-    indicator: 'h-full bg-brand-primary transition-all duration-300 ease-default',
+    label: 'label-fixed-small text-primary-fg',
+    value: 'label-fixed-small text-secondary-fg tabular-nums',
+    track: 'relative overflow-hidden rounded-pill bg-strong',
+    indicator: 'h-full bg-brand transition-all duration-300 ease-default',
   },
   variants: {
     variant: {
       brand: {
-        indicator: 'bg-brand-primary',
+        indicator: 'bg-brand',
       },
       positive: {
-        indicator: 'bg-positive-primary',
+        indicator: 'bg-positive',
       },
       neutral: {
-        indicator: 'bg-inverse-primary',
+        indicator: 'bg-inverse',
       },
     },
     size: {
