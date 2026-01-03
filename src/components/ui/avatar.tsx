@@ -34,18 +34,72 @@ const avatarImageVariants = tv({
 const avatarFallbackVariants = tv({
   base: [
     'flex h-full w-full items-center justify-center rounded-full',
-    'bg-secondary text-fg-secondary font-medium',
+    'font-medium',
   ],
+  variants: {
+    appearance: {
+      default: [],
+      subtle: [],
+    },
+    type: {
+      primary: [],
+      secondary: [],
+      brand: [],
+      pink: [],
+      fuchsia: [],
+      violet: [],
+      teal: [],
+      lime: [],
+      aave: [],
+      cowswap: [],
+      fluid: [],
+    }
+  },
+  compoundVariants: [
+    // Default (Solid/Strong)
+    { appearance: 'default', type: 'primary', class: 'bg-primary text-fg-primary' }, // or bg-strong text-inverse? 'primary' usually means neutral in this context
+    { appearance: 'default', type: 'secondary', class: 'bg-secondary text-fg-secondary' },
+    { appearance: 'default', type: 'brand', class: 'bg-brand text-fg-on-brand' },
+    { appearance: 'default', type: 'pink', class: 'bg-pink text-fg-on-brand' }, // Using on-brand (white) for strong colors
+    { appearance: 'default', type: 'fuchsia', class: 'bg-fuchsia text-fg-on-brand' },
+    { appearance: 'default', type: 'violet', class: 'bg-violet text-fg-on-brand' },
+    { appearance: 'default', type: 'teal', class: 'bg-teal text-fg-on-brand' },
+    { appearance: 'default', type: 'lime', class: 'bg-lime text-fg-on-brand' },
+    { appearance: 'default', type: 'aave', class: 'bg-partner-aave text-fg-on-brand' },
+    { appearance: 'default', type: 'cowswap', class: 'bg-partner-cowswap text-fg-on-brand' },
+    { appearance: 'default', type: 'fluid', class: 'bg-partner-fluid text-fg-on-brand' },
+
+    // Subtle (Soft)
+    { appearance: 'subtle', type: 'primary', class: 'bg-weak text-fg-primary' },
+    { appearance: 'subtle', type: 'secondary', class: 'bg-muted text-fg-secondary' },
+    { appearance: 'subtle', type: 'brand', class: 'bg-brand-weak text-brand-strong' },
+    { appearance: 'subtle', type: 'pink', class: 'bg-pink-weak text-pink-strong' },
+    { appearance: 'subtle', type: 'fuchsia', class: 'bg-fuchsia-weak text-fuchsia-strong' },
+    { appearance: 'subtle', type: 'violet', class: 'bg-violet-weak text-violet-strong' },
+    { appearance: 'subtle', type: 'teal', class: 'bg-teal-weak text-teal-strong' },
+    { appearance: 'subtle', type: 'lime', class: 'bg-lime-weak text-lime-strong' },
+    { appearance: 'subtle', type: 'aave', class: 'bg-partner-aave-weak text-partner-aave-strong' },
+    { appearance: 'subtle', type: 'cowswap', class: 'bg-partner-cowswap-weak text-partner-cowswap-strong' },
+    // Fluid might not have subtle tokens defined in globals.css based on previous view, checking... 
+    // Fluid had only base color. fallback to brand or special handling if needed.
+    { appearance: 'subtle', type: 'fluid', class: 'bg-partner-fluid text-fg-primary' },
+  ],
+  defaultVariants: {
+    appearance: 'default',
+    type: 'primary',
+  },
 })
 
-export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof avatarVariants> {
+export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement>, 
+  VariantProps<typeof avatarVariants>,
+  VariantProps<typeof avatarFallbackVariants> {
   src?: string
   alt?: string
   fallback?: React.ReactNode
 }
 
 const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
-  ({ className, size, src, alt, fallback, ...props }, ref) => {
+  ({ className, size, appearance, type, src, alt, fallback, ...props }, ref) => {
     const [imageError, setImageError] = React.useState(false)
 
     return (
@@ -62,7 +116,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
             onError={() => setImageError(true)}
           />
         ) : (
-          <div className={avatarFallbackVariants()}>
+            <div className={avatarFallbackVariants({ appearance, type })}>
             {fallback || (alt ? alt.slice(0, 2).toUpperCase() : '??')}
           </div>
         )}
@@ -72,4 +126,4 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
 )
 Avatar.displayName = 'Avatar'
 
-export { Avatar, avatarVariants }
+export { Avatar, avatarVariants, avatarFallbackVariants }
