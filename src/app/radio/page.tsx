@@ -41,6 +41,26 @@ export default function RadioPage() {
           </form>
         </section>
 
+
+
+        <section className="p-300 border border-border-subtle rounded-xl">
+           <h2 className="text-heading-h6 mb-200">Sizes</h2>
+           <div className="flex items-center gap-300">
+             <div className="flex flex-col gap-50">
+                <RadioGroup defaultValue="1" className="flex items-center gap-100">
+                  <Radio value="1" size="3xs" id="r-size-3xs" />
+                  <label className="text-label-xs text-fg-secondary cursor-pointer" htmlFor="r-size-3xs">3XS</label>
+                </RadioGroup>
+             </div>
+             <div className="flex flex-col gap-50">
+                <RadioGroup defaultValue="1" className="flex items-center gap-100">
+                  <Radio value="1" size="2xs" id="r-size-2xs" />
+                  <label className="text-label-sm text-fg-secondary cursor-pointer" htmlFor="r-size-2xs">2XS</label>
+                </RadioGroup>
+             </div>
+           </div>
+        </section>
+
         <section className="p-300 border border-border-subtle rounded-xl">
           <h2 className="text-heading-h6 mb-200">Disabled</h2>
              <RadioGroup defaultValue="2" className="flex flex-col gap-100">

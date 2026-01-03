@@ -13,7 +13,7 @@ const radioVariants = tv({
     'cursor-pointer',
     'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
     'disabled:pointer-events-none disabled:opacity-disabled',
-    'data-[checked]:bg-inverse data-[checked]:border-inverse',
+    'data-[checked]:bg-brand data-[checked]:border-brand',
     'data-[unchecked]:bg-surface data-[unchecked]:border-border-strong',
     'hover:data-[unchecked]:bg-subtle',
   ],
@@ -21,6 +21,21 @@ const radioVariants = tv({
     size: {
       '3xs': 'size-control-3xs',
       '2xs': 'size-control-2xs',
+    },
+  },
+  defaultVariants: {
+    size: '3xs',
+  },
+})
+
+const radioIndicatorVariants = tv({
+  base: [
+    'rounded-pill bg-surface',
+  ],
+  variants: {
+    size: {
+      '3xs': 'size-50', // 8px for 16px control
+      '2xs': 'size-75', // 12px for 20px control
     },
   },
   defaultVariants: {
@@ -39,7 +54,7 @@ const Radio = React.forwardRef<HTMLButtonElement, RadioProps>(
       className={cn(radioVariants({ size }), className)}
       {...props}
     >
-      <BaseRadio.Indicator className="size-icon-xs bg-surface rounded-pill" />
+      <BaseRadio.Indicator className={cn(radioIndicatorVariants({ size }))} />
     </BaseRadio.Root>
   )
 )
