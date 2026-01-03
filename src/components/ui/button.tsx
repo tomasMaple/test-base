@@ -55,12 +55,12 @@ const buttonVariants = tv({
       ]
     },
     size: {
-      xs: ['h-control-xs', 'px-50', 'gap-25', 'text-label-xs'],
-      sm: ['h-control-sm', 'px-75', 'gap-25', 'text-label-xs'],
-      md: ['h-control-md', 'px-75', 'gap-50', 'text-label-sm'],
-      lg: ['h-control-lg', 'px-100', 'gap-50', 'text-label-sm'],
-      xl: ['h-control-xl', 'px-100', 'gap-75', 'text-label-md'],
-      icon: ['h-control-md', 'w-control-md', 'p-0'] // Common utility variant
+      xs: ['h-control-xs', 'px-50', 'gap-25', 'text-label-xs', '[&_svg]:size-icon-sm'],
+      sm: ['h-control-sm', 'px-75', 'gap-25', 'text-label-xs', '[&_svg]:size-icon-md'],
+      md: ['h-control-md', 'px-75', 'gap-50', 'text-label-sm', '[&_svg]:size-icon-lg'],
+      lg: ['h-control-lg', 'px-100', 'gap-50', 'text-label-sm', '[&_svg]:size-icon-xl'],
+      xl: ['h-control-xl', 'px-100', 'gap-75', 'text-label-md', '[&_svg]:size-icon-xl'],
+      icon: ['h-control-md', 'w-control-md', 'p-0', 'justify-center', '[&_svg]:size-icon-lg'] // Common utility variant
     },
     fullWidth: {
       true: 'w-full',

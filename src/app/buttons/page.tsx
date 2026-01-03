@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
+import { CheckIcon } from 'lucide-react'
 
 export default function ButtonsPage() {
   return (
@@ -43,6 +44,25 @@ export default function ButtonsPage() {
             <Button disabled>Disabled</Button>
             <Button variant="secondary" disabled>Disabled Secondary</Button>
           </div>
+        </section>
+               <section className="p-300 border border-border-subtle rounded-xl bg-surface ">
+          <h2 className="text-heading-h6 mb-200">States</h2>
+          <div className="flex flex-wrap gap-200">
+            <Button variant="primary" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Primary</Button>
+            <Button variant="secondary" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Secondary</Button>
+            <Button variant="tertiary" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Tertiary</Button>
+            <Button variant="ghost" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Ghost</Button>
+            <Button variant="negative" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Negative</Button>
+            <Button variant="outline" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Outline</Button>
+          </div>
+                    <div className="flex flex-wrap gap-200 mt-100">
+            <Button variant="primary" size="xs" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Primary</Button>
+            <Button variant="secondary" size="sm" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Secondary</Button>
+            <Button variant="tertiary" size="md" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Tertiary</Button>
+            <Button variant="ghost" size="lg" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Ghost</Button>
+            <Button variant="negative" size="xl" beforeIcon={<CheckIcon />} afterIcon={<CheckIcon />}>Negative</Button>
+          </div>
+
         </section>
       </div>
     </div>
