@@ -64,12 +64,7 @@ export default function DashboardCardDemoPage() {
               </DashboardCard.Content>
             </DashboardCard>
 
-            <DashboardCard variant="elevated">
-              <DashboardCard.Header title="Elevated" />
-              <DashboardCard.Content>
-                <p className="text-body-sm text-fg-secondary">Shadow for emphasis</p>
-              </DashboardCard.Content>
-            </DashboardCard>
+
           </div>
         </section>
 

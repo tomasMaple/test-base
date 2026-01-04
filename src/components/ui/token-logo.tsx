@@ -67,16 +67,18 @@ const tokenLogoVariants = tv({
   ],
   variants: {
     size: {
-      sm: 'size-icon-sm',   // 12px
-      md: 'size-icon-md',   // 14px
-      lg: 'size-icon-lg',   // 16px
-      xl: 'size-icon-xl',   // 18px
-      '2xl': 'size-icon-2xl', // 20px
-      '3xl': 'size-icon-3xl', // 24px
+      '3xs': 'size-control-3xs', // 16px
+      '2xs': 'size-control-2xs', // 20px
+      xs: 'size-control-xs',     // 24px
+      sm: 'size-control-sm',     // 32px
+      md: 'size-control-md',     // 36px
+      lg: 'size-control-lg',     // 40px
+      xl: 'size-control-xl',     // 48px
+      '2xl': 'size-control-2xl', // 56px
     },
   },
   defaultVariants: {
-    size: 'lg',
+    size: '2xs',
   },
 })
 
@@ -84,12 +86,14 @@ const tokenLogoVariants = tv({
  * Size to pixel mapping for Next.js Image
  */
 const sizePixelMap = {
-  sm: 12,
-  md: 14,
-  lg: 16,
-  xl: 18,
-  '2xl': 20,
-  '3xl': 24,
+  '3xs': 16,
+  '2xs': 20,
+  xs: 24,
+  sm: 32,
+  md: 36,
+  lg: 40,
+  xl: 48,
+  '2xl': 56,
 } as const
 
 export type TokenLogoProps = React.HTMLAttributes<HTMLSpanElement> &
@@ -99,8 +103,8 @@ export type TokenLogoProps = React.HTMLAttributes<HTMLSpanElement> &
   }
 
 const TokenLogo = React.forwardRef<HTMLSpanElement, TokenLogoProps>(
-  ({ className, token, size = 'lg', ...props }, ref) => {
-    const pixels = sizePixelMap[size ?? 'lg']
+  ({ className, token, size = '3xs', ...props }, ref) => {
+    const pixels = sizePixelMap[size ?? '3xs']
     
     return (
       <span

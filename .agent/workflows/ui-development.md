@@ -12,23 +12,42 @@ description: How to develop UI in this project - ALWAYS use existing components
 
 Before writing ANY UI code, check `src/components/ui/`:
 
-```
-src/components/ui/
-├── button.tsx          # All buttons
-├── navbar.tsx          # App navigation
-├── dashboard-card.tsx  # Cards with metrics, headers, footers
-├── modal-presets.tsx   # Confirmation, Form, Info modals
-├── badge.tsx           # Status badges
-├── pill.tsx            # Pill labels
-├── avatar.tsx          # User avatars
-├── select.tsx          # Dropdowns
-├── tabs.tsx            # Tab navigation
-├── toast.tsx           # Toast notifications
-├── token-logo.tsx      # Crypto token logos
-└── ... (see index.ts for all)
+### 2. NEVER Use Emojis
+
+Use Lucide icons instead of emojis.
+
+```tsx
+// ❌ BAD
+<span>💧 Drips</span>;
+
+// ✅ GOOD
+import { Droplets } from "lucide-react";
+<span>
+  <Droplets className="size-icon-sm" /> Drips
+</span>;
 ```
 
-### 2. Use Design Tokens (Not Arbitrary Values)
+### 3. NEVER Use Shadows (Unless in Components)
+
+Do NOT add `shadow-*` classes to custom elements. Shadows should only come from pre-built components like `DashboardCard`.
+
+```tsx
+// ❌ BAD
+<div className="shadow-sm rounded-md">
+
+// ✅ GOOD
+<DashboardCard>
+```
+
+### 4. Border Usage Rules
+
+- **Dividers**: ALWAYS use `border-border-weak`.
+- **Interactive Elements**:
+  - Default: `border-border-weak`
+  - Hover: `border-border-subtle`
+- **NEVER use `border-strong`** unless explicitly required for high contrast.
+
+### 5. Use Design Tokens (Not Arbitrary Values)
 
 ```tsx
 // ❌ BAD

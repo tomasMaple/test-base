@@ -60,7 +60,7 @@ export default function PortfolioPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-100 mb-200">
-        <DashboardCard variant="elevated">
+        <DashboardCard>
           <DashboardCard.Metric
             label="Total Value"
             value={`$${totalValue.toLocaleString()}`}
@@ -69,7 +69,7 @@ export default function PortfolioPage() {
           />
         </DashboardCard>
 
-        <DashboardCard variant="elevated">
+        <DashboardCard>
           <DashboardCard.Metric
             label="Total Earned"
             value={`$${totalEarned.toLocaleString()}`}
@@ -78,7 +78,7 @@ export default function PortfolioPage() {
           />
         </DashboardCard>
 
-        <DashboardCard variant="elevated">
+        <DashboardCard>
           <DashboardCard.Metric
             label="Active Positions"
             value={positions.filter(p => p.status === 'active').length.toString()}
@@ -127,7 +127,7 @@ export default function PortfolioPage() {
                   >
                     <td className="py-100">
                       <div className="flex items-center gap-75">
-                        <TokenLogo token={position.token.replace('syrup', '').toLowerCase() as 'usdc' | 'usdt'} size="lg" />
+                        <TokenLogo token={position.token.replace('syrup', '').toLowerCase() as 'usdc' | 'usdt'} size="3xs" />
                         <div>
                           <div className="text-label-sm font-medium text-fg-primary">
                             {position.token}

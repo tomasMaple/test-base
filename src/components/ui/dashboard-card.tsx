@@ -12,15 +12,14 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 const dashboardCardVariants = tv({
   base: [
     'flex flex-col',
-    'rounded-xl',
+    'rounded-3xl',
     'overflow-hidden',
     'transition-all duration-fast ease-default',
   ],
   variants: {
     variant: {
-      default: 'bg-surface border border-border-subtle',
-      outlined: 'bg-transparent border border-border-strong',
-      elevated: 'bg-surface shadow-300 border border-border-weak',
+      default: 'bg-surface ',
+      outlined: 'bg-transparent ',
     },
     size: {
       sm: 'p-100',
