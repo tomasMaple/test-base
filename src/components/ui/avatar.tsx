@@ -6,6 +6,20 @@ import { cn, tv } from '@/lib/utils'
 // Base UI might not have a dedicated Avatar primitive yet, often it's just a div with img or fallback.
 // Assuming standard accessible implementation:
 
+// Icon size mapping for each avatar size
+const avatarIconSizes = {
+  '3xs': 'size-icon-xl',
+  '2xs': 'size-icon-sm',
+  xs: 'size-icon-sm',
+  sm: 'size-icon-sm',
+  md: 'size-icon-md',
+  lg: 'size-icon-lg',
+  xl: 'size-icon-xl',
+  '2xl': 'size-icon-2xl',
+} as const
+
+type AvatarSize = keyof typeof avatarIconSizes
+
 const avatarVariants = tv({
   base: [
     'relative flex shrink-0 overflow-hidden rounded-full',
@@ -15,7 +29,7 @@ const avatarVariants = tv({
       '3xs': 'size-control-3xs text-[8px]',
       '2xs': 'size-control-2xs text-[10px]',
       xs: 'size-control-xs text-label-xs',
-      sm: 'size-control-sm text-label-xs',
+      sm: 'size-control-sm text-label-sm',
       md: 'size-control-md text-label-sm',
       lg: 'size-control-lg text-label-md',
       xl: 'size-control-xl text-label-lg',
@@ -126,4 +140,4 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
 )
 Avatar.displayName = 'Avatar'
 
-export { Avatar, avatarVariants, avatarFallbackVariants }
+export { Avatar, avatarVariants, avatarFallbackVariants, avatarIconSizes, type AvatarSize }

@@ -1,7 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { Avatar } from '@/components/ui/avatar'
+import { Avatar, avatarIconSizes } from '@/components/ui/avatar'
+import { User } from 'lucide-react'
 
 export default function AvatarPage() {
   return (
@@ -17,6 +18,14 @@ export default function AvatarPage() {
         <section className="p-300 border border-border-subtle rounded-xl">
           <h2 className="text-heading-h6 mb-200">Sizes</h2>
           <div className="flex flex-wrap items-end gap-200">
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback="3XS" size="3xs" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">3XS</span>
+            </div>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback="2XS" size="2xs" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">2XS</span>
+            </div>
             <div className="flex flex-col items-center gap-50">
                <Avatar fallback="XS" size="xs" type="brand" appearance="default" />
                <span className="text-label-xs text-secondary-fg">XS</span>
@@ -36,6 +45,48 @@ export default function AvatarPage() {
             <div className="flex flex-col items-center gap-50">
                <Avatar fallback="XL" size="xl" type="brand" appearance="default" />
                <span className="text-label-xs text-secondary-fg">XL</span>
+            </div>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback="2XL" size="2xl" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">2XL</span>
+            </div>
+          </div>
+        </section>
+
+        <section className="p-300 border border-border-subtle rounded-xl">
+          <h2 className="text-heading-h6 mb-200">Sizes with Icons</h2>
+          <div className="flex flex-wrap items-end gap-200">
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback={<User className={avatarIconSizes['3xs']} />} size="3xs" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">3XS</span>
+            </div>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback={<User className={avatarIconSizes['2xs']} />} size="2xs" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">2XS</span>
+            </div>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback={<User className={avatarIconSizes.xs} />} size="xs" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">XS</span>
+            </div>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback={<User className={avatarIconSizes.sm} />} size="sm" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">SM</span>
+            </div>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback={<User className={avatarIconSizes.md} />} size="md" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">MD</span>
+            </div>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback={<User className={avatarIconSizes.lg} />} size="lg" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">LG</span>
+            </div>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback={<User className={avatarIconSizes.xl} />} size="xl" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">XL</span>
+            </div>
+            <div className="flex flex-col items-center gap-50">
+               <Avatar fallback={<User className={avatarIconSizes['2xl']} />} size="2xl" type="brand" appearance="default" />
+               <span className="text-label-xs text-secondary-fg">2XL</span>
             </div>
           </div>
         </section>

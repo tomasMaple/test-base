@@ -5,6 +5,25 @@ import { type VariantProps } from 'tailwind-variants'
 import { cn, tv } from '@/lib/utils'
 
 // =============================================================================
+// ICON SIZE MAPPING
+// =============================================================================
+
+// Icon size mapping for each badge size
+const badgeIconSizes = {
+  '56': 'size-icon-3xl',
+  '48': 'size-icon-3xl',
+  '40': 'size-icon-2xl',
+  '36': 'size-icon-xl',
+  '32': 'size-icon-xl',
+  '24': 'size-icon-3xl',
+  '20': 'size-icon-lg',
+  '16': 'size-icon-md',
+  '12': 'size-icon-sm',
+} as const
+
+type BadgeSize = keyof typeof badgeIconSizes
+
+// =============================================================================
 // VARIANTS
 // =============================================================================
 
@@ -25,10 +44,10 @@ const badgeVariants = tv({
       '40': ['size-control-lg', 'min-w-control-lg', 'px-75', 'text-label-lg', '[&_svg]:size-icon-2xl'],
       '36': ['size-control-md', 'min-w-control-md', 'px-67', 'text-label-md', '[&_svg]:size-icon-xl'],
       '32': ['size-control-sm', 'min-w-control-sm', 'px-50', 'text-label-md', '[&_svg]:size-icon-xl'],
-      '24': ['size-control-xs', 'min-w-control-xs', 'px-50', 'text-label-xs', '[&_svg]:size-icon-lg'],
-      '20': ['size-control-2xs', 'min-w-control-2xs', 'px-37', 'text-label-xs', '[&_svg]:size-icon-md'],
-      '16': ['size-control-3xs', 'min-w-control-3xs', 'px-25', 'text-label-2xs', '[&_svg]:size-icon-sm'],
-      '12': ['h-[12px]', 'min-w-[12px]', 'px-12', 'text-label-2xs', '[&_svg]:size-[10px]'],
+      '24': ['size-control-xs', 'min-w-control-xs', 'px-50', 'text-label-xs', '[&_svg]:size-icon-3xl'],
+      '20': ['size-control-2xs', 'min-w-control-2xs', 'px-37', 'text-label-xs', '[&_svg]:size-icon-lg'],
+      '16': ['size-control-3xs', 'min-w-control-3xs', 'px-25', 'text-label-2xs', '[&_svg]:size-icon-md'],
+      '12': ['h-[12px]', 'min-w-[12px]', 'px-12', 'text-label-2xs', '[&_svg]:size-icon-sm'],
     },
     type: {
       primary: '',
@@ -198,4 +217,4 @@ Badge.displayName = 'Badge'
 // EXPORTS
 // =============================================================================
 
-export { Badge, badgeVariants }
+export { Badge, badgeVariants, badgeIconSizes, type BadgeSize }
