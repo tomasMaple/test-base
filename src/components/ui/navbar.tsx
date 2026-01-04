@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { cn, tv } from '@/lib/utils'
 
@@ -20,7 +21,6 @@ const navbarVariants = tv({
   variants: {
     variant: {
       default: 'bg-surface',
-      transparent: 'bg-transparent backdrop-blur-sm',
     },
     sticky: {
       true: 'sticky top-0 z-50',
@@ -55,7 +55,7 @@ const navLinkVariants = tv({
 // =============================================================================
 
 type NavbarVariantProps = {
-  variant?: 'default' | 'transparent'
+  variant?: 'default'
   sticky?: boolean
 }
 
@@ -97,22 +97,50 @@ NavbarRoot.displayName = 'Navbar'
 // =============================================================================
 
 interface NavbarLogoProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode
   href?: string
 }
 
 const NavbarLogo = React.forwardRef<HTMLDivElement, NavbarLogoProps>(
-  ({ className, children, href = '/', ...props }, ref) => {
+  ({ className, href = '/', ...props }, ref) => {
     return (
       <div ref={ref} className={cn('flex items-center shrink-0', className)} {...props}>
-        <Link href={href} className="flex items-center gap-50 text-fg-primary">
-          {children}
+        <Link href={href} className="flex items-center">
+          <Image
+            src="/logos/Maple_Logo_black.svg"
+            alt="Maple"
+            width={100}
+            height={29}
+            priority
+          />
         </Link>
       </div>
     )
   }
 )
 NavbarLogo.displayName = 'NavbarLogo'
+
+// =============================================================================
+// NAVBAR BRAND (Logo + Links wrapper)
+// =============================================================================
+
+interface NavbarBrandProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode
+}
+
+const NavbarBrand = React.forwardRef<HTMLDivElement, NavbarBrandProps>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn('flex items-center gap-400', className)}
+        {...props}
+      >
+        {children}
+      </div>
+    )
+  }
+)
+NavbarBrand.displayName = 'NavbarBrand'
 
 // =============================================================================
 // NAVBAR LINKS
@@ -178,7 +206,7 @@ const NavbarActions = React.forwardRef<HTMLDivElement, NavbarActionsProps>(
     return (
       <div
         ref={ref}
-        className={cn('flex items-center gap-50 shrink-0', className)}
+        className={cn('flex items-center gap-50 shrink-0 ml-auto', className)}
         {...props}
       >
         {children}
@@ -194,6 +222,7 @@ NavbarActions.displayName = 'NavbarActions'
 
 export const Navbar = Object.assign(NavbarRoot, {
   Logo: NavbarLogo,
+  Brand: NavbarBrand,
   Links: NavbarLinks,
   Link: NavbarLink,
   Actions: NavbarActions,
@@ -202,6 +231,7 @@ export const Navbar = Object.assign(NavbarRoot, {
 export {
   NavbarRoot,
   NavbarLogo,
+  NavbarBrand,
   NavbarLinks,
   NavbarLink,
   NavbarActions,
