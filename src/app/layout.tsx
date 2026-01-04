@@ -34,6 +34,7 @@ const navigationItems: SidebarItemType[] = [
   { href: '/tabs', label: 'Tabs' },
   { href: '/scroll-area', label: 'Scroll Area' },
   { href: '/tooltip', label: 'Tooltip' },
+  { href: '/token-logo', label: 'Token Logo' },
   { href: '/number-field', label: 'Number Field' },
   { href: '/alert-dialog', label: 'Alert Dialog' },
   { href: '/placeholder', label: 'Placeholder' },

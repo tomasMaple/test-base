@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 
 // Wrapper component to access toast manager (must be inside ToastProvider)
 function ToastDemo() {
-  const toastManager = useToastManager<ToastProps>()
+  const toastManager = useToastManager()
 
   const triggerToast = (
     appearance: 'default' | 'subtle',
