@@ -22,7 +22,9 @@ export const metadata: Metadata = {
 const navigationItems: SidebarItemType[] = [
   { href: '/buttons', label: 'Button' },
   { href: '/button-examples', label: 'Button Examples' },
+  { href: '/link', label: 'Link' },
   { href: '/avatar', label: 'Avatar' },
+  { href: '/badge', label: 'Badge' },
   { href: '/checkbox', label: 'Checkbox' },
   { href: '/radio', label: 'Radio' },
   { href: '/switch', label: 'Switch' },
