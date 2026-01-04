@@ -13,7 +13,8 @@ export function AppNavbar() {
           <Navbar.Link href="/">Landing</Navbar.Link>
           <Navbar.Link href="/templates/portfolio">Portfolio</Navbar.Link>
           <Navbar.Link href="/templates/test">Test</Navbar.Link>
-          <Navbar.Link href="/overview">Overview</Navbar.Link>
+          <Navbar.Link href="/templates/borrow-test">Borrow Test</Navbar.Link>
+          <Navbar.Link href="/overview/navbar">Overview</Navbar.Link>
         </Navbar.Links>
       </Navbar.Brand>
       <Navbar.Actions>
