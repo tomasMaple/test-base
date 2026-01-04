@@ -43,6 +43,7 @@ const TooltipContent = React.forwardRef<
       <BaseTooltip.Popup
         ref={ref}
         className={cn(tooltipContentVariants(), className)}
+        style={{ color: 'var(--sem-fg-inverse)', ...props.style }}
         {...props}
       >
         {showArrow && (
