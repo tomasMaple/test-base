@@ -65,14 +65,14 @@ export const Sidebar = ({ items, className }: SidebarProps) => {
     <aside
       className={cn(
         'w-64 h-screen bg-surface border-r border-border-subtle sticky top-0',
-        'flex flex-col p-75',
+        'flex flex-col p-75 overflow-hidden',
         className
       )}
     >
-      <div className="mb-100">
+      <div className="mb-100 shrink-0">
         <h2 className="text-heading-h6 px-75 font-semibold text-fg-primary">Navigation</h2>
       </div>
-      <nav className="flex flex-col gap-12">
+      <nav className="flex flex-col gap-12 flex-1 overflow-y-auto min-h-0">
         {items.map((item) => (
           <SidebarItemComponent
             key={item.href}

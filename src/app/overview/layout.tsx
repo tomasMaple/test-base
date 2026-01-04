@@ -7,6 +7,7 @@ const navigationItems: SidebarItemType[] = [
   { href: '/overview/modal-presets', label: 'Modal Presets' },
   // Base Components
   { href: '/overview/buttons', label: 'Button' },
+  { href: '/overview/icon-button', label: 'Icon Button' },
   { href: '/overview/button-examples', label: 'Button Examples' },
   { href: '/overview/link', label: 'Link' },
   { href: '/overview/avatar', label: 'Avatar' },
