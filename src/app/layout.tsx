@@ -28,6 +28,7 @@ const navigationItems: SidebarItemType[] = [
   { href: '/switch', label: 'Switch' },
   { href: '/progress', label: 'Progress' },
   { href: '/popover', label: 'Popover' },
+  { href: '/pill', label: 'Pill' },
   { href: '/toast', label: 'Toast' },
   { href: '/toggle', label: 'Toggle' },
   { href: '/select', label: 'Select' },
