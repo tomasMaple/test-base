@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
 export default function TabsPage() {
   return (
-    <div className="p-300">
+    <div className="p-300 bg-strong">
       <div className="mb-300">
         <h1 className="text-heading-h2 mb-100">Tabs</h1>
         <p className="text-body-base text-fg-secondary">

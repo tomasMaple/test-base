@@ -29,19 +29,35 @@ const TabsContext = React.createContext<TabsContextValue>({
 const tabsListVariants = tv({
   base: [
     'inline-flex items-center justify-center rounded-pill',
-    'border border-border-subtle',
   ],
   variants: {
     padding: {
       noPadding: 'p-0',
-      withPadding: 'p-50 gap-25',
+      withPadding: 'p-50 gap-25 border border-border-subtle shadow-200',
     },
     variant: {
-      canvas: 'bg-brand',
-      primary: 'bg-primary',
-      secondary: 'bg-secondary',
+      canvas: '',
+      primary: '',
+      secondary: '',
     },
   },
+  compoundVariants: [
+    {
+      padding: 'withPadding',
+      variant: 'canvas',
+      class: 'bg-canvas',
+    },
+    {
+      padding: 'withPadding',
+      variant: 'primary',
+      class: 'bg-primary',
+    },
+    {
+      padding: 'withPadding',
+      variant: 'secondary',
+      class: 'bg-secondary',
+    },
+  ],
   defaultVariants: {
     padding: 'noPadding',
     variant: 'canvas',
@@ -63,9 +79,9 @@ const tabsTriggerVariants = tv({
         // Hover state (inactive)
         'hover:bg-primary hover:text-fg-primary',
         // Selected state
-        'data-[selected]:bg-primary data-[selected]:text-fg-primary',
-        'data-[state=active]:bg-primary data-[state=active]:text-fg-primary',
-        'aria-selected:bg-primary aria-selected:text-fg-primary',
+        'data-[selected]:bg-primary data-[selected]:text-fg-primary data-[selected]:shadow-200',
+        'data-[state=active]:bg-surface data-[state=active]:text-fg-primary data-[state=active]:shadow-200',
+        'aria-selected:bg-surface aria-selected:text-fg-primary aria-selected:shadow-200',
         // Hover while selected
         'hover:data-[selected]:bg-surface',
         'hover:data-[state=active]:bg-surface',
@@ -77,9 +93,9 @@ const tabsTriggerVariants = tv({
         // Hover state (inactive)
         'hover:bg-secondary hover:text-fg-primary',
         // Selected state
-        'data-[selected]:bg-surface data-[selected]:text-fg-primary data-[selected]:shadow-200',
-        'data-[state=active]:bg-surface data-[state=active]:text-fg-primary data-[state=active]:shadow-200',
-        'aria-selected:bg-surface aria-selected:text-fg-primary aria-selected:shadow-200',
+        'data-[selected]:bg-surface data-[selected]:text-fg-primary',
+        'data-[state=active]:bg-surface data-[state=active]:text-fg-primary',
+        'aria-selected:bg-surface aria-selected:text-fg-primary',
         // Hover while selected
         'hover:data-[selected]:bg-surface',
         'hover:data-[state=active]:bg-surface',
