@@ -64,12 +64,6 @@ function ToastDemo() {
         </section>
       </div>
 
-      {/* Toast Viewport */}
-      <ToastPortal>
-        <StyledToastViewport>
-          <ToastList />
-        </StyledToastViewport>
-      </ToastPortal>
     </div>
   )
 }
@@ -78,6 +72,12 @@ export default function ToastPage() {
   return (
     <ToastProvider>
       <ToastDemo />
+      {/* Toast Viewport - must be sibling to ToastDemo to avoid flushSync errors */}
+      <ToastPortal>
+        <StyledToastViewport>
+          <ToastList />
+        </StyledToastViewport>
+      </ToastPortal>
     </ToastProvider>
   )
 }
