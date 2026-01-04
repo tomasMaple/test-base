@@ -20,6 +20,11 @@ export const metadata: Metadata = {
 };
 
 const navigationItems: SidebarItemType[] = [
+  // Building Blocks
+  { href: '/navbar', label: 'Navbar' },
+  { href: '/dashboard-card', label: 'Dashboard Card' },
+  { href: '/modal-presets', label: 'Modal Presets' },
+  // Base Components
   { href: '/buttons', label: 'Button' },
   { href: '/button-examples', label: 'Button Examples' },
   { href: '/link', label: 'Link' },
