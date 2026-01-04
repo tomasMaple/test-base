@@ -25,7 +25,7 @@ const selectTriggerVariants = tv({
     'cursor-pointer',
     'focus-visible:outline focus-visible:[outline-width:var(--spacing-focus-outline)] focus-visible:[outline-offset:var(--spacing-focus-offset)] focus-visible:outline-brand',
     'disabled:pointer-events-none disabled:opacity-disabled',
-    'data-[placeholder]:text-fg-secondary',
+
   ],
   variants: {
     variant: {
@@ -39,10 +39,10 @@ const selectTriggerVariants = tv({
       ],
     },
     size: {
-      xs: 'h-control-xs px-25 text-label-xs',
-      sm: 'h-control-sm px-50 text-label-xs',
-      md: 'h-control-md px-75 text-label-sm',
-      lg: 'h-control-lg px-100 text-label-sm',
+      xs: 'h-control-xs px-50 text-label-xs data-[placeholder]:text-body-xs data-[placeholder]:text-fg-muted',
+      sm: 'h-control-sm px-50 text-label-xs data-[placeholder]:text-body-xs data-[placeholder]:text-fg-muted',
+      md: 'h-control-md px-75 text-label-sm data-[placeholder]:text-body-sm data-[placeholder]:text-fg-muted',
+      lg: 'h-control-lg px-75 text-label-sm data-[placeholder]:text-body-sm data-[placeholder]:text-fg-muted',
     },
     error: {
       true: 'border-negative focus-visible:outline-negative',
@@ -60,10 +60,10 @@ const selectFieldVariants = tv({
   base: 'flex flex-col gap-25',
   variants: {
     size: {
-      xs: 'min-w-[120px]',
-      sm: 'min-w-[160px]',
-      md: 'min-w-[200px]',
-      lg: 'min-w-[240px]',
+      xs: 'min-w-[240px]',
+      sm: 'min-w-[260px]',
+      md: 'min-w-[280px]',
+      lg: 'min-w-[300px]',
     },
   },
   defaultVariants: {
@@ -241,8 +241,19 @@ export interface SelectTriggerProps
   extends React.ComponentPropsWithoutRef<typeof BaseSelect.Trigger>,
     VariantProps<typeof selectTriggerVariants> {}
 
+// Icon size mapping for trigger chevron
+const getIconSizeClass = (size: SelectSize = 'md') => {
+  const sizeMap: Record<SelectSize, string> = {
+    xs: 'size-icon-sm',
+    sm: 'size-icon-sm',
+    md: 'size-icon-md',
+    lg: 'size-icon-lg',
+  }
+  return sizeMap[size]
+}
+
 const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
-  ({ className, size, variant, error, children, ...props }, ref) => (
+  ({ className, size = 'md', variant, error, children, ...props }, ref) => (
     <BaseSelect.Trigger
       ref={ref}
       className={cn(selectTriggerVariants({ variant, size, error }), className)}
@@ -250,7 +261,7 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
     >
       {children}
       <BaseSelect.Icon>
-        <ChevronDown className="size-icon-xs opacity-50" />
+        <ChevronDown className={cn(getIconSizeClass(size), 'opacity-50')} />
       </BaseSelect.Icon>
     </BaseSelect.Trigger>
   )
@@ -334,7 +345,15 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     const selectContent = (
       <>
         <SelectTrigger ref={ref} className={triggerClassName} size={size} variant={variant} error={error}>
-          <SelectValue placeholder={placeholder} />
+          <SelectValue>
+            {(val: any) => {
+              if (!val || (Array.isArray(val) && val.length === 0)) return placeholder
+              if (Array.isArray(val)) {
+                return val.map((v) => options?.find((o) => o.value === v)?.label || v).join(', ')
+              }
+              return options?.find((o) => o.value === val)?.label || val
+            }}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {options?.map((option) => (

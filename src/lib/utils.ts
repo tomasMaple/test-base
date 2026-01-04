@@ -1,11 +1,12 @@
 import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 import { createTV } from 'tailwind-variants'
 
 /**
  * Utility for combining class names
  */
 export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs)
+  return twMerge(clsx(inputs))
 }
 
 /**
