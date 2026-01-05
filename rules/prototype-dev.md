@@ -109,6 +109,9 @@ import {
 
 ## Component Reference
 
+> [!IMPORTANT]
+> For **comprehensive Atlassian-style documentation** on each component including usage guidelines, prop tables, code examples, and "Translating from Tailwind" patterns, see **[Component Library Reference](./component-reference.md)**.
+
 ### Button
 
 Use for actions with text. Use `beforeIcon`/`afterIcon` for icons with text.
