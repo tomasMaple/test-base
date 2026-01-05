@@ -1,105 +1,226 @@
 # Prototype Development Rules
 
-> **Rules for AI agents creating prototypes, designs, and UI compositions using existing Maple components.**
+> **Rules for AI agents creating prototypes, designs, and UI compositions using Maple components.**
 
 ---
 
-## Quick Start
+## Core Principle: Maple First, Always
 
-### Creating a New Prototype
+**Default Approach**: Always use Maple Design System components and tokens FIRST. Only create custom solutions when no existing component fits.
 
-1. Create a new page in `src/app/{feature-name}/page.tsx`
-2. Import components from `@/components/ui`
+**Priority Order**:
+
+1. Use existing components from `@/components/ui`
+2. Compose complex UIs by combining components
 3. Use design tokens for any custom styling
-4. Add realistic mock data
+4. Create new components only as last resort (using Base UI + tokens)
 
-```tsx
-// src/app/my-prototype/page.tsx
-"use client";
+> ⚠️ **NEVER** install external UI libraries (shadcn, Radix standalone, etc.)
 
-import { Button, Avatar, Card } from "@/components/ui";
+---
 
-export default function MyPrototypePage() {
-  return (
-    <div className="p-200 bg-canvas min-h-screen">
-      <h1 className="text-heading-h3 text-fg-primary mb-150">My Feature</h1>
-      {/* Build your prototype here */}
-    </div>
-  );
-}
+## Quick Navigation Guide
+
+### 🎨 Colors
+
+- **ALWAYS**: Use design tokens (`bg-surface`, `text-fg-primary`, etc.)
+- **NEVER**: Use hex values like `#FFFFFF` or Tailwind defaults like `bg-blue-500`
+- **Reference**: See Token Quick Reference below
+
+### 🅰️ Headings & Text
+
+- **NEVER**: Use native HTML elements like `<h1>`, `<p>`, `<span>` with custom styling
+- **INSTEAD**: Use typography classes (`.text-heading-h1`, `.text-body-base`, `.text-label-sm`)
+- **NEVER**: Use `font-mono` or custom fonts
+
+### 📏 Spacing
+
+- **NEVER**: Use pixel or rem values for padding, margin, or gap
+- **INSTEAD**: Use spacing tokens like `p-100`, `gap-75`, `mb-150`
+
+### 🔘 Buttons
+
+- **NEVER**: Use native `<button>` elements with Tailwind classes
+- **INSTEAD**: Use `Button` for buttons with text (and optional icons)
+- **INSTEAD**: Use `IconButton` for icon-only buttons
+- **NEVER**: Create custom button-like elements
+
+### 🔗 Links
+
+- **NEVER**: Use native `<a>` elements with custom styling
+- **INSTEAD**: Use `Link` component with appropriate variants
+
+### 📝 Form Inputs
+
+- **NEVER**: Use native `<input>` elements with custom styling
+- **INSTEAD**: Use `Field` component (includes label, description, error handling)
+
+---
+
+## Decision Tree
+
+```
+Need UI Element?
+├── Check Maple Components → Found? → Use it
+├── Check Design Tokens → Found? → Apply them
+├── Can compose existing components? → Do it
+└── No solution? → Create minimal custom using Base UI + tokens
 ```
 
 ---
 
-## Component Priority
+## Available Components
 
-**Always use this order:**
+Import all from `@/components/ui`:
 
-1. **Use existing components** from `@/components/ui` first
-2. **Compose complex UIs** by combining existing components
-3. **Create new components** only if no existing component fits — and use Base UI + `globals.css` tokens
-
-> ⚠️ Never install external UI libraries (shadcn, Radix standalone, etc.)
+```tsx
+import {
+  Button,
+  IconButton,
+  Link,
+  Avatar,
+  Badge,
+  Pill,
+  TokenLogo,
+  Field,
+  Select,
+  Checkbox,
+  Radio,
+  Switch,
+  Toggle,
+  NumberField,
+  Dialog,
+  AlertDialog,
+  Popover,
+  Tooltip,
+  Toast,
+  Tabs,
+  Progress,
+  ScrollArea,
+  AppLayout,
+  Navbar,
+  Sidebar,
+  DashboardCard,
+  ModalPresets,
+} from "@/components/ui";
+```
 
 ---
 
-## Available Components with Examples
-
-Import from `@/components/ui`:
+## Component Reference
 
 ### Button
+
+Use for actions with text. Use `beforeIcon`/`afterIcon` for icons with text.
 
 ```tsx
 import { Button } from "@/components/ui";
 import { Plus, ArrowRight } from "lucide-react";
 
-// Basic
 <Button variant="primary" size="md">Submit</Button>
-
-// With icons
-<Button variant="secondary" size="lg" beforeIcon={<Plus />}>Add Item</Button>
+<Button variant="secondary" size="lg" beforeIcon={<Plus />}>Add item</Button>
 <Button variant="ghost" size="sm" afterIcon={<ArrowRight />}>Continue</Button>
 
 // Variants: primary, secondary, tertiary, ghost, brand, negative
 // Sizes: xs, sm, md, lg, xl
 ```
 
-### Avatar
+### IconButton
+
+Use for icon-only buttons **without text labels**.
 
 ```tsx
-import { Avatar } from "@/components/ui";
+import { IconButton } from "@/components/ui";
+import { Plus, Settings, X } from "lucide-react";
 
-// With image
-<Avatar src="/avatars/user.jpg" size="md" />
+<IconButton variant="ghost" size="sm" aria-label="Add item">
+  <Plus />
+</IconButton>
 
-// With fallback initials
-<Avatar fallback="JD" size="lg" type="brand" appearance="default" />
+<IconButton variant="secondary" size="md" aria-label="Settings">
+  <Settings />
+</IconButton>
 
-// Sizes: 3xs, 2xs, xs, sm, md, lg, xl
-// Types: primary, secondary, brand, positive, negative, info, warning
+// MUST include aria-label for accessibility
+// Variants: primary, secondary, tertiary, ghost, negative, outline
+// Sizes: xs, sm, md, lg, xl
 ```
 
-### Badge & Pill
+### Link
+
+Use for navigation and external links.
 
 ```tsx
-import { Badge, Pill } from "@/components/ui";
+import { Link } from "@/components/ui";
+import { ExternalLink } from "lucide-react";
 
-// Badge (for status indicators)
-<Badge type="positive" size="20">Active</Badge>
-<Badge type="negative" appearance="subtle">Failed</Badge>
+<Link href="/dashboard">Dashboard</Link>
+<Link href="https://docs.example.com" external afterIcon={<ExternalLink />}>
+  Documentation
+</Link>
 
-// Pill (for tags/labels)
-<Pill type="brand">DeFi</Pill>
-<Pill type="info" appearance="ghost">New</Pill>
+// Types: primary, inverse-primary, secondary
+// Sizes: medium, small, x-small
+// underlined: true/false
 ```
 
-### Form Controls
+### Field (Input)
+
+Use for text inputs with labels, descriptions, and error handling.
 
 ```tsx
-import { Checkbox, Radio, Switch, Select } from "@/components/ui";
+import { Field } from "@/components/ui";
+
+<Field
+  label="Email address"
+  description="We'll never share your email"
+  placeholder="you@example.com"
+  type="email"
+  size="md"
+  required
+/>
+
+<Field
+  label="Amount"
+  placeholder="0.00"
+  type="number"
+  size="lg"
+  errorMessage="Amount is required"
+  invalid
+/>
+
+// Sizes: xs, sm, md, lg
+// Variants: primary, ghost
+```
+
+### Select
+
+Use for dropdown selection.
+
+```tsx
+import { Select } from "@/components/ui";
+
+<Select
+  options={[
+    { value: "usdc", label: "USDC" },
+    { value: "usdt", label: "USDT" },
+    { value: "dai", label: "DAI" },
+  ]}
+  placeholder="Select asset"
+  size="md"
+/>;
+
+// Sizes: xs, sm, md, lg, xl
+// Variants: secondary (default)
+```
+
+### Checkbox, Radio, Switch, Toggle
+
+```tsx
+import { Checkbox, Radio, Switch, Toggle } from "@/components/ui";
 
 // Checkbox
-<Checkbox size="3xs" defaultChecked />
+<Checkbox size="3xs" defaultChecked>Accept terms</Checkbox>
 
 // Radio Group
 <Radio.Root defaultValue="option1">
@@ -110,36 +231,70 @@ import { Checkbox, Radio, Switch, Select } from "@/components/ui";
 // Switch
 <Switch size="sm" defaultChecked />
 
-// Select
-<Select
-  options={[
-    { value: "usdc", label: "USDC" },
-    { value: "usdt", label: "USDT" },
-  ]}
-  placeholder="Select asset"
-  size="md"
-/>
+// Toggle
+<Toggle size="md" defaultPressed>Bold</Toggle>
+```
+
+### Avatar
+
+```tsx
+import { Avatar } from "@/components/ui";
+
+<Avatar src="/avatars/user.jpg" size="md" />
+<Avatar fallback="JD" size="lg" type="brand" appearance="default" />
+
+// Sizes: 3xs, 2xs, xs, sm, md, lg, xl
+// Types: primary, secondary, brand, positive, negative, info, warning, pink, fuchsia, violet, teal, lime
+// Appearances: default, subtle
+```
+
+### Badge & Pill
+
+```tsx
+import { Badge, Pill } from "@/components/ui";
+
+// Badge - for status indicators (circular)
+<Badge type="positive" size="20">3</Badge>
+<Badge type="negative" appearance="subtle">!</Badge>
+
+// Pill - for tags/labels (rounded rectangle)
+<Pill type="brand">DeFi</Pill>
+<Pill type="info" appearance="ghost">New</Pill>
+
+// Types: primary, secondary, brand, info, positive, warning, negative, custom
+// Appearances: default, subtle, ghost (Pill only)
+```
+
+### TokenLogo
+
+```tsx
+import { TokenLogo } from "@/components/ui";
+
+<TokenLogo symbol="USDC" size="md" />
+<TokenLogo symbol="ETH" size="lg" />
+
+// Sizes: 2xs, xs, sm, md, lg, xl, 2xl
 ```
 
 ### Dialog
 
 ```tsx
-import { Dialog, Button, Input, Select } from "@/components/ui";
+import { Dialog, Button, Field, Select } from "@/components/ui";
 
 <Dialog>
   <Dialog.Trigger>
-    <Button>Open Dialog</Button>
+    <Button>Open dialog</Button>
   </Dialog.Trigger>
   <Dialog.Portal>
     <Dialog.Backdrop />
     <Dialog.Popup>
-      <Dialog.Title>Deposit Funds</Dialog.Title>
+      <Dialog.Title>Deposit funds</Dialog.Title>
       <Dialog.Description>Enter amount to deposit</Dialog.Description>
 
-      {/* Compose with other components inside */}
+      {/* Compose with other components */}
       <div className="space-y-100 mt-150">
         <Select options={assets} placeholder="Select asset" />
-        <Input placeholder="Amount" type="number" />
+        <Field label="Amount" placeholder="0.00" type="number" />
       </div>
 
       <div className="flex gap-75 mt-150">
@@ -153,12 +308,39 @@ import { Dialog, Button, Input, Select } from "@/components/ui";
 </Dialog>;
 ```
 
+### AlertDialog
+
+```tsx
+import { AlertDialog, Button } from "@/components/ui";
+
+<AlertDialog>
+  <AlertDialog.Trigger>
+    <Button variant="negative">Delete</Button>
+  </AlertDialog.Trigger>
+  <AlertDialog.Portal>
+    <AlertDialog.Backdrop />
+    <AlertDialog.Popup>
+      <AlertDialog.Title>Are you sure?</AlertDialog.Title>
+      <AlertDialog.Description>
+        This action cannot be undone.
+      </AlertDialog.Description>
+      <div className="flex gap-75 mt-150">
+        <AlertDialog.Close>
+          <Button variant="secondary">Cancel</Button>
+        </AlertDialog.Close>
+        <Button variant="negative">Delete</Button>
+      </div>
+    </AlertDialog.Popup>
+  </AlertDialog.Portal>
+</AlertDialog>;
+```
+
 ### Popover & Tooltip
 
 ```tsx
-import { Popover, Tooltip, Button } from "@/components/ui";
+import { Popover, Tooltip, Button, Checkbox } from "@/components/ui";
 
-// Popover (interactive content)
+// Popover - for interactive content
 <Popover>
   <Popover.Trigger>
     <Button variant="ghost">Settings</Button>
@@ -166,7 +348,6 @@ import { Popover, Tooltip, Button } from "@/components/ui";
   <Popover.Portal>
     <Popover.Positioner>
       <Popover.Popup>
-        {/* Any components inside */}
         <div className="p-100 space-y-75">
           <Checkbox>Enable notifications</Checkbox>
           <Checkbox>Dark mode</Checkbox>
@@ -176,7 +357,7 @@ import { Popover, Tooltip, Button } from "@/components/ui";
   </Popover.Portal>
 </Popover>
 
-// Tooltip (informational, hover-only)
+// Tooltip - informational, hover-only
 <Tooltip content="Click to copy address">
   <Button variant="ghost" size="sm">0x1234...5678</Button>
 </Tooltip>
@@ -193,30 +374,69 @@ import { Tabs } from "@/components/ui";
     <Tabs.Tab value="positions">Positions</Tabs.Tab>
     <Tabs.Tab value="history">History</Tabs.Tab>
   </Tabs.List>
-  <Tabs.Panel value="overview">
-    {/* Content with other components */}
-  </Tabs.Panel>
-  <Tabs.Panel value="positions">
-    {/* Position cards, tables, etc. */}
-  </Tabs.Panel>
+  <Tabs.Panel value="overview">{/* Tab content */}</Tabs.Panel>
 </Tabs.Root>;
+```
+
+### Progress
+
+```tsx
+import { Progress } from "@/components/ui";
+
+<Progress value={75} max={100} />;
+```
+
+### ScrollArea
+
+```tsx
+import { ScrollArea } from "@/components/ui";
+
+<ScrollArea className="h-[300px]">{/* Scrollable content */}</ScrollArea>;
+```
+
+### Toast
+
+```tsx
+import { Toast, useToast, Button } from "@/components/ui";
+
+function MyComponent() {
+  const { toast } = useToast();
+
+  return (
+    <Button
+      onClick={() =>
+        toast({ title: "Success!", description: "Action completed" })
+      }
+    >
+      Show toast
+    </Button>
+  );
+}
+```
+
+### Layout Components
+
+```tsx
+import { AppLayout, Navbar, Sidebar, DashboardCard } from "@/components/ui";
+
+// These are pre-configured layout components
+// Use them for consistent page structure
 ```
 
 ---
 
 ## Composing Complex UIs
 
-**Principle:** Build complex interfaces by combining existing components.
+**Principle**: Build complex interfaces by combining existing components.
 
 ### Example: Position Card
 
 ```tsx
-import { Avatar, Badge, Button, Tooltip } from "@/components/ui";
+import { Avatar, Badge, Button } from "@/components/ui";
 
 function PositionCard({ position }) {
   return (
     <div className="bg-surface rounded-lg border border-border-subtle p-150">
-      {/* Header with avatar and badge */}
       <div className="flex items-center justify-between mb-100">
         <div className="flex items-center gap-75">
           <Avatar src={position.icon} size="sm" />
@@ -229,7 +449,6 @@ function PositionCard({ position }) {
         </Badge>
       </div>
 
-      {/* Stats */}
       <div className="space-y-50 mb-150">
         <div className="flex justify-between">
           <span className="text-body-sm text-fg-secondary">Deposited</span>
@@ -245,13 +464,12 @@ function PositionCard({ position }) {
         </div>
       </div>
 
-      {/* Actions */}
       <div className="flex gap-75">
         <Button variant="secondary" size="sm" fullWidth>
           Withdraw
         </Button>
         <Button variant="primary" size="sm" fullWidth>
-          Deposit More
+          Deposit more
         </Button>
       </div>
     </div>
@@ -259,80 +477,194 @@ function PositionCard({ position }) {
 }
 ```
 
-### Example: Settings Dialog
+---
 
-```tsx
-import { Dialog, Button, Switch, Select, Input } from "@/components/ui";
+## Token Quick Reference
 
-function SettingsDialog() {
-  return (
-    <Dialog>
-      <Dialog.Trigger>
-        <Button variant="ghost">Settings</Button>
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Backdrop />
-        <Dialog.Popup className="max-w-md">
-          <Dialog.Title>Preferences</Dialog.Title>
+### Colors
 
-          <div className="space-y-150 mt-150">
-            {/* Section with switches */}
-            <div className="space-y-100">
-              <h3 className="text-label-sm text-fg-secondary">Notifications</h3>
-              <div className="flex items-center justify-between">
-                <span className="text-body-sm">Email alerts</span>
-                <Switch size="sm" />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-body-sm">Push notifications</span>
-                <Switch size="sm" />
-              </div>
-            </div>
+| Purpose         | Class                                        |
+| --------------- | -------------------------------------------- |
+| Page background | `bg-canvas`                                  |
+| Card background | `bg-surface`                                 |
+| Hover state     | `bg-primary`                                 |
+| Active state    | `bg-secondary`                               |
+| Disabled        | `bg-muted`                                   |
+| Primary text    | `text-fg-primary`                            |
+| Secondary text  | `text-fg-secondary`                          |
+| Muted text      | `text-fg-muted`                              |
+| Positive        | `text-positive`, `bg-positive`               |
+| Negative        | `text-negative`, `bg-negative`               |
+| Borders         | `border-border-subtle`, `border-border-weak` |
 
-            {/* Section with select */}
-            <div className="space-y-75">
-              <h3 className="text-label-sm text-fg-secondary">Display</h3>
-              <Select
-                options={[
-                  { value: "usd", label: "USD" },
-                  { value: "eur", label: "EUR" },
-                ]}
-                placeholder="Currency"
-              />
-            </div>
-          </div>
+### Spacing
 
-          <div className="flex gap-75 mt-200">
-            <Dialog.Close>
-              <Button variant="secondary" fullWidth>
-                Cancel
-              </Button>
-            </Dialog.Close>
-            <Button variant="primary" fullWidth>
-              Save
-            </Button>
-          </div>
-        </Dialog.Popup>
-      </Dialog.Portal>
-    </Dialog>
-  );
-}
-```
+| Token              | Value | Use      |
+| ------------------ | ----- | -------- |
+| `p-25`, `gap-25`   | 4px   | Tight    |
+| `p-50`, `gap-50`   | 8px   | Small    |
+| `p-75`, `gap-75`   | 12px  | Default  |
+| `p-100`, `gap-100` | 16px  | Standard |
+| `p-150`, `gap-150` | 24px  | Large    |
+| `p-200`, `gap-200` | 32px  | Section  |
+
+### Typography
+
+| Class                                  | Use             |
+| -------------------------------------- | --------------- |
+| `.text-heading-h3`, `.text-heading-h4` | Page titles     |
+| `.text-heading-h5`, `.text-heading-h6` | Section titles  |
+| `.text-body-base`                      | Body text       |
+| `.text-body-sm`                        | Secondary text  |
+| `.text-label-sm`, `.text-label-md`     | Labels, buttons |
+| `.text-label-xs`                       | Captions        |
+
+### Border Radius
+
+| Token          | Use            |
+| -------------- | -------------- |
+| `rounded-sm`   | Small elements |
+| `rounded-md`   | Cards, inputs  |
+| `rounded-lg`   | Large cards    |
+| `rounded-pill` | Pills, buttons |
 
 ---
 
-## Creating New Components (When Necessary)
+## Content Writing Guidelines
 
-Only create new components when existing ones cannot be composed to achieve the design.
+### Voice & Tone
 
-### Rules for New Components
+- **Clear and direct**: Professional yet approachable
+- **Helpful and empowering**: Build user confidence
+- **Adapt by context**:
+  - New users: Supportive and prescriptive
+  - Power users: Direct and efficient
+  - Errors: Calm, solution-focused
+  - Success: Brief celebration
+
+### Capitalization
+
+**ALWAYS use sentence case for ALL UI text**:
+
+- ✅ "Account settings" NOT "Account Settings"
+- ✅ "Email notifications" NOT "Email Notifications"
+- ✅ "Save changes" NOT "Save Changes"
+- ✅ "Privacy and security" NOT "Privacy and Security"
+
+Capitalize only: first word, proper nouns, product names.
+Don't use periods at the end (unless complete sentence).
+
+### Button Labels
+
+Use verb + noun pattern in sentence case:
+
+- ✅ "Save changes", "Delete project", "Add item", "Send message"
+- ❌ "Save" (too vague)
+- ❌ "Submit" (prefer specific action)
+- ❌ "Message" (missing verb)
+
+### Numbers & Numerals
+
+**Use numerals for**: dates, times, measurements, percentages, quantities, statistics
+
+- ✅ "3 projects", "25% complete", "2 hours ago"
+- ✅ Use commas for thousands: "1,000 items"
+- Spell out one through nine only at start of sentences
+
+### Dates & Times
+
+- **Dates**: "January 8, 2020" (medium) or "Jan 8, 2020" (short)
+- **Time**: "3:30 p.m." (omit `:00` for exact hours → "3 p.m.")
+
+### Contractions & Language
+
+- **ALWAYS** use contractions: "can't", "don't", "you'll", "won't"
+- **ALWAYS** use US English: "color" not "colour", "organize" not "organise"
+- **ALWAYS** use second person: "your", "you"
+- Be direct and concise - no filler words
+
+### Vocabulary Standards
+
+| Use                     | Instead of         |
+| ----------------------- | ------------------ |
+| "app"                   | "add-on", "plugin" |
+| "sign in"               | "log in" (in UI)   |
+| "menu"                  | "dropdown"         |
+| "checkbox"              | "check box"        |
+| "canceled", "canceling" | "cancelled"        |
+| "real-time"             | "realtime"         |
+
+### Message Types
+
+| Type        | Tone                 | Example                                                      |
+| ----------- | -------------------- | ------------------------------------------------------------ |
+| Success     | Brief, celebratory   | "Changes saved"                                              |
+| Error       | Solution-focused     | "Connection failed. Check your network and try again."       |
+| Warning     | Explain consequences | "This will delete all your data"                             |
+| Info        | Helpful context      | "You can change this later in settings"                      |
+| Empty state | Motivate action      | "No projects yet. Create your first project to get started." |
+
+### Lists
+
+- **Bulleted lists**: Lowercase if completing intro sentence, no periods for fragments, max 6 items
+- **Numbered lists**: Capitalize first word, end with periods, don't use for 2 or fewer steps
+- **Parallel structure**: All items must follow same grammatical pattern
+- **Serial comma**: Always use comma before "and" in series of 3+ items
+
+### Accessibility Copy
+
+- **ALWAYS** provide accessible labels for interactive elements
+- **NEVER** rely on placeholder text for critical information
+- **NEVER** use "Learn more" as link text - use descriptive text instead:
+  - ❌ "Learn more"
+  - ✅ "View documentation", "Read the API guide"
+- **ALWAYS** ensure status is not conveyed by color alone
+
+### Icons
+
+- **Import from**: `lucide-react`
+- **NEVER** invent or guess icon names
+- **ALWAYS** add `aria-hidden="true"` to decorative icons
+- **ALWAYS** pair icons with text labels where possible
+
+---
+
+## Do's and Don'ts
+
+### ✅ DO
+
+- Use existing components from `@/components/ui`
+- Use `Button` for text buttons, `IconButton` for icon-only
+- Use `Field` for form inputs, `Select` for dropdowns
+- Use `Link` for navigation, not `<a>` elements
+- Use design tokens for all colors, spacing, typography
+- Use sentence case for all UI text
+- Create realistic mock data
+- Build complete, polished prototypes
+- Add `aria-label` to icon-only buttons
+
+### ❌ DON'T
+
+- Use raw `<button>`, `<a>`, `<input>` elements
+- Use `font-mono` or custom fonts
+- Use arbitrary values (`h-[32px]`, `bg-[#fff]`)
+- Use Tailwind defaults (`bg-blue-500`, `text-gray-900`)
+- Use hex colors directly
+- Install new UI libraries
+- Create new CSS variables
+- Leave placeholder text like "Lorem ipsum"
+- Use Title Case for UI copy
+
+---
+
+## Creating New Components (Last Resort)
+
+Only when existing components cannot achieve the design:
 
 1. **Use Base UI primitives** from `@base-ui-components/react`
 2. **Use only tokens** from `src/app/globals.css`
-3. **Follow existing patterns** (forwardRef, displayName, tv variants)
+3. **Follow existing patterns** in `src/components/ui/`
 4. **Never use arbitrary values** or Tailwind defaults
-
-### Example: Simple New Component
 
 ```tsx
 "use client";
@@ -367,19 +699,18 @@ export function StatCard({ label, value, trend, className }) {
 }
 ```
 
+---
+
 ## Layout Patterns
 
 ### Page Container
 
 ```tsx
 <div className="min-h-screen bg-canvas">
-  {/* Header */}
   <header className="border-b border-border-weak p-100">
-    <h1 className="text-heading-h5 text-fg-primary">Page Title</h1>
+    <h1 className="text-heading-h5 text-fg-primary">Page title</h1>
   </header>
-
-  {/* Content */}
-  <main className="p-200 max-w-6xl mx-auto">{/* Your content */}</main>
+  <main className="p-200 max-w-6xl mx-auto">{/* Content */}</main>
 </div>
 ```
 
@@ -397,178 +728,12 @@ export function StatCard({ label, value, trend, className }) {
 
 ```tsx
 <div className="flex min-h-screen">
-  {/* Sidebar */}
   <aside className="w-[280px] border-r border-border-weak bg-surface p-100">
     {/* Navigation */}
   </aside>
-
-  {/* Main content */}
   <main className="flex-1 p-200">{/* Content */}</main>
 </div>
 ```
-
-### List with Dividers
-
-```tsx
-<div className="divide-y divide-border-weak">
-  {items.map((item) => (
-    <div key={item.id} className="py-100 flex items-center gap-100">
-      {/* Item content */}
-    </div>
-  ))}
-</div>
-```
-
----
-
-## Token Quick Reference
-
-### Colors
-
-| Purpose         | Class                  |
-| --------------- | ---------------------- |
-| Page background | `bg-canvas`            |
-| Card background | `bg-surface`           |
-| Hover state     | `bg-primary`           |
-| Active state    | `bg-secondary`         |
-| Disabled        | `bg-muted`             |
-| Primary text    | `text-fg-primary`      |
-| Secondary text  | `text-fg-secondary`    |
-| Muted text      | `text-fg-muted`        |
-| Borders         | `border-border-subtle` |
-
-### Spacing
-
-| Size | Class              | Value |
-| ---- | ------------------ | ----- |
-| XS   | `p-50`, `gap-50`   | 8px   |
-| SM   | `p-75`, `gap-75`   | 12px  |
-| MD   | `p-100`, `gap-100` | 16px  |
-| LG   | `p-150`, `gap-150` | 24px  |
-| XL   | `p-200`, `gap-200` | 32px  |
-
-### Typography
-
-| Use           | Class                                  |
-| ------------- | -------------------------------------- |
-| Page title    | `text-heading-h3` or `text-heading-h4` |
-| Section title | `text-heading-h5` or `text-heading-h6` |
-| Body text     | `text-body-base`                       |
-| Small text    | `text-body-sm`                         |
-| Labels        | `text-label-sm`                        |
-| Captions      | `text-label-xs`                        |
-
-### Border Radius
-
-| Use            | Class          |
-| -------------- | -------------- |
-| Small elements | `rounded-sm`   |
-| Cards, inputs  | `rounded-md`   |
-| Large cards    | `rounded-lg`   |
-| Pills, buttons | `rounded-pill` |
-
----
-
-## Mock Data Conventions
-
-### User/Account
-
-```tsx
-const mockUser = {
-  id: "user_001",
-  name: "Alex Johnson",
-  email: "alex@example.com",
-  avatar: "/avatars/alex.jpg",
-  initials: "AJ",
-};
-```
-
-### Financial Positions
-
-```tsx
-const mockPositions = [
-  {
-    id: "pos_001",
-    asset: "syrupUSDC",
-    deposited: 50000,
-    earned: 1250.5,
-    apy: 8.5,
-    status: "active",
-  },
-  {
-    id: "pos_002",
-    asset: "syrupUSDT",
-    deposited: 25000,
-    earned: 487.25,
-    apy: 7.2,
-    status: "active",
-  },
-];
-```
-
-### Transactions
-
-```tsx
-const mockTransactions = [
-  {
-    id: "tx_001",
-    type: "deposit",
-    amount: 10000,
-    asset: "USDC",
-    timestamp: "2026-01-05T10:30:00Z",
-    status: "completed",
-  },
-];
-```
-
----
-
-## Do's and Don'ts
-
-### ✅ DO
-
-- Use existing components from `@/components/ui`
-- Use `IconButton` for icon-only buttons (not raw `<button>`)
-- Use `Button` with `beforeIcon`/`afterIcon` for buttons with icons + text
-- Use design tokens for all colors, spacing, typography
-- Create realistic mock data
-- Build complete, polished prototypes
-- Use proper semantic HTML
-
-### ❌ DON'T
-
-- Use raw `<button>` elements — use `Button` or `IconButton` components
-- Use `font-mono` — stick to the design system typography
-- Create new components (compose existing ones instead)
-- Use arbitrary values (`h-[32px]`, `bg-[#fff]`)
-- Use Tailwind defaults (`bg-blue-500`, `text-gray-900`)
-- Install new UI libraries (shadcn, Radix, etc.)
-- Create new CSS variables
-- Leave placeholder text like "Lorem ipsum"
-
----
-
-## Visual Quality Standards
-
-Prototypes must look **polished and professional**:
-
-1. **Consistent spacing** — Use the spacing scale, never mix arbitrary values
-2. **Proper hierarchy** — Clear visual distinction between headers, body, captions
-3. **Realistic content** — Use mock data that looks real, not Lorem ipsum
-4. **Complete states** — Show loading, empty, error states when relevant
-5. **Responsive** — Test at desktop and mobile widths
-
----
-
-## Working with Screenshots/Designs
-
-When replicating a design from a screenshot:
-
-1. **Identify existing components** — Match UI elements to available components
-2. **Map colors to tokens** — Find the closest token for each color
-3. **Use the spacing scale** — Measure and use closest spacing token
-4. **Match typography** — Use heading/body/label classes appropriately
-5. **Don't pixel-perfect** — Match the intent, not every pixel
 
 ---
 
