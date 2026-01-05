@@ -1,6 +1,13 @@
 import { Sidebar, type SidebarItemType } from "@/components/ui/sidebar";
 
 const navigationItems: SidebarItemType[] = [
+  // Charts
+  { href: '/overview/area-chart', label: 'Area Chart' },
+  { href: '/overview/bar-chart', label: 'Bar Chart' },
+  { href: '/overview/bar-stack-chart', label: 'Bar Stack Chart' },
+  { href: '/overview/bar-stack-horizontal-chart', label: 'Bar Stack Horizontal' },
+  { href: '/overview/bar-group-chart', label: 'Bar Group Chart' },
+  { href: '/overview/bar-group-horizontal-chart', label: 'Bar Group Horizontal' },
   // Building Blocks
   { href: '/overview/navbar', label: 'Navbar' },
   { href: '/overview/dashboard-card', label: 'Dashboard Card' },
