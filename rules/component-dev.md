@@ -431,12 +431,13 @@ const iconSize = iconSizeMap[size ?? "md"];
 
 | ❌ Never Do                              | ✅ Instead                              |
 | ---------------------------------------- | --------------------------------------- |
+| `<button>` raw elements                  | `<Button>` or `<IconButton>` components |
+| `font-mono` or custom fonts              | Use design system typography only       |
 | `h-[32px]` arbitrary values              | `h-control-sm` token                    |
 | `bg-blue-500` Tailwind defaults          | `bg-info` or `bg-brand`                 |
 | `text-white` Tailwind defaults           | `text-fg-inverse` or `text-fg-on-brand` |
 | `style={{ ... }}` inline styles          | Tailwind classes                        |
 | `import { tv } from 'tailwind-variants'` | `import { tv } from '@/lib/utils'`      |
-| `<button>` native elements               | `<Button>` from Base UI                 |
 | Missing `displayName`                    | Always set after forwardRef             |
 | Missing disabled styles                  | Always include `disabled:` states       |
 

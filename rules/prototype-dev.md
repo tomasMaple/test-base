@@ -528,6 +528,8 @@ const mockTransactions = [
 ### ✅ DO
 
 - Use existing components from `@/components/ui`
+- Use `IconButton` for icon-only buttons (not raw `<button>`)
+- Use `Button` with `beforeIcon`/`afterIcon` for buttons with icons + text
 - Use design tokens for all colors, spacing, typography
 - Create realistic mock data
 - Build complete, polished prototypes
@@ -535,6 +537,8 @@ const mockTransactions = [
 
 ### ❌ DON'T
 
+- Use raw `<button>` elements — use `Button` or `IconButton` components
+- Use `font-mono` — stick to the design system typography
 - Create new components (compose existing ones instead)
 - Use arbitrary values (`h-[32px]`, `bg-[#fff]`)
 - Use Tailwind defaults (`bg-blue-500`, `text-gray-900`)
