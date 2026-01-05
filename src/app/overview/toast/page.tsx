@@ -11,6 +11,17 @@ import {
 } from '@/components/ui/toast'
 import { Button } from '@/components/ui/button'
 
+// Suppress flushSync warning from Base UI Toast (React 19 compatibility issue)
+const originalError = console.error
+if (typeof window !== 'undefined') {
+  console.error = (...args) => {
+    if (args[0]?.includes?.('flushSync was called from inside a lifecycle method')) {
+      return
+    }
+    originalError.apply(console, args)
+  }
+}
+
 // Wrapper component to access toast manager (must be inside ToastProvider)
 function ToastDemo() {
   const toastManager = useToastManager()
@@ -19,13 +30,16 @@ function ToastDemo() {
     appearance: 'default' | 'subtle',
     type: 'primary' | 'secondary' | 'brand' | 'negative' | 'positive' | 'warning'
   ) => {
-    toastManager.add({
-      title: `${appearance} ${type}`,
-      description: 'This is a toast message.',
-      data: {
-        appearance,
-        type,
-      },
+    // Defer to next microtask to avoid flushSync error in React 19
+    queueMicrotask(() => {
+      toastManager.add({
+        title: `${appearance} ${type}`,
+        description: 'This is a toast message.',
+        data: {
+          appearance,
+          type,
+        },
+      })
     })
   }
 

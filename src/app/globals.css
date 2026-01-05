@@ -123,6 +123,8 @@
   /* ==========================================
      PRIMITIVE ICON SIZES
      ========================================== */
+  --primitive-icon-2xs: 8px;
+  --primitive-icon-xs: 10px;
   --primitive-icon-sm: 12px;
   --primitive-icon-md: 14px;
   --primitive-icon-lg: 16px;
@@ -728,6 +730,8 @@
      ICON SIZES
      Usage: size-icon-md, w-icon-lg, h-icon-sm
      ========================================== */
+  --spacing-icon-2xs: var(--primitive-icon-2xs);
+  --spacing-icon-xs: var(--primitive-icon-xs);
   --spacing-icon-sm: var(--primitive-icon-sm);
   --spacing-icon-md: var(--primitive-icon-md);
   --spacing-icon-lg: var(--primitive-icon-lg);

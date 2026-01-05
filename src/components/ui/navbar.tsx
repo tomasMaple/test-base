@@ -15,7 +15,7 @@ const navbarVariants = tv({
     'w-full h-[64px]',
     'flex items-center justify-between',
     'px-150 gap-100',
-    'border-b border-border-subtle',
+    'border-b-1 border-border-subtle',
     'transition-colors duration-fast ease-default',
   ],
   variants: {
