@@ -16,7 +16,7 @@ export function AppNavbar() {
         </Navbar.Links>
       </Navbar.Brand>
       <Navbar.Actions>
-        <Button size="sm" beforeIcon={<Wallet />}>
+        <Button size="md" beforeIcon={<Wallet />}>
           Connect Wallet
         </Button>
       </Navbar.Actions>

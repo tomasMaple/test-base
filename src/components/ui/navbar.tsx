@@ -35,14 +35,14 @@ const navbarVariants = tv({
 
 const navLinkVariants = tv({
   base: [
-    'text-label-sm font-medium px-75 py-50 rounded-md',
+    'px-75 py-50 rounded-md',
     'transition-colors duration-fast ease-default',
     'hover:bg-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-strong',
   ],
   variants: {
     active: {
-      true: 'text-fg-primary bg-secondary',
-      false: 'text-fg-secondary hover:text-fg-primary',
+      true: 'text-fg-primary bg-primary text-label-sm',
+      false: 'text-fg-muted hover:text-fg-secondary text-body-sm',
     },
   },
   defaultVariants: {
@@ -109,7 +109,7 @@ const NavbarLogo = React.forwardRef<HTMLDivElement, NavbarLogoProps>(
             src="/logos/Maple_Logo_black.svg"
             alt="Maple"
             width={100}
-            height={29}
+            height={24}
             priority
           />
         </Link>
@@ -132,7 +132,7 @@ const NavbarBrand = React.forwardRef<HTMLDivElement, NavbarBrandProps>(
     return (
       <div
         ref={ref}
-        className={cn('flex items-center gap-400', className)}
+        className={cn('flex items-center gap-200', className)}
         {...props}
       >
         {children}
@@ -155,7 +155,7 @@ const NavbarLinks = React.forwardRef<HTMLDivElement, NavbarLinksProps>(
     return (
       <div
         ref={ref}
-        className={cn('flex items-center gap-25', className)}
+        className={cn('flex items-center gap-50', className)}
         {...props}
       >
         {children}
