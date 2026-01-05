@@ -18,7 +18,7 @@ export default function TokenLogoPage() {
       <section className="space-y-100">
         <h2 className="text-heading-h6 text-fg-primary">Size Scale</h2>
         <div className="flex items-end gap-100 p-100 bg-primary rounded-md">
-          {(['sm', 'md', 'lg', 'xl', '2xl', '3xl'] as const).map((size) => (
+          {(['3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const).map((size) => (
             <div key={size} className="flex flex-col items-center gap-50">
               <TokenLogo token="btc" size={size} />
               <span className="text-label-xs text-fg-muted">{size}</span>
@@ -33,7 +33,7 @@ export default function TokenLogoPage() {
         <div className="flex flex-wrap gap-100 p-100 bg-primary rounded-md">
           {popularTokens.map((token) => (
             <div key={token} className="flex flex-col items-center gap-50">
-              <TokenLogo token={token} size="3xl" />
+              <TokenLogo token={token} size="xl" />
               <span className="text-label-xs text-fg-muted uppercase">{token}</span>
             </div>
           ))}

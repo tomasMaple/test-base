@@ -1,6 +1,6 @@
-# Maple Component Library Rules
+# Component Development Rules
 
-> **Rules for AI agents building styled components using Base UI primitives with Tailwind CSS v4 and Maple design tokens.**
+> **Rules for AI agents building, fixing, and improving Maple Design System components.**
 
 ---
 
@@ -9,7 +9,7 @@
 1. **Base UI for behavior** — All interactive components use `@base-ui-components/react` primitives
 2. **Tailwind for styling** — Use only Tailwind utility classes with design tokens
 3. **Design tokens only** — NEVER use arbitrary values; always use configured theme tokens
-4. **Tailwind Variants for variants** — All component variants managed via `tailwind-variants`
+4. **tailwind-variants for variants** — All component variants managed via `tv()`
 5. **No Tailwind Merge** — We don't use `tailwind-merge`; classes pass through as-is
 
 ---
@@ -47,15 +47,13 @@ export const tv = createTV({
 
 ## Component Size Reference
 
-Use these size scales based on component type:
-
-| Component Type                                                                                                                                                                 | Sizes                                      | Default | Height Token                       |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ | ------- | ---------------------------------- |
-| Button, Input, Select, Autocomplete, Combobox, Field, Tabs, Toggle, Toggle Group, Menubar, Navigation Menu, Number Field, Accordion Item, Collapsible, Meter, Progress, Slider | `xs`, `sm`, `md`, `lg`, `xl`               | `md`    | `h-control-{size}`                 |
-| Avatar                                                                                                                                                                         | `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl` | `md`    | `size-control-{size}`              |
-| Checkbox, Radio                                                                                                                                                                | `3xs`, `2xs`                               | `3xs`   | `size-control-{size}`              |
-| Switch                                                                                                                                                                         | `2xs`, `xs`, `sm`, `md`                    | `sm`    | `h-control-{size}`                 |
-| Alert Dialog, Accordion, Context Menu, Dialog, Menu, Popover, Scroll Area, Toast, Tooltip                                                                                      | `auto` (content-based)                     | —       | Use padding + max-width/max-height |
+| Component Type                      | Sizes                                      | Default | Height Token            |
+| ----------------------------------- | ------------------------------------------ | ------- | ----------------------- |
+| Button, Input, Select, Tabs, Toggle | `xs`, `sm`, `md`, `lg`, `xl`               | `md`    | `h-control-{size}`      |
+| Avatar                              | `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl` | `md`    | `size-control-{size}`   |
+| Checkbox, Radio                     | `3xs`, `2xs`                               | `3xs`   | `size-control-{size}`   |
+| Switch                              | `2xs`, `xs`, `sm`, `md`                    | `sm`    | `h-control-{size}`      |
+| Dialog, Popover, Tooltip            | `auto` (content-based)                     | —       | Use padding + max-width |
 
 ### Control Height Values
 
@@ -73,8 +71,6 @@ Use these size scales based on component type:
 ---
 
 ## Variant State Mapping
-
-When creating component variants, follow these state progressions:
 
 ### Primary (Brand Inverse)
 
@@ -133,9 +129,6 @@ import { Button as BaseButton } from "@base-ui-components/react/button";
 import { type VariantProps } from "tailwind-variants";
 import { cn, tv } from "@/lib/utils";
 
-/**
- * Button variants using Tailwind Variants with Maple design tokens
- */
 const buttonVariants = tv({
   base: [
     "inline-flex items-center justify-center",
@@ -159,22 +152,6 @@ const buttonVariants = tv({
         "hover:bg-primary",
         "active:bg-secondary",
       ],
-      tertiary: [
-        "bg-primary text-fg-primary",
-        "hover:bg-secondary",
-        "active:bg-muted",
-      ],
-      ghost: [
-        "bg-transparent text-fg-primary",
-        "hover:bg-primary",
-        "active:bg-secondary",
-      ],
-      negative: [
-        "bg-negative text-fg-on-accent",
-        "hover:bg-negative-strong",
-        "active:bg-negative-emphasis",
-        "focus-visible:outline-negative",
-      ],
     },
     size: {
       xs: ["h-control-xs", "px-50", "gap-25", "text-label-xs"],
@@ -183,15 +160,10 @@ const buttonVariants = tv({
       lg: ["h-control-lg", "px-100", "gap-50", "text-label-sm"],
       xl: ["h-control-xl", "px-100", "gap-75", "text-label-md"],
     },
-    fullWidth: {
-      true: "w-full",
-      false: "w-auto",
-    },
   },
   defaultVariants: {
     variant: "primary",
     size: "md",
-    fullWidth: false,
   },
 });
 
@@ -203,22 +175,13 @@ export type ButtonProps = React.ComponentPropsWithoutRef<typeof BaseButton> &
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    {
-      className,
-      variant,
-      size,
-      fullWidth,
-      children,
-      beforeIcon,
-      afterIcon,
-      ...props
-    },
+    { className, variant, size, children, beforeIcon, afterIcon, ...props },
     ref
   ) => {
     return (
       <BaseButton
         ref={ref}
-        className={cn(buttonVariants({ variant, size, fullWidth }), className)}
+        className={cn(buttonVariants({ variant, size }), className)}
         {...props}
       >
         {beforeIcon && <span className="shrink-0">{beforeIcon}</span>}
@@ -237,146 +200,34 @@ export { buttonVariants };
 
 ## Compound Components
 
-For complex Base UI components with multiple parts (Select, Dialog, Menu, etc.), export **both** a simplified wrapper AND individual parts:
-
-### File Structure
+For multi-part components (Select, Dialog, Menu), export both a simplified wrapper AND individual parts:
 
 ```tsx
-// components/ui/select.tsx
+// Simplified wrapper for common usage
+export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
+  ({ options, placeholder, variant, size, ...props }, ref) => (
+    <SelectRoot {...props}>
+      <SelectTrigger ref={ref} variant={variant} size={size}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectPortal>
+        <SelectPositioner>
+          <SelectPopup>
+            {options.map((option) => (
+              <SelectOption key={option.value} value={option.value} size={size}>
+                {option.label}
+              </SelectOption>
+            ))}
+          </SelectPopup>
+        </SelectPositioner>
+      </SelectPortal>
+    </SelectRoot>
+  )
+);
 
-'use client'
-
-import * as React from 'react'
-import { Select as BaseSelect } from '@base-ui-components/react/select'
-import { type VariantProps } from 'tailwind-variants'
-import { cn, tv } from '@/lib/utils'
-
-// =============================================================================
-// VARIANTS
-// =============================================================================
-
-const selectTriggerVariants = tv({
-  base: [...],
-  variants: {
-    variant: {...},
-    size: {...},
-  },
-  defaultVariants: {
-    variant: 'secondary',
-    size: 'md',
-  },
-})
-
-const selectOptionVariants = tv({
-  base: [...],
-  variants: {
-    size: {...},
-  },
-})
-
-// =============================================================================
-// COMPOUND PARTS (for complex/custom usage)
-// =============================================================================
-
-const SelectRoot = BaseSelect.Root
-const SelectValue = BaseSelect.Value
-const SelectPortal = BaseSelect.Portal
-const SelectPositioner = BaseSelect.Positioner
-
-const SelectTrigger = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentPropsWithoutRef<typeof BaseSelect.Trigger> &
-    VariantProps<typeof selectTriggerVariants>
->(({ className, variant, size, ...props }, ref) => (
-  <BaseSelect.Trigger
-    ref={ref}
-    className={cn(selectTriggerVariants({ variant, size }), className)}
-    {...props}
-  />
-))
-SelectTrigger.displayName = 'SelectTrigger'
-
-const SelectPopup = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseSelect.Popup>
->(({ className, ...props }, ref) => (
-  <BaseSelect.Popup
-    ref={ref}
-    className={cn(
-      'bg-surface border border-border-subtle rounded-md shadow-300',
-      'p-25',
-      className
-    )}
-    {...props}
-  />
-))
-SelectPopup.displayName = 'SelectPopup'
-
-const SelectOption = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseSelect.Option> &
-    VariantProps<typeof selectOptionVariants>
->(({ className, size, ...props }, ref) => (
-  <BaseSelect.Option
-    ref={ref}
-    className={cn(selectOptionVariants({ size }), className)}
-    {...props}
-  />
-))
-SelectOption.displayName = 'SelectOption'
-
-// =============================================================================
-// SIMPLIFIED WRAPPER (for simple/common usage)
-// =============================================================================
-
-export interface SelectProps extends VariantProps<typeof selectTriggerVariants> {
-  options: Array<{ value: string; label: string; disabled?: boolean }>
-  placeholder?: string
-  value?: string
-  defaultValue?: string
-  onValueChange?: (value: string) => void
-  disabled?: boolean
-  className?: string
-}
-
-const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
-  ({ options, placeholder, variant, size, className, ...props }, ref) => {
-    return (
-      <SelectRoot {...props}>
-        <SelectTrigger ref={ref} variant={variant} size={size} className={className}>
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-        <SelectPortal>
-          <SelectPositioner>
-            <SelectPopup>
-              {options.map((option) => (
-                <SelectOption
-                  key={option.value}
-                  value={option.value}
-                  disabled={option.disabled}
-                  size={size}
-                >
-                  {option.label}
-                </SelectOption>
-              ))}
-            </SelectPopup>
-          </SelectPositioner>
-        </SelectPortal>
-      </SelectRoot>
-    )
-  }
-)
-Select.displayName = 'Select'
-
-// =============================================================================
-// EXPORTS
-// =============================================================================
-
+// Export all parts for custom usage
 export {
-  // Simplified wrapper
   Select,
-
-  // Compound parts
   SelectRoot,
   SelectTrigger,
   SelectValue,
@@ -384,41 +235,8 @@ export {
   SelectPositioner,
   SelectPopup,
   SelectOption,
-
-  // Variants (for extending)
   selectTriggerVariants,
-  selectOptionVariants,
-}
-```
-
-### Usage
-
-```tsx
-// Simple usage
-<Select
-  options={[
-    { value: 'a', label: 'Option A' },
-    { value: 'b', label: 'Option B' },
-  ]}
-  placeholder="Select..."
-  size="md"
-/>
-
-// Complex/custom usage
-<SelectRoot>
-  <SelectTrigger size="lg" variant="secondary">
-    <SelectValue placeholder="Choose..." />
-  </SelectTrigger>
-  <SelectPortal>
-    <SelectPositioner>
-      <SelectPopup>
-        <div className="text-fg-muted text-label-xs px-75 py-25">Group Label</div>
-        <SelectOption value="a" size="lg">Option A</SelectOption>
-        <SelectOption value="b" size="lg">Option B</SelectOption>
-      </SelectPopup>
-    </SelectPositioner>
-  </SelectPortal>
-</SelectRoot>
+};
 ```
 
 ---
@@ -426,8 +244,6 @@ export {
 ## Icon Handling
 
 ### Icon Size Mapping
-
-Icons should scale with component size:
 
 | Component Size | Icon Token      | Value |
 | -------------- | --------------- | ----- |
@@ -450,7 +266,6 @@ const iconSizeMap = {
   "2xl": "size-icon-3xl",
 } as const;
 
-// In component
 const iconSize = iconSizeMap[size ?? "md"];
 
 {
@@ -481,12 +296,10 @@ const iconSize = iconSizeMap[size ?? "md"];
 | **Foregrounds** |                          |                                |
 | Primary         | `--color-fg-primary`     | `text-fg-primary`              |
 | Secondary       | `--color-fg-secondary`   | `text-fg-secondary`            |
-| Tertiary        | `--color-fg-tertiary`    | `text-fg-tertiary`             |
 | Muted           | `--color-fg-muted`       | `text-fg-muted`                |
 | Subtle          | `--color-fg-subtle`      | `text-fg-subtle`               |
 | Inverse         | `--color-fg-inverse`     | `text-fg-inverse`              |
 | On Brand        | `--color-fg-on-brand`    | `text-fg-on-brand`             |
-| On Accent       | `--color-fg-on-accent`   | `text-fg-on-accent`            |
 | **Borders**     |                          |                                |
 | Weak            | `--color-border-weak`    | `border-border-weak`           |
 | Subtle          | `--color-border-subtle`  | `border-border-subtle`         |
@@ -495,7 +308,6 @@ const iconSize = iconSizeMap[size ?? "md"];
 | Primary         | `--color-brand`          | `bg-brand`, `text-brand`       |
 | Strong          | `--color-brand-strong`   | `bg-brand-strong`              |
 | Emphasis        | `--color-brand-emphasis` | `bg-brand-emphasis`            |
-| Weak            | `--color-brand-weak`     | `bg-brand-weak`                |
 | **Status**      |                          |                                |
 | Positive        | `--color-positive`       | `bg-positive`, `text-positive` |
 | Negative        | `--color-negative`       | `bg-negative`, `text-negative` |
@@ -544,6 +356,63 @@ const iconSize = iconSizeMap[size ?? "md"];
 
 ---
 
+## Accessibility Requirements
+
+### Keyboard & Focus
+
+- MUST: Full keyboard support per [WAI-ARIA APG](https://www.w3.org/WAI/ARIA/apg/patterns/)
+- MUST: Visible focus rings using `focus-visible:ring-2 focus-visible:ring-brand`
+- MUST: Trap focus in modals/dialogs; return focus on close
+
+### Touch Targets
+
+- MUST: Hit target ≥24px (mobile ≥44px)
+- MUST: Use `h-control-xs` (24px) as minimum interactive size
+
+### Form Inputs
+
+- MUST: Mobile input font-size ≥16px (prevents iOS zoom)
+- MUST: Use correct `type` and `inputmode` attributes
+- MUST: Errors inline next to fields
+- MUST: `disabled:pointer-events-none disabled:opacity-disabled`
+- NEVER: Block paste in inputs
+
+### General
+
+- MUST: Icon-only buttons have `aria-label`
+- MUST: Decorative elements have `aria-hidden="true"`
+- MUST: Status cues not color-only (add icons or text)
+
+---
+
+## BaseUI Data Attribute Patterns
+
+```tsx
+// Checked/Unchecked
+"data-[checked]:bg-brand";
+"data-[unchecked]:bg-muted";
+
+// Disabled
+"data-[disabled]:opacity-disabled";
+"data-[disabled]:pointer-events-none";
+
+// Highlighted (menus)
+"data-[highlighted]:bg-primary";
+
+// Open/Closed
+"data-[open]:bg-secondary";
+"data-[closed]:opacity-0";
+
+// Focus visible
+"data-[focus-visible]:ring-2";
+
+// Animation states
+"data-[starting-style]:opacity-0 data-[starting-style]:scale-95";
+"data-[ending-style]:opacity-0 data-[ending-style]:scale-95";
+```
+
+---
+
 ## Required Practices
 
 1. **Always use `cn()` for className composition**
@@ -558,7 +427,7 @@ const iconSize = iconSizeMap[size ?? "md"];
 
 ---
 
-## Forbidden
+## Forbidden Patterns
 
 | ❌ Never Do                              | ✅ Instead                              |
 | ---------------------------------------- | --------------------------------------- |
@@ -567,32 +436,26 @@ const iconSize = iconSizeMap[size ?? "md"];
 | `text-white` Tailwind defaults           | `text-fg-inverse` or `text-fg-on-brand` |
 | `style={{ ... }}` inline styles          | Tailwind classes                        |
 | `import { tv } from 'tailwind-variants'` | `import { tv } from '@/lib/utils'`      |
-| `import { twMerge }`                     | Don't use tailwind-merge                |
 | `<button>` native elements               | `<Button>` from Base UI                 |
 | Missing `displayName`                    | Always set after forwardRef             |
 | Missing disabled styles                  | Always include `disabled:` states       |
 
 ---
 
-## File Structure
+## Completion Checklist
 
-```
-src/
-├── lib/
-│   └── utils.ts              # cn() and tv() exports
-└── components/
-    └── ui/
-        ├── button.tsx
-        ├── input.tsx
-        ├── checkbox.tsx
-        ├── radio.tsx
-        ├── switch.tsx
-        ├── select.tsx
-        ├── dialog.tsx
-        ├── avatar.tsx
-        ├── badge.tsx
-        └── index.ts          # barrel export
-```
+Before marking a component complete:
+
+- [ ] Uses only design tokens (no arbitrary values)
+- [ ] Has `displayName` set
+- [ ] Forwards ref properly
+- [ ] Exports TypeScript interface
+- [ ] All states styled via `data-*` attributes
+- [ ] Focus visible ring implemented
+- [ ] Disabled state styled
+- [ ] Keyboard accessible (Enter, Space, Escape as needed)
+- [ ] Touch target ≥24px
+- [ ] Added to `src/components/ui/index.ts`
 
 ---
 
@@ -600,5 +463,4 @@ src/
 
 - [Base UI Documentation](https://base-ui.com/react/overview/quick-start)
 - [Base UI Styling Guide](https://base-ui.com/react/handbook/styling)
-- [Base UI for LLMs](https://base-ui.com/llms.txt)
 - [Tailwind Variants Documentation](https://www.tailwind-variants.org/)
