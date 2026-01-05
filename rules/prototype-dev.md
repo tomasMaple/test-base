@@ -267,14 +267,31 @@ import { Badge, Pill } from "@/components/ui";
 
 ### TokenLogo
 
+**CRITICAL**: The `token` prop MUST match the token name displayed in the UI.
+
 ```tsx
 import { TokenLogo } from "@/components/ui";
 
-<TokenLogo symbol="USDC" size="md" />
-<TokenLogo symbol="ETH" size="lg" />
+// If displaying "syrupUSDC" in text, use token="syrupusdc"
+<div className="flex items-center gap-75">
+  <TokenLogo token="syrupusdc" size="sm" />
+  <div>
+    <span className="text-label-sm">300.00</span>
+    <span className="text-body-xs text-fg-secondary">syrupUSDC</span>
+  </div>
+</div>
 
-// Sizes: 2xs, xs, sm, md, lg, xl, 2xl
+// If displaying "Pendle" as a protocol name, use token="pendle"
+<div className="flex items-center gap-75">
+  <TokenLogo token="pendle" size="md" />
+  <span className="text-label-md">Explore Pendle</span>
+</div>
+
+// Sizes: 3xs, 2xs, xs, sm, md, lg, xl, 2xl
 ```
+
+**Available tokens** (maps to `/public/logos/{token}.svg`):
+`aave`, `arbitrium`, `balancer`, `btc`, `cbbtc`, `cowswap`, `dai`, `drips`, `eth`, `fluid`, `hype`, `jitosol`, `jupiter`, `kamino`, `lbtc`, `lombard`, `maple`, `midas`, `morpho`, `orca`, `pendle`, `plasma`, `sky`, `sol`, `spark`, `superform`, `susde`, `syrupbtc`, `syrupusdc`, `syrupusdt`, `teth`, `uni`, `usdc`, `usde`, `usds`, `usdt`, `usdt0`, `usr`, `ustb`, `wbtc`, `weth`, `xrp`
 
 ### Dialog
 
@@ -649,6 +666,7 @@ Use verb + noun pattern in sentence case:
 ### ❌ DON'T
 
 - Use raw `<button>`, `<a>`, `<input>` elements
+- Use borders on `bg-surface` cards placed directly on `bg-canvas` — the surface color provides enough contrast
 - Use emojis — use Lucide icons instead
 - Use `shadow-*` classes — shadows come from components like `DashboardCard`
 - Use `border-border-strong` — reserved for high-contrast only

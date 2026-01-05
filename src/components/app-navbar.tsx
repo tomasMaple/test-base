@@ -11,9 +11,7 @@ export function AppNavbar() {
         <Navbar.Logo />
         <Navbar.Links>
           <Navbar.Link href="/">Landing</Navbar.Link>
-          <Navbar.Link href="/templates/portfolio">Portfolio</Navbar.Link>
           <Navbar.Link href="/templates/test">Test</Navbar.Link>
-          <Navbar.Link href="/templates/borrow-test">Borrow Test</Navbar.Link>
           <Navbar.Link href="/overview/navbar">Overview</Navbar.Link>
         </Navbar.Links>
       </Navbar.Brand>
