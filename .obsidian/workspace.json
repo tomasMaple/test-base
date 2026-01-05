@@ -178,6 +178,13 @@
   },
   "active": "03b7c684862b816f",
   "lastOpenFiles": [
+    "node_modules/@visx/mock-data/node_modules/@types/d3-random/package.json",
+    "node_modules/@visx/mock-data/node_modules/@types/d3-random/index.d.ts",
+    "node_modules/@visx/mock-data/node_modules/@types/d3-random/README.md",
+    "node_modules/@visx/mock-data/node_modules/@types/d3-random/LICENSE",
+    "node_modules/@visx/mock-data/node_modules/@types/d3-random",
+    "node_modules/@visx/mock-data/node_modules/@types",
+    "node_modules/@visx/mock-data/node_modules",
     "src/app/layouts-test/[id]/page.tsx",
     "src/app/layouts-test/[id]",
     "src/app/layouts-test/page.tsx",
