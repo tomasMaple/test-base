@@ -6,27 +6,7 @@ A design system template for creating UI prototypes with AI assistance.
 
 ## Getting Started (For Non-Developers)
 
-### Step 1: Install Required Software
-
-Before starting, you need to install two things on your computer:
-
-#### 1.1 Install Node.js
-
-1. Go to [nodejs.org](https://nodejs.org)
-2. Download the **LTS** version (the button on the left)
-3. Run the installer and follow the prompts
-4. Restart your computer after installation
-
-#### 1.2 Install a Code Editor with AI
-
-Choose one of these AI-powered code editors:
-
-| Editor                   | Best For     | Download                                               |
-| ------------------------ | ------------ | ------------------------------------------------------ |
-| **Cursor** (Recommended) | Beginners    | [cursor.com](https://cursor.com)                       |
-| **VS Code + Copilot**    | GitHub users | [code.visualstudio.com](https://code.visualstudio.com) |
-
----
+### Step 1: Hey
 
 ### Step 2: Download This Template
 
