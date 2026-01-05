@@ -639,6 +639,9 @@ Use verb + noun pattern in sentence case:
 - Use `Link` for navigation, not `<a>` elements
 - Use design tokens for all colors, spacing, typography
 - Use sentence case for all UI text
+- Use Lucide icons (from `lucide-react`)
+- Use `border-border-weak` for dividers
+- Use `border-border-weak` → `hover:border-border-subtle` for interactive elements
 - Create realistic mock data
 - Build complete, polished prototypes
 - Add `aria-label` to icon-only buttons
@@ -646,6 +649,10 @@ Use verb + noun pattern in sentence case:
 ### ❌ DON'T
 
 - Use raw `<button>`, `<a>`, `<input>` elements
+- Use emojis — use Lucide icons instead
+- Use `shadow-*` classes — shadows come from components like `DashboardCard`
+- Use `border-border-strong` — reserved for high-contrast only
+- Add a Navbar in pages — it's already in root layout (`AppNavbar`)
 - Use `font-mono` or custom fonts
 - Use arbitrary values (`h-[32px]`, `bg-[#fff]`)
 - Use Tailwind defaults (`bg-blue-500`, `text-gray-900`)
