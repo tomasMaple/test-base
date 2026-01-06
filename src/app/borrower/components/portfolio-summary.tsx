@@ -51,6 +51,7 @@ interface GroupedCardProps {
   highlighted?: boolean
   clickable?: boolean
   onClick?: () => void
+  buttonLabel?: string
   className?: string
 }
 
@@ -60,47 +61,37 @@ function GroupedCard({
   highlighted = false,
   clickable = false,
   onClick,
+  buttonLabel,
   className,
 }: GroupedCardProps) {
-  const content = (
-    <>
-      <span className={cn('text-label-xs uppercase tracking-wide', highlighted ? 'text-negative' : 'text-fg-muted')}>
-        {title}
-      </span>
-      <div className="mt-75 space-y-50">
-        {children}
-      </div>
-    </>
-  )
-
-  if (clickable && onClick) {
-    return (
-      <button
-        onClick={onClick}
-        className={cn(
-          'flex-1 rounded-xl p-125 border text-left transition-all cursor-pointer',
-          highlighted 
-            ? 'bg-negative-subtle border-negative hover:bg-negative-subtle/80' 
-            : 'bg-surface border-border-subtle hover:border-border-strong',
-          className
-        )}
-      >
-        {content}
-      </button>
-    )
-  }
-
   return (
     <div
       className={cn(
-        'flex-1 rounded-xl p-125 border',
-        highlighted 
-          ? 'bg-negative-subtle border-negative' 
+        'flex-1 rounded-xl p-125 border flex flex-col',
+        highlighted
+          ? 'bg-negative-subtle border-negative'
           : 'bg-surface border-border-subtle',
         className
       )}
     >
-      {content}
+      <span className={cn('text-label-xs uppercase tracking-wide', highlighted ? 'text-negative' : 'text-fg-muted')}>
+        {title}
+      </span>
+      <div className="mt-75 space-y-50 flex-1">
+        {children}
+      </div>
+      {clickable && onClick ? (
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onClick}
+          className="w-full mt-100"
+        >
+          {buttonLabel || 'View details'}
+        </Button>
+      ) : (
+        <div className="h-control-sm mt-100" />
+      )}
     </div>
   )
 }
@@ -419,6 +410,7 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
           highlighted={hasOverdueInterest}
           clickable={true}
           onClick={() => setShowInterestModal(true)}
+          buttonLabel="Pay Interest"
         >
           {hasOverdueInterest ? (
             <>
@@ -443,12 +435,13 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
           )}
         </GroupedCard>
 
-        {/* Card 3: Margin Calls - shows active count + nearest trigger */}
+        {/* Card 3: Margin Calls - shows active count + next trigger */}
         <GroupedCard
           title="Margin Calls"
           highlighted={hasActiveMarginCalls}
           clickable={true}
           onClick={() => setShowMarginCallModal(true)}
+          buttonLabel="View Details"
         >
           <div className="flex items-baseline justify-between">
             <span className={cn(
@@ -459,7 +452,7 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
             </span>
           </div>
           <div className="pt-25 border-t border-border-subtle">
-            <p className="text-label-xs text-fg-muted mb-25">Nearest trigger</p>
+            <p className="text-label-xs text-fg-muted mb-25">Next Trigger</p>
             {data.nearestMarginCall ? (
               <p className="text-label-md font-medium text-fg-primary">
                 {data.nearestMarginCall.collateralType.toUpperCase()} at{' '}

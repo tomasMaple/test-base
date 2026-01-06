@@ -35,8 +35,8 @@ export const mockLoans: Loan[] = [
     currentLtv: 45,
     marginCallLtv: 70,
     liquidationLtv: 85,
-    marginCallPrice: 62700,
-    liquidationPrice: 51500,
+    marginCallPrice: 62498, // 5000000 / (114.29 * 0.70)
+    liquidationPrice: 51469, // 5000000 / (114.29 * 0.85)
     currentCollateralPrice: CURRENT_PRICES.btc,
     interestDueDate: daysFromNow(9),
     interestAmountUsd: 41667,
@@ -58,8 +58,8 @@ export const mockLoans: Loan[] = [
     currentLtv: 57,
     marginCallLtv: 70,
     liquidationLtv: 85,
-    marginCallPrice: 2737,
-    liquidationPrice: 2300,
+    marginCallPrice: 2793, // 8500000 / (4347.83 * 0.70)
+    liquidationPrice: 2300, // 8500000 / (4347.83 * 0.85)
     currentCollateralPrice: CURRENT_PRICES.eth,
     interestDueDate: daysFromNow(15),
     interestAmountUsd: 70833,
@@ -81,8 +81,8 @@ export const mockLoans: Loan[] = [
     currentLtv: 72,
     marginCallLtv: 70,
     liquidationLtv: 85,
-    marginCallPrice: 164,
-    liquidationPrice: 138,
+    marginCallPrice: 189, // 25000000 / (189189.19 * 0.70)
+    liquidationPrice: 155, // 25000000 / (189189.19 * 0.85)
     currentCollateralPrice: CURRENT_PRICES.sol,
     interestDueDate: daysFromNow(3),
     interestAmountUsd: 208333,
@@ -106,8 +106,8 @@ export const mockLoans: Loan[] = [
     currentLtv: 60,
     marginCallLtv: 70,
     liquidationLtv: 85,
-    marginCallPrice: 83500,
-    liquidationPrice: 68800,
+    marginCallPrice: 83571, // 12000000 / (205.13 * 0.70)
+    liquidationPrice: 68823, // 12000000 / (205.13 * 0.85)
     currentCollateralPrice: CURRENT_PRICES.btc,
     interestDueDate: daysFromNow(21),
     interestAmountUsd: 100000,
@@ -129,8 +129,8 @@ export const mockLoans: Loan[] = [
     currentLtv: 50,
     marginCallLtv: 70,
     liquidationLtv: 85,
-    marginCallPrice: 2415,
-    liquidationPrice: 2029,
+    marginCallPrice: 2464, // 15000000 / (8695.65 * 0.70)
+    liquidationPrice: 2029, // 15000000 / (8695.65 * 0.85)
     currentCollateralPrice: CURRENT_PRICES.eth,
     interestDueDate: daysFromNow(12),
     interestAmountUsd: 125000,

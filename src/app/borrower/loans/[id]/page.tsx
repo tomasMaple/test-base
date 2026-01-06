@@ -571,7 +571,7 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
         </header>
 
         <main className="pb-200 space-y-150">
-          {/* Margin call alert (if active) - full width above columns */}
+          {/* Margin call alert (if active) - full width above everything */}
           {loan.status === 'margin-call' && loan.marginCallDeadline && (
             <div className="bg-negative-subtle border border-negative rounded-xl p-150">
               <div className="flex items-start gap-100">
@@ -593,76 +593,180 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-150 items-start">
-            {/* Left column - Tabs */}
-            <div className="lg:col-span-2">
-              <Tabs defaultValue="summary">
-                <TabsList className="mb-150">
-                  <TabsTrigger value="summary">Summary</TabsTrigger>
-                  <TabsTrigger value="history">History</TabsTrigger>
-                  <TabsTrigger value="terms">Loan terms</TabsTrigger>
-                </TabsList>
+          {/* Tabs - full width */}
+          <Tabs defaultValue="summary">
+            <TabsList className="mb-150">
+              <TabsTrigger value="summary">Summary</TabsTrigger>
+              <TabsTrigger value="history">History</TabsTrigger>
+              <TabsTrigger value="terms">Loan terms</TabsTrigger>
+            </TabsList>
 
-                <TabsPanel value="summary">
+            {/* Tab panels with two-column layout */}
+            <TabsPanel value="summary">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
+                {/* Left column - Summary content */}
+                <div className="lg:col-span-2">
                   <SummaryTab loan={loan} />
-                </TabsPanel>
+                </div>
 
-                <TabsPanel value="history">
+                {/* Right column - Loan info and Actions */}
+                <div className="space-y-150">
+                  {/* Loan header card */}
+                  <Card>
+                    <div className="flex items-center justify-between mb-100">
+                      <h2 className="text-heading-h6 text-fg-primary">
+                        Loan #{loan.id.split('-')[1]}
+                      </h2>
+                      <Pill
+                        type={status.type}
+                        appearance="subtle"
+                        size="24"
+                        beforeIcon={status.icon}
+                      >
+                        {status.label}
+                      </Pill>
+                    </div>
+                    <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
+                  </Card>
+
+                  {/* Actions */}
+                  <Card>
+                    <h3 className="text-label-sm font-medium text-fg-secondary mb-100 uppercase tracking-wide">
+                      Actions
+                    </h3>
+                    <div className="space-y-75">
+                      <ActionItem
+                        icon={<CreditCard className="size-icon-lg" />}
+                        label="Pay Interest"
+                      />
+                      <ActionItem
+                        icon={<Plus className="size-icon-lg" />}
+                        label="Add Collateral"
+                      />
+                      <ActionItem
+                        icon={<FileText className="size-icon-lg" />}
+                        label="Give Notice to Repay"
+                      />
+                      <ActionItem
+                        icon={<ArrowDownLeft className="size-icon-lg" />}
+                        label="Request Collateral Back"
+                      />
+                    </div>
+                  </Card>
+                </div>
+              </div>
+            </TabsPanel>
+
+            <TabsPanel value="history">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
+                {/* Left column - History content */}
+                <div className="lg:col-span-2">
                   <HistoryTab payments={paymentHistory} />
-                </TabsPanel>
+                </div>
 
-                <TabsPanel value="terms">
+                {/* Right column - Loan info and Actions */}
+                <div className="space-y-150">
+                  {/* Loan header card */}
+                  <Card>
+                    <div className="flex items-center justify-between mb-100">
+                      <h2 className="text-heading-h6 text-fg-primary">
+                        Loan #{loan.id.split('-')[1]}
+                      </h2>
+                      <Pill
+                        type={status.type}
+                        appearance="subtle"
+                        size="24"
+                        beforeIcon={status.icon}
+                      >
+                        {status.label}
+                      </Pill>
+                    </div>
+                    <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
+                  </Card>
+
+                  {/* Actions */}
+                  <Card>
+                    <h3 className="text-label-sm font-medium text-fg-secondary mb-100 uppercase tracking-wide">
+                      Actions
+                    </h3>
+                    <div className="space-y-75">
+                      <ActionItem
+                        icon={<CreditCard className="size-icon-lg" />}
+                        label="Pay Interest"
+                      />
+                      <ActionItem
+                        icon={<Plus className="size-icon-lg" />}
+                        label="Add Collateral"
+                      />
+                      <ActionItem
+                        icon={<FileText className="size-icon-lg" />}
+                        label="Give Notice to Repay"
+                      />
+                      <ActionItem
+                        icon={<ArrowDownLeft className="size-icon-lg" />}
+                        label="Request Collateral Back"
+                      />
+                    </div>
+                  </Card>
+                </div>
+              </div>
+            </TabsPanel>
+
+            <TabsPanel value="terms">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
+                {/* Left column - Loan terms content */}
+                <div className="lg:col-span-2">
                   <LoanTermsTab loan={loan} />
-                </TabsPanel>
-              </Tabs>
-            </div>
+                </div>
 
-            {/* Right column - Actions - aligned with tab panel content */}
-            <div className="space-y-150 lg:pt-[58px]">
-            {/* Loan header card */}
-            <Card>
-              <div className="flex items-center justify-between mb-100">
-                <h2 className="text-heading-h6 text-fg-primary">
-                  Loan #{loan.id.split('-')[1]}
-                </h2>
-                <Pill
-                  type={status.type}
-                  appearance="subtle"
-                  size="24"
-                  beforeIcon={status.icon}
-                >
-                  {status.label}
-                </Pill>
-              </div>
-              <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
-            </Card>
+                {/* Right column - Loan info and Actions */}
+                <div className="space-y-150">
+                  {/* Loan header card */}
+                  <Card>
+                    <div className="flex items-center justify-between mb-100">
+                      <h2 className="text-heading-h6 text-fg-primary">
+                        Loan #{loan.id.split('-')[1]}
+                      </h2>
+                      <Pill
+                        type={status.type}
+                        appearance="subtle"
+                        size="24"
+                        beforeIcon={status.icon}
+                      >
+                        {status.label}
+                      </Pill>
+                    </div>
+                    <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
+                  </Card>
 
-            {/* Actions */}
-            <Card>
-              <h3 className="text-label-sm font-medium text-fg-secondary mb-100 uppercase tracking-wide">
-                Actions
-              </h3>
-              <div className="space-y-75">
-                <ActionItem
-                  icon={<CreditCard className="size-icon-lg" />}
-                  label="Pay Interest"
-                />
-                <ActionItem
-                  icon={<Plus className="size-icon-lg" />}
-                  label="Add Collateral"
-                />
-                <ActionItem
-                  icon={<FileText className="size-icon-lg" />}
-                  label="Give Notice to Repay"
-                />
-                <ActionItem
-                  icon={<ArrowDownLeft className="size-icon-lg" />}
-                  label="Request Collateral Back"
-                />
+                  {/* Actions */}
+                  <Card>
+                    <h3 className="text-label-sm font-medium text-fg-secondary mb-100 uppercase tracking-wide">
+                      Actions
+                    </h3>
+                    <div className="space-y-75">
+                      <ActionItem
+                        icon={<CreditCard className="size-icon-lg" />}
+                        label="Pay Interest"
+                      />
+                      <ActionItem
+                        icon={<Plus className="size-icon-lg" />}
+                        label="Add Collateral"
+                      />
+                      <ActionItem
+                        icon={<FileText className="size-icon-lg" />}
+                        label="Give Notice to Repay"
+                      />
+                      <ActionItem
+                        icon={<ArrowDownLeft className="size-icon-lg" />}
+                        label="Request Collateral Back"
+                      />
+                    </div>
+                  </Card>
+                </div>
               </div>
-            </Card>
-          </div>
-        </div>
+            </TabsPanel>
+          </Tabs>
       </main>
       </div>
     </div>
