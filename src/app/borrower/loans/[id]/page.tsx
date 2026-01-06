@@ -63,17 +63,21 @@ function formatDate(date: Date): string {
   })
 }
 
-function formatCountdown(date: Date): string {
-  const now = new Date()
-  const diffMs = date.getTime() - now.getTime()
-  const hours = Math.floor(diffMs / (1000 * 60 * 60))
-  const days = Math.floor(hours / 24)
-  const remainingHours = hours % 24
-
-  if (days > 0) {
-    return `${days}d ${remainingHours}h`
-  }
-  return `${hours}h`
+function formatDeadline(date: Date): string {
+  const day = date.getDate()
+  const suffix = day === 1 || day === 21 || day === 31 ? 'st' 
+    : day === 2 || day === 22 ? 'nd'
+    : day === 3 || day === 23 ? 'rd'
+    : 'th'
+  
+  const month = date.toLocaleDateString('en-US', { month: 'short' })
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  const ampm = hours >= 12 ? 'pm' : 'am'
+  const hour12 = hours % 12 || 12
+  const minuteStr = minutes.toString().padStart(2, '0')
+  
+  return `${month} ${day}${suffix} ${hour12}:${minuteStr}${ampm}`
 }
 
 function getDaysUntil(date: Date): number {
@@ -114,7 +118,7 @@ const statusConfig: Record<
 
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('bg-surface border border-border-subtle rounded-xl p-150', className)}>
+    <div className={cn('bg-surface border border-border-subtle rounded-xl p-150 overflow-visible', className)}>
       {children}
     </div>
   )
@@ -217,36 +221,11 @@ function SummaryTab({ loan }: SummaryTabProps) {
   const minPrice = Math.floor(loan.liquidationPrice * 0.7)
   const maxPrice = Math.ceil(loan.currentCollateralPrice * 1.3)
 
-  const isMarginCall = loan.status === 'margin-call'
   const daysUntilInterest = getDaysUntil(loan.interestDueDate)
   const isOverdue = loan.status === 'overdue'
 
   return (
     <div className="space-y-150">
-      {/* Margin call alert (if active) */}
-      {isMarginCall && loan.marginCallDeadline && (
-        <div className="bg-negative-subtle border border-negative rounded-xl p-150">
-          <div className="flex items-start gap-100">
-            <AlertTriangle className="size-icon-xl text-negative shrink-0 mt-12" />
-            <div className="flex-1">
-              <h3 className="text-label-md font-medium text-negative mb-25">
-                Margin call active
-              </h3>
-              <p className="text-body-sm text-negative mb-100">
-                Add {formatCurrency(loan.marginCallRequiredUsd || 0)} in collateral
-                to restore your LTV to safe levels.
-              </p>
-              <div className="flex items-center gap-100">
-                <span className="text-label-sm text-negative">Cure by:</span>
-                <Pill type="negative" appearance="default" size="24">
-                  {formatCountdown(loan.marginCallDeadline)}
-                </Pill>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Position overview */}
       <Card>
         <CardHeader title="Position overview" />
@@ -278,7 +257,7 @@ function SummaryTab({ loan }: SummaryTabProps) {
         </div>
 
         {/* LTV Display */}
-        <div className="border-t border-border-subtle pt-150">
+        <div className="border-t border-border-subtle pt-150 overflow-visible">
           <LtvDisplay
             currentLtv={loan.currentLtv}
             marginCallLtv={loan.marginCallLtv}
@@ -310,9 +289,42 @@ function SummaryTab({ loan }: SummaryTabProps) {
         </Card>
       </div>
 
-      {/* LTV Simulator */}
+      {/* LTV Calculator */}
       <Card>
-        <CardHeader title="LTV simulator" />
+        <div className="flex items-center justify-between mb-100">
+          <CardHeader title="LTV calculator" />
+          <div className="flex gap-50">
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => setSimulatedPrice(loan.currentCollateralPrice)}
+            >
+              Current
+            </Button>
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => {
+                // Calculate price that gives exactly marginCallLtv
+                const priceAtMarginCall = loan.principalUsd / (loan.collateralAmount * loan.marginCallLtv / 100)
+                setSimulatedPrice(priceAtMarginCall)
+              }}
+            >
+              Margin Call
+            </Button>
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => {
+                // Calculate price that gives exactly liquidationLtv
+                const priceAtLiquidation = loan.principalUsd / (loan.collateralAmount * loan.liquidationLtv / 100)
+                setSimulatedPrice(priceAtLiquidation)
+              }}
+            >
+              Liquidation
+            </Button>
+          </div>
+        </div>
         <div className="space-y-100">
           <div className="flex items-center justify-between">
             <span className="text-label-sm text-fg-muted">
@@ -346,31 +358,7 @@ function SummaryTab({ loan }: SummaryTabProps) {
             className="w-full h-2 bg-secondary rounded-full appearance-none cursor-pointer accent-brand"
           />
 
-          <div className="flex gap-50">
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={() => setSimulatedPrice(loan.currentCollateralPrice)}
-            >
-              Current
-            </Button>
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={() => setSimulatedPrice(loan.marginCallPrice)}
-            >
-              MC price
-            </Button>
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={() => setSimulatedPrice(loan.liquidationPrice)}
-            >
-              Liq price
-            </Button>
-          </div>
-
-          <div className="bg-primary rounded-lg p-100">
+          <div className="bg-primary rounded-lg p-100 overflow-visible">
             <div className="flex items-center justify-between mb-50">
               <span className="text-label-sm text-fg-muted">Simulated LTV</span>
               <span
@@ -582,33 +570,55 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
           </NextLink>
         </header>
 
-        <main className="pb-200">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
-          {/* Left column - Tabs */}
-          <div className="lg:col-span-2">
-            <Tabs defaultValue="summary">
-              <TabsList className="mb-150">
-                <TabsTrigger value="summary">Summary</TabsTrigger>
-                <TabsTrigger value="history">History</TabsTrigger>
-                <TabsTrigger value="terms">Loan terms</TabsTrigger>
-              </TabsList>
+        <main className="pb-200 space-y-150">
+          {/* Margin call alert (if active) - full width above columns */}
+          {loan.status === 'margin-call' && loan.marginCallDeadline && (
+            <div className="bg-negative-subtle border border-negative rounded-xl p-150">
+              <div className="flex items-start gap-100">
+                <AlertTriangle className="size-icon-xl text-negative shrink-0 mt-12" />
+                <div className="flex-1">
+                  <h3 className="text-label-md font-medium text-negative mb-25">
+                    Margin call active
+                  </h3>
+                  <p className="text-body-sm text-negative mb-100">
+                    Add {formatCurrency(loan.marginCallRequiredUsd || 0)} in collateral
+                    to restore your LTV to safe levels.
+                  </p>
+                  <p className="text-label-sm text-negative">
+                    Cure by:{' '}
+                    <span className="font-semibold">{formatDeadline(loan.marginCallDeadline)}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
-              <TabsPanel value="summary">
-                <SummaryTab loan={loan} />
-              </TabsPanel>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-150 items-start">
+            {/* Left column - Tabs */}
+            <div className="lg:col-span-2">
+              <Tabs defaultValue="summary">
+                <TabsList className="mb-150">
+                  <TabsTrigger value="summary">Summary</TabsTrigger>
+                  <TabsTrigger value="history">History</TabsTrigger>
+                  <TabsTrigger value="terms">Loan terms</TabsTrigger>
+                </TabsList>
 
-              <TabsPanel value="history">
-                <HistoryTab payments={paymentHistory} />
-              </TabsPanel>
+                <TabsPanel value="summary">
+                  <SummaryTab loan={loan} />
+                </TabsPanel>
 
-              <TabsPanel value="terms">
-                <LoanTermsTab loan={loan} />
-              </TabsPanel>
-            </Tabs>
-          </div>
+                <TabsPanel value="history">
+                  <HistoryTab payments={paymentHistory} />
+                </TabsPanel>
 
-          {/* Right column - Actions */}
-          <div className="space-y-150">
+                <TabsPanel value="terms">
+                  <LoanTermsTab loan={loan} />
+                </TabsPanel>
+              </Tabs>
+            </div>
+
+            {/* Right column - Actions - aligned with tab panel content */}
+            <div className="space-y-150 lg:pt-[58px]">
             {/* Loan header card */}
             <Card>
               <div className="flex items-center justify-between mb-100">
@@ -636,7 +646,6 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
                 <ActionItem
                   icon={<CreditCard className="size-icon-lg" />}
                   label="Pay Interest"
-                  highlighted={true}
                 />
                 <ActionItem
                   icon={<Plus className="size-icon-lg" />}

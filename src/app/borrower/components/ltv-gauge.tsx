@@ -39,57 +39,61 @@ export function LtvGauge({
     danger: 'bg-negative',
   }
 
-  const heightClass = {
-    sm: 'h-2',
-    md: 'h-3',
-    lg: 'h-4',
-  }[size]
-
-  // Make gates very prominent
-  const markerHeight = {
-    sm: 'h-8',
-    md: 'h-10',
-    lg: 'h-12',
-  }[size]
-
-  const markerWidth = {
-    sm: 'w-1',
-    md: 'w-1.5',
-    lg: 'w-2',
-  }[size]
+  // Use pixel values for guaranteed sizing
+  const barHeight = { sm: 8, md: 12, lg: 16 }[size]
+  const markerH = { sm: 20, md: 24, lg: 32 }[size]
+  const markerW = { sm: 6, md: 8, lg: 10 }[size]
+  const liqMarkerW = { sm: 8, md: 10, lg: 12 }[size]
 
   return (
     <div className={cn('w-full', className)}>
       {/* Gauge container */}
-      <div className="relative py-25">
-        {/* Background track */}
-        <div className={cn('w-full rounded-full bg-secondary', heightClass)}>
+      <div 
+        className="relative w-full"
+        style={{ height: markerH, overflow: 'visible' }}
+      >
+        {/* Background track - vertically centered */}
+        <div 
+          className="absolute left-0 right-0 rounded-full bg-secondary"
+          style={{ 
+            height: barHeight, 
+            top: '50%', 
+            transform: 'translateY(-50%)' 
+          }}
+        >
           {/* Filled portion */}
           <div
-            className={cn(
-              'rounded-full transition-all duration-standard',
-              heightClass,
-              barColors[status]
-            )}
-            style={{ width: `${Math.min(currentLtv, 100)}%` }}
+            className={cn('rounded-full transition-all duration-standard', barColors[status])}
+            style={{ 
+              width: `${Math.min(currentLtv, 100)}%`,
+              height: barHeight
+            }}
           />
         </div>
 
         {/* Margin call threshold gate - red */}
         <div
-          className="absolute top-0 bottom-0 flex items-center"
-          style={{ left: `${marginCallLtv}%`, transform: 'translateX(-50%)' }}
-        >
-          <div className={cn('rounded-sm bg-negative', markerHeight, markerWidth)} />
-        </div>
+          className="absolute rounded-sm bg-negative"
+          style={{ 
+            left: `${marginCallLtv}%`, 
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: markerW,
+            height: markerH
+          }}
+        />
 
         {/* Liquidation threshold gate - darker/bolder red */}
         <div
-          className="absolute top-0 bottom-0 flex items-center"
-          style={{ left: `${liquidationLtv}%`, transform: 'translateX(-50%)' }}
-        >
-          <div className={cn('rounded-sm bg-negative-emphasis', markerHeight, 'w-2')} />
-        </div>
+          className="absolute rounded-sm bg-negative-emphasis"
+          style={{ 
+            left: `${liquidationLtv}%`, 
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: liqMarkerW,
+            height: markerH
+          }}
+        />
       </div>
 
       {/* Labels below the bar */}
@@ -138,7 +142,7 @@ export function LtvDisplay({
   }
 
   return (
-    <div className={cn('flex flex-col gap-50', className)}>
+    <div className={cn('flex flex-col gap-75 overflow-visible', className)}>
       {/* LTV Header row */}
       <div className="flex items-center justify-between">
         <div className="flex items-baseline gap-50">
@@ -150,11 +154,11 @@ export function LtvDisplay({
         <div className="flex items-center gap-100">
           <div className="flex items-center gap-25">
             <div className="w-2 h-2 rounded-sm bg-negative" />
-            <span className="text-label-sm text-fg-muted">MC {marginCallLtv}%</span>
+            <span className="text-label-sm text-fg-muted">Margin Call {marginCallLtv}%</span>
           </div>
           <div className="flex items-center gap-25">
             <div className="w-2.5 h-2.5 rounded-sm bg-negative-emphasis" />
-            <span className="text-label-sm font-medium text-fg-muted">Liq {liquidationLtv}%</span>
+            <span className="text-label-sm font-medium text-fg-muted">Liq. Level {liquidationLtv}%</span>
           </div>
         </div>
       </div>

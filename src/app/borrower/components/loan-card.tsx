@@ -107,7 +107,7 @@ export function LoanCard({ loan, className }: LoanCardProps) {
 
         {/* Row 3: Full-width LTV bar */}
         <div className="mb-100">
-          <div className="flex items-center justify-between mb-50">
+          <div className="flex items-center justify-between mb-75">
             <div className="flex items-center gap-50">
               <span className="text-label-sm text-fg-muted">LTV</span>
               <span className={cn(
@@ -120,11 +120,11 @@ export function LoanCard({ loan, className }: LoanCardProps) {
             <div className="flex items-center gap-100 text-label-sm text-fg-muted">
               <div className="flex items-center gap-50">
                 <div className="w-2 h-2 rounded-sm bg-negative" />
-                <span>MC {loan.marginCallLtv}%</span>
+                <span>Margin Call {loan.marginCallLtv}%</span>
               </div>
               <div className="flex items-center gap-50">
                 <div className="w-2.5 h-2.5 rounded-sm bg-negative-emphasis" />
-                <span className="font-medium">Liq {loan.liquidationLtv}%</span>
+                <span className="font-medium">Liq. Level {loan.liquidationLtv}%</span>
               </div>
             </div>
           </div>

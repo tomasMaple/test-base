@@ -7,6 +7,7 @@ import {
 } from './components'
 import {
   mockEntities,
+  mockLoans,
   calculatePortfolioSummary,
 } from './mock-data'
 
@@ -31,7 +32,7 @@ export default function BorrowerDashboardPage() {
 
         <main className="pb-200 space-y-200">
           {/* Portfolio summary */}
-          <PortfolioSummary data={portfolioSummary} />
+          <PortfolioSummary data={portfolioSummary} loans={mockLoans} />
 
           {/* Entity sections */}
           <div className="space-y-200">
