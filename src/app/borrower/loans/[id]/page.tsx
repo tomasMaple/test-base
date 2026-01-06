@@ -570,19 +570,20 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
 
   return (
     <div className="min-h-screen bg-canvas">
-      {/* Header */}
-      <header className="px-200 py-150">
-        <NextLink
-          href="/borrower"
-          className="inline-flex items-center gap-50 text-label-sm text-fg-muted hover:text-fg-primary transition-colors mb-100"
-        >
-          <ArrowLeft className="size-icon-md" />
-          Back to Dashboard
-        </NextLink>
-      </header>
+      <div className="max-w-7xl mx-auto px-200">
+        {/* Header */}
+        <header className="py-150">
+          <NextLink
+            href="/borrower"
+            className="inline-flex items-center gap-50 text-label-sm text-fg-muted hover:text-fg-primary transition-colors mb-100"
+          >
+            <ArrowLeft className="size-icon-md" />
+            Back to Dashboard
+          </NextLink>
+        </header>
 
-      <main className="px-200 pb-200">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
+        <main className="pb-200">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
           {/* Left column - Tabs */}
           <div className="lg:col-span-2">
             <Tabs defaultValue="summary">
@@ -654,6 +655,7 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
           </div>
         </div>
       </main>
+      </div>
     </div>
   )
 }

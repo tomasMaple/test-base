@@ -20,25 +20,27 @@ export default function BorrowerDashboardPage() {
 
   return (
     <div className="min-h-screen bg-canvas">
-      {/* Page header */}
-      <header className="px-200 py-150">
-        <h1 className="text-heading-h5 text-fg-primary">Loan Dashboard</h1>
-        <p className="text-body-sm text-fg-muted mt-25">
-          Monitor your loans across all entities
-        </p>
-      </header>
+      <div className="max-w-7xl mx-auto px-200">
+        {/* Page header */}
+        <header className="py-150">
+          <h1 className="text-heading-h5 text-fg-primary">Loan Dashboard</h1>
+          <p className="text-body-sm text-fg-muted mt-25">
+            Monitor your loans across all entities
+          </p>
+        </header>
 
-      <main className="px-200 pb-200 space-y-200">
-        {/* Portfolio summary */}
-        <PortfolioSummary data={portfolioSummary} />
+        <main className="pb-200 space-y-200">
+          {/* Portfolio summary */}
+          <PortfolioSummary data={portfolioSummary} />
 
-        {/* Entity sections */}
-        <div className="space-y-200">
-          {sortedEntities.map((entity) => (
-            <EntitySection key={entity.id} entity={entity} />
-          ))}
-        </div>
-      </main>
+          {/* Entity sections */}
+          <div className="space-y-200">
+            {sortedEntities.map((entity) => (
+              <EntitySection key={entity.id} entity={entity} />
+            ))}
+          </div>
+        </main>
+      </div>
     </div>
   )
 }
