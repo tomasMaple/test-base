@@ -152,7 +152,7 @@ const FieldDescription = React.forwardRef<HTMLParagraphElement, FieldDescription
 FieldDescription.displayName = 'FieldDescription'
 
 interface FieldControlProps
-  extends Omit<React.ComponentPropsWithoutRef<typeof BaseField.Control>, 'size'>,
+  extends React.ComponentPropsWithoutRef<typeof BaseField.Control>,
     VariantProps<typeof fieldControlVariants> {
   size?: FieldSize
 }
