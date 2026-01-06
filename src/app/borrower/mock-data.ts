@@ -23,7 +23,7 @@ export const CURRENT_PRICES = {
 // =============================================================================
 
 export const mockLoans: Loan[] = [
-  // Galaxy US - Loan 1 (Healthy, large BTC loan)
+  // Galaxy US - Loan 1 (Healthy, large BTC loan, 9 months history)
   {
     id: 'LOAN-7a3B4f2E',
     entityId: 'entity-1',
@@ -42,11 +42,14 @@ export const mockLoans: Loan[] = [
     interestAmountUsd: 41667,
     interestRate: 0.10,
     status: 'healthy',
-    startDate: daysAgo(45),
-    maturityDate: daysFromNow(315),
-    collateralWalletAddress: '0x7a3B...4f2E',
+    startDate: daysAgo(270), // 9 months ago
+    maturityDate: null, // Revolving loan with no maturity
+    recallPeriodDays: 30, // Galaxy US recall period
+    loanContractAddress: '0x7a3B4f2E8c1D9e0F3b2A5c6D7e8F9a0B1c2D3e4F',
+    borrowerWalletAddress: '0x1a2B3c4D5e6F7g8H9i0J1k2L3m4N5o6P7q8R9s0T', // Galaxy US drawdown wallet
+    collateralWalletAddress: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
   },
-  // Galaxy US - Loan 2 (Healthy, ETH loan)
+  // Galaxy US - Loan 2 (Healthy, ETH loan, 8 months history)
   {
     id: 'LOAN-9c1D8e3A',
     entityId: 'entity-1',
@@ -65,11 +68,14 @@ export const mockLoans: Loan[] = [
     interestAmountUsd: 70833,
     interestRate: 0.10,
     status: 'healthy',
-    startDate: daysAgo(30),
-    maturityDate: daysFromNow(330),
-    collateralWalletAddress: '0x9c1D...8e3A',
+    startDate: daysAgo(240), // 8 months ago
+    maturityDate: null, // Revolving loan with no maturity
+    recallPeriodDays: 30, // Galaxy US recall period
+    loanContractAddress: '0x9c1D8e3A7b4F5c2D1e0A9b8C7d6E5f4A3b2C1d8E',
+    borrowerWalletAddress: '0x1a2B3c4D5e6F7g8H9i0J1k2L3m4N5o6P7q8R9s0T', // Galaxy US drawdown wallet
+    collateralWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb4',
   },
-  // Galaxy Cayman - Loan 3 (MARGIN CALL ACTIVE)
+  // Galaxy Cayman - Loan 3 (MARGIN CALL ACTIVE, 7 months history)
   {
     id: 'LOAN-2b5F9d1C',
     entityId: 'entity-2',
@@ -90,11 +96,14 @@ export const mockLoans: Loan[] = [
     status: 'margin-call',
     marginCallDeadline: daysFromNow(2),
     marginCallRequiredUsd: 2500000,
-    startDate: daysAgo(60),
-    maturityDate: daysFromNow(300),
-    collateralWalletAddress: '0x2b5F...9d1C',
+    startDate: daysAgo(210), // 7 months ago
+    maturityDate: null, // Revolving loan with no maturity
+    recallPeriodDays: 60, // Galaxy Cayman recall period
+    loanContractAddress: '0x2b5F9d1C3e4A7f8B6c5D4e3F2a1B0c9D8e7F6a9D',
+    borrowerWalletAddress: '0x9A8b7C6d5E4f3G2h1I0j9K8l7M6n5O4p3Q2r1S0t', // Galaxy Cayman drawdown wallet
+    collateralWalletAddress: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
   },
-  // Galaxy Europe - Loan 4 (Approaching trigger)
+  // Galaxy Europe - Loan 4 (Approaching trigger, 1 year of history)
   {
     id: 'LOAN-4d7A2c8B',
     entityId: 'entity-3',
@@ -113,11 +122,14 @@ export const mockLoans: Loan[] = [
     interestAmountUsd: 100000,
     interestRate: 0.10,
     status: 'healthy',
-    startDate: daysAgo(20),
-    maturityDate: daysFromNow(340),
-    collateralWalletAddress: '0x4d7A...2c8B',
+    startDate: daysAgo(365), // Loan started 1 year ago
+    maturityDate: null, // Revolving loan with no maturity
+    recallPeriodDays: 30, // Galaxy Europe recall period
+    loanContractAddress: '0x4d7A2c8B5e1F3a6C9b0D8e7F4a5B3c2D1e0F9a2C',
+    borrowerWalletAddress: '0x5F4e3D2c1B0a9F8e7D6c5B4a3F2e1D0c9B8a7F6e', // Galaxy Europe drawdown wallet
+    collateralWalletAddress: 'bc1qa5wkgaew2dkv56kfvj49j0av5nml45x9ek9hz6',
   },
-  // Galaxy Europe - Loan 5 (Healthy)
+  // Galaxy Europe - Loan 5 (Healthy, 6 months history)
   {
     id: 'LOAN-6e9C3f5D',
     entityId: 'entity-3',
@@ -136,9 +148,12 @@ export const mockLoans: Loan[] = [
     interestAmountUsd: 125000,
     interestRate: 0.10,
     status: 'healthy',
-    startDate: daysAgo(25),
-    maturityDate: daysFromNow(335),
-    collateralWalletAddress: '0x6e9C...3f5D',
+    startDate: daysAgo(180), // 6 months ago
+    maturityDate: null, // Revolving loan with no maturity
+    recallPeriodDays: 30, // Galaxy Europe recall period
+    loanContractAddress: '0x6e9C3f5D8a2B4c1E7f0A9b3C6d5E4f2A1b0C9d3F',
+    borrowerWalletAddress: '0x5F4e3D2c1B0a9F8e7D6c5B4a3F2e1D0c9B8a7F6e', // Galaxy Europe drawdown wallet
+    collateralWalletAddress: '0x8e23Ee67d1332aD560396262C48fF9B6B144DFA5',
   },
 ]
 
@@ -169,16 +184,65 @@ export const mockEntities: LegalEntity[] = [
 // =============================================================================
 
 export const mockPaymentHistory: PaymentHistoryItem[] = [
+  // LOAN-7a3B4f2E - Galaxy US Loan 1 (Started 270 days ago - 9 months)
   {
-    id: 'pay-1',
+    id: 'draw-1',
     loanId: 'LOAN-7a3B4f2E',
-    date: daysAgo(30),
+    date: daysAgo(270), // Start date of loan - MUST BE FIRST
+    amountUsd: 5000000,
+    type: 'drawdown',
+    status: 'completed',
+  },
+  {
+    id: 'pay-1-1',
+    loanId: 'LOAN-7a3B4f2E',
+    date: daysAgo(240),
     amountUsd: 41667,
     type: 'interest',
     status: 'completed',
   },
   {
-    id: 'pay-2',
+    id: 'pay-1-2',
+    loanId: 'LOAN-7a3B4f2E',
+    date: daysAgo(210),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-1-3',
+    loanId: 'LOAN-7a3B4f2E',
+    date: daysAgo(180),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-1-4',
+    loanId: 'LOAN-7a3B4f2E',
+    date: daysAgo(150),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-1-5',
+    loanId: 'LOAN-7a3B4f2E',
+    date: daysAgo(120),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-1-6',
+    loanId: 'LOAN-7a3B4f2E',
+    date: daysAgo(90),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-1-7',
     loanId: 'LOAN-7a3B4f2E',
     date: daysAgo(60),
     amountUsd: 41667,
@@ -186,26 +250,286 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     status: 'completed',
   },
   {
-    id: 'pay-3',
+    id: 'pay-1-8',
+    loanId: 'LOAN-7a3B4f2E',
+    date: daysAgo(30),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+  },
+  // LOAN-9c1D8e3A - Galaxy US Loan 2 (Started 240 days ago - 8 months)
+  {
+    id: 'draw-2',
     loanId: 'LOAN-9c1D8e3A',
-    date: daysAgo(15),
+    date: daysAgo(240), // Start date of loan - MUST BE FIRST
+    amountUsd: 8500000,
+    type: 'drawdown',
+    status: 'completed',
+  },
+  {
+    id: 'pay-2-1',
+    loanId: 'LOAN-9c1D8e3A',
+    date: daysAgo(210),
     amountUsd: 70833,
     type: 'interest',
     status: 'completed',
   },
   {
-    id: 'pay-4',
+    id: 'pay-2-2',
+    loanId: 'LOAN-9c1D8e3A',
+    date: daysAgo(180),
+    amountUsd: 70833,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-2-3',
+    loanId: 'LOAN-9c1D8e3A',
+    date: daysAgo(150),
+    amountUsd: 70833,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-2-4',
+    loanId: 'LOAN-9c1D8e3A',
+    date: daysAgo(120),
+    amountUsd: 70833,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-2-5',
+    loanId: 'LOAN-9c1D8e3A',
+    date: daysAgo(90),
+    amountUsd: 70833,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-2-6',
+    loanId: 'LOAN-9c1D8e3A',
+    date: daysAgo(60),
+    amountUsd: 70833,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-2-7',
+    loanId: 'LOAN-9c1D8e3A',
+    date: daysAgo(30),
+    amountUsd: 70833,
+    type: 'interest',
+    status: 'completed',
+  },
+  // LOAN-2b5F9d1C - Galaxy Cayman Loan 3 (Started 210 days ago - 7 months)
+  {
+    id: 'draw-3',
     loanId: 'LOAN-2b5F9d1C',
-    date: daysAgo(25),
+    date: daysAgo(210), // Start date of loan - MUST BE FIRST
+    amountUsd: 25000000,
+    type: 'drawdown',
+    status: 'completed',
+  },
+  {
+    id: 'pay-3-1',
+    loanId: 'LOAN-2b5F9d1C',
+    date: daysAgo(180),
     amountUsd: 208333,
     type: 'interest',
     status: 'completed',
   },
   {
-    id: 'pay-5',
+    id: 'pay-3-2',
+    loanId: 'LOAN-2b5F9d1C',
+    date: daysAgo(150),
+    amountUsd: 208333,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-3-3',
+    loanId: 'LOAN-2b5F9d1C',
+    date: daysAgo(120),
+    amountUsd: 208333,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-3-4',
+    loanId: 'LOAN-2b5F9d1C',
+    date: daysAgo(90),
+    amountUsd: 208333,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-3-5',
+    loanId: 'LOAN-2b5F9d1C',
+    date: daysAgo(60),
+    amountUsd: 208333,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-3-6',
+    loanId: 'LOAN-2b5F9d1C',
+    date: daysAgo(30),
+    amountUsd: 208333,
+    type: 'interest',
+    status: 'completed',
+  },
+  // LOAN-4d7A2c8B - Galaxy Europe Loan 4 (Started 365 days ago - full year history)
+  {
+    id: 'draw-4',
     loanId: 'LOAN-4d7A2c8B',
-    date: daysAgo(10),
+    date: daysAgo(365), // Start date of loan - MUST BE FIRST
+    amountUsd: 12000000,
+    type: 'drawdown',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-1',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(335),
     amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-2',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(305),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-3',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(275),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-4',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(245),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-5',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(215),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-6',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(185),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-7',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(155),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-8',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(125),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-9',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(95),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-10',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(65),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-11',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(35),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-12',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(5),
+    amountUsd: 100000,
+    type: 'interest',
+    status: 'completed',
+  },
+  // LOAN-6e9C3f5D - Galaxy Europe Loan 5 (Started 180 days ago - 6 months)
+  {
+    id: 'draw-5',
+    loanId: 'LOAN-6e9C3f5D',
+    date: daysAgo(180), // Start date of loan - MUST BE FIRST
+    amountUsd: 15000000,
+    type: 'drawdown',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-1',
+    loanId: 'LOAN-6e9C3f5D',
+    date: daysAgo(150),
+    amountUsd: 125000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-2',
+    loanId: 'LOAN-6e9C3f5D',
+    date: daysAgo(120),
+    amountUsd: 125000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-3',
+    loanId: 'LOAN-6e9C3f5D',
+    date: daysAgo(90),
+    amountUsd: 125000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-4',
+    loanId: 'LOAN-6e9C3f5D',
+    date: daysAgo(60),
+    amountUsd: 125000,
+    type: 'interest',
+    status: 'completed',
+  },
+  {
+    id: 'pay-5-5',
+    loanId: 'LOAN-6e9C3f5D',
+    date: daysAgo(30),
+    amountUsd: 125000,
     type: 'interest',
     status: 'completed',
   },
@@ -220,7 +544,9 @@ export function getLoanById(id: string): Loan | undefined {
 }
 
 export function getPaymentHistoryForLoan(loanId: string): PaymentHistoryItem[] {
-  return mockPaymentHistory.filter((p) => p.loanId === loanId)
+  return mockPaymentHistory
+    .filter((p) => p.loanId === loanId)
+    .sort((a, b) => b.date.getTime() - a.date.getTime()) // Sort by date descending (most recent first)
 }
 
 export function getEntitiesSortedByUrgency(): LegalEntity[] {

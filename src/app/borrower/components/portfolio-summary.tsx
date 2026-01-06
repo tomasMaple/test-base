@@ -118,7 +118,7 @@ function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalPr
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="w-full max-w-3xl">
         <DialogTitle>Margin Call Levels</DialogTitle>
-        
+
         <p className="text-body-sm text-fg-muted mb-150">
           Price levels at which each loan will trigger a margin call, sorted by proximity to trigger.
         </p>
@@ -128,28 +128,30 @@ function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalPr
             const headroom = loan.marginCallLtv - loan.currentLtv
             const isMarginCalled = headroom <= 0
             const isClose = headroom > 0 && headroom < 15
+            const loanShortId = loan.id.slice(-4)
+            const loanAmount = formatCurrency(loan.principalUsd)
 
             return (
               <div
                 key={loan.id}
                 className={cn(
                   'rounded-xl p-100 border',
-                  isMarginCalled 
-                    ? 'bg-negative-subtle border-negative' 
-                    : isClose 
-                      ? 'bg-warning-subtle border-warning' 
+                  isMarginCalled
+                    ? 'bg-negative-subtle border-negative'
+                    : isClose
+                      ? 'bg-warning-subtle border-warning'
                       : 'bg-surface border-border-subtle'
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-100">
+                  <div className="flex items-center gap-75">
                     <TokenLogo token={loan.collateralType} size="md" />
                     <div>
                       <p className="text-label-md font-medium text-fg-primary">
                         {loan.collateralType.toUpperCase()}
                       </p>
                       <p className="text-label-xs text-fg-muted">
-                        {loan.entityName} · Loan #{loan.id.split('-')[1]}
+                        {loan.entityName} · {loanAmount} Loan #{loanShortId}
                       </p>
                     </div>
                   </div>
@@ -300,16 +302,18 @@ function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalPr
                 <div className="space-y-75">
                   {sortedLoans.map((loan) => {
                     const dueInfo = formatDueDate(loan.interestDueDate)
+                    const loanShortId = loan.id.slice(-4)
+                    const loanAmount = formatCurrency(loan.principalUsd)
 
                     return (
                       <div
                         key={loan.id}
                         className={cn(
                           'rounded-xl p-100 border flex items-center justify-between',
-                          dueInfo.isOverdue 
-                            ? 'bg-negative-subtle border-negative' 
-                            : dueInfo.isUrgent 
-                              ? 'bg-warning-subtle border-warning' 
+                          dueInfo.isOverdue
+                            ? 'bg-negative-subtle border-negative'
+                            : dueInfo.isUrgent
+                              ? 'bg-warning-subtle border-warning'
                               : 'bg-surface border-border-subtle'
                         )}
                       >
@@ -317,7 +321,7 @@ function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalPr
                           <TokenLogo token={loan.collateralType} size="sm" />
                           <div>
                             <p className="text-label-sm font-medium text-fg-primary">
-                              Loan #{loan.id.split('-')[1]}
+                              {loanAmount} Loan #{loanShortId}
                             </p>
                             <p className={cn(
                               'text-label-xs',
@@ -397,8 +401,8 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
   return (
     <>
       <div className={cn('grid grid-cols-1 md:grid-cols-3 gap-100', className)}>
-        {/* Card 1: Total Principal */}
-        <GroupedCard title="Total Principal">
+        {/* Card 1: Total Borrowed */}
+        <GroupedCard title="Total Borrowed">
           <p className="text-heading-h4 font-semibold text-fg-primary">
             {formatCurrency(data.totalPrincipal)}
           </p>
@@ -454,10 +458,13 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
           <div className="pt-25 border-t border-border-subtle">
             <p className="text-label-xs text-fg-muted mb-25">Next Trigger</p>
             {data.nearestMarginCall ? (
-              <p className="text-label-md font-medium text-fg-primary">
-                {data.nearestMarginCall.collateralType.toUpperCase()} at{' '}
-                {formatFullCurrency(data.nearestMarginCall.marginCallPrice)}
-              </p>
+              <div className="flex items-center gap-25">
+                <TokenLogo token={data.nearestMarginCall.collateralType as any} size="xs" />
+                <p className="text-label-md font-medium text-fg-primary">
+                  {data.nearestMarginCall.collateralType.toUpperCase()} at{' '}
+                  {formatFullCurrency(data.nearestMarginCall.marginCallPrice)}
+                </p>
+              </div>
             ) : (
               <p className="text-label-md text-fg-muted">—</p>
             )}

@@ -12,8 +12,7 @@ import { LegalEntity, Loan, LoanStatus } from '../types'
 const statusPriority: Record<LoanStatus, number> = {
   'margin-call': 0,
   overdue: 1,
-  'approaching-trigger': 2,
-  healthy: 3,
+  healthy: 2,
 }
 
 function sortLoansByUrgency(loans: Loan[]): Loan[] {
