@@ -42,42 +42,33 @@ function formatDate(date: Date): string {
 }
 
 // =============================================================================
-// SUMMARY CARD COMPONENT
+// GROUPED SUMMARY CARD COMPONENT
 // =============================================================================
 
-interface SummaryCardProps {
+interface GroupedCardProps {
   title: string
-  value: React.ReactNode
-  subtitle?: string
+  children: React.ReactNode
   highlighted?: boolean
   clickable?: boolean
   onClick?: () => void
   className?: string
 }
 
-function SummaryCard({
+function GroupedCard({
   title,
-  value,
-  subtitle,
+  children,
   highlighted = false,
   clickable = false,
   onClick,
   className,
-}: SummaryCardProps) {
+}: GroupedCardProps) {
   const content = (
     <>
-      <span className={cn('text-label-xs', highlighted ? 'text-negative' : 'text-fg-muted')}>
+      <span className={cn('text-label-xs uppercase tracking-wide', highlighted ? 'text-negative' : 'text-fg-muted')}>
         {title}
       </span>
-      <div className="mt-50">
-        <span className={cn('text-heading-h5 font-semibold', highlighted ? 'text-negative' : 'text-fg-primary')}>
-          {value}
-        </span>
-        {subtitle && (
-          <p className={cn('text-label-xs mt-12', highlighted ? 'text-negative' : 'text-fg-muted')}>
-            {subtitle}
-          </p>
-        )}
+      <div className="mt-75 space-y-50">
+        {children}
       </div>
     </>
   )
@@ -87,7 +78,7 @@ function SummaryCard({
       <button
         onClick={onClick}
         className={cn(
-          'flex-1 rounded-xl p-100 border text-left transition-all cursor-pointer',
+          'flex-1 rounded-xl p-125 border text-left transition-all cursor-pointer',
           highlighted 
             ? 'bg-negative-subtle border-negative hover:bg-negative-subtle/80' 
             : 'bg-surface border-border-subtle hover:border-border-strong',
@@ -102,7 +93,7 @@ function SummaryCard({
   return (
     <div
       className={cn(
-        'flex-1 rounded-xl p-100 border',
+        'flex-1 rounded-xl p-125 border',
         highlighted 
           ? 'bg-negative-subtle border-negative' 
           : 'bg-surface border-border-subtle',
@@ -134,14 +125,14 @@ function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalPr
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="w-full max-w-2xl">
+      <DialogContent className="w-full max-w-3xl">
         <DialogTitle>Margin Call Levels</DialogTitle>
         
         <p className="text-body-sm text-fg-muted mb-150">
           Price levels at which each loan will trigger a margin call, sorted by proximity to trigger.
         </p>
 
-        <div className="space-y-100 max-h-[60vh] overflow-y-auto">
+        <div className="space-y-100 max-h-[60vh] overflow-y-auto pr-50">
           {sortedLoans.map((loan) => {
             const headroom = loan.marginCallLtv - loan.currentLtv
             const isMarginCalled = headroom <= 0
@@ -279,14 +270,14 @@ function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalPr
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="w-full max-w-2xl">
+      <DialogContent className="w-full max-w-3xl">
         <DialogTitle>Interest Payments</DialogTitle>
         
         <p className="text-body-sm text-fg-muted mb-150">
           Upcoming and overdue interest payments grouped by legal entity.
         </p>
 
-        <div className="space-y-150 max-h-[60vh] overflow-y-auto">
+        <div className="space-y-150 max-h-[60vh] overflow-y-auto pr-50">
           {sortedEntities.map(([entityName, entityLoans]) => {
             const sortedLoans = sortLoansWithinEntity(entityLoans)
             const totalInterest = entityLoans.reduce((sum, l) => sum + l.interestAmountUsd, 0)
@@ -409,62 +400,76 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
   const [showMarginCallModal, setShowMarginCallModal] = React.useState(false)
   const [showInterestModal, setShowInterestModal] = React.useState(false)
 
+  const hasOverdueInterest = data.overdueInterest > 0
+  const hasActiveMarginCalls = data.activeMarginCalls > 0
+
   return (
     <>
-      <div className={cn('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-100', className)}>
-        {/* Total principal */}
-        <SummaryCard
-          title="Total Principal"
-          value={formatCurrency(data.totalPrincipal)}
-        />
+      <div className={cn('grid grid-cols-1 md:grid-cols-3 gap-100', className)}>
+        {/* Card 1: Total Principal */}
+        <GroupedCard title="Total Principal">
+          <p className="text-heading-h4 font-semibold text-fg-primary">
+            {formatCurrency(data.totalPrincipal)}
+          </p>
+        </GroupedCard>
 
-        {/* Active loans */}
-        <SummaryCard
-          title="Active Loans"
-          value={data.activeLoans}
-        />
-
-        {/* Active margin calls */}
-        <SummaryCard
-          title="Active Margin Calls"
-          value={data.activeMarginCalls}
-          highlighted={data.activeMarginCalls > 0}
-        />
-
-        {/* Overdue interest - clickable */}
-        <SummaryCard
-          title="Overdue Interest"
-          value={data.overdueInterest}
-          highlighted={data.overdueInterest > 0}
+        {/* Card 2: Interest Payments - shows overdue OR next payment */}
+        <GroupedCard
+          title="Interest Payments"
+          highlighted={hasOverdueInterest}
           clickable={true}
           onClick={() => setShowInterestModal(true)}
-        />
+        >
+          {hasOverdueInterest ? (
+            <>
+              <p className="text-heading-h4 font-semibold text-negative">
+                {data.overdueInterest} overdue
+              </p>
+              <p className="text-label-sm text-negative">
+                Click to view all payments
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-heading-h4 font-semibold text-fg-primary">
+                {data.nextPayment ? formatFullCurrency(data.nextPayment.amount) : '—'}
+              </p>
+              {data.nextPayment && (
+                <p className="text-label-sm text-fg-muted">
+                  Due {formatDate(data.nextPayment.date)}
+                </p>
+              )}
+            </>
+          )}
+        </GroupedCard>
 
-        {/* Next payment - clickable */}
-        <SummaryCard
-          title="Next Payment"
-          value={data.nextPayment ? formatFullCurrency(data.nextPayment.amount) : '—'}
-          subtitle={data.nextPayment ? formatDate(data.nextPayment.date) : undefined}
-          clickable={!!data.nextPayment}
-          onClick={() => setShowInterestModal(true)}
-        />
-
-        {/* Nearest margin call - clickable */}
-        <SummaryCard
-          title="Nearest Margin Call"
-          value={
-            data.nearestMarginCall ? (
-              <>
+        {/* Card 3: Margin Calls - shows active count + nearest trigger */}
+        <GroupedCard
+          title="Margin Calls"
+          highlighted={hasActiveMarginCalls}
+          clickable={true}
+          onClick={() => setShowMarginCallModal(true)}
+        >
+          <div className="flex items-baseline justify-between">
+            <span className={cn(
+              'text-heading-h4 font-semibold',
+              hasActiveMarginCalls ? 'text-negative' : 'text-fg-primary'
+            )}>
+              {data.activeMarginCalls} active
+            </span>
+          </div>
+          <div className="pt-25 border-t border-border-subtle">
+            <p className="text-label-xs text-fg-muted mb-25">Nearest trigger</p>
+            {data.nearestMarginCall ? (
+              <p className="text-label-md font-medium text-fg-primary">
                 {data.nearestMarginCall.collateralType.toUpperCase()} at{' '}
                 {formatFullCurrency(data.nearestMarginCall.marginCallPrice)}
-              </>
+              </p>
             ) : (
-              '—'
-            )
-          }
-          clickable={!!data.nearestMarginCall}
-          onClick={() => setShowMarginCallModal(true)}
-        />
+              <p className="text-label-md text-fg-muted">—</p>
+            )}
+          </div>
+        </GroupedCard>
       </div>
 
       {/* Margin Call Levels Modal */}
