@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import { Dialog, DialogContent, DialogTitle, TokenLogo } from '@/components/ui'
+import { Button, Dialog, DialogContent, DialogTitle, Pill, TokenLogo } from '@/components/ui'
 import { Loan } from '../types'
 
 // =============================================================================
@@ -207,6 +207,178 @@ function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalPr
 }
 
 // =============================================================================
+// INTEREST PAYMENTS MODAL
+// =============================================================================
+
+interface InterestPaymentsModalProps {
+  open: boolean
+  onClose: () => void
+  loans: Loan[]
+}
+
+function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalProps) {
+  const now = new Date()
+
+  // Group loans by entity
+  const loansByEntity = loans.reduce((acc, loan) => {
+    const entity = loan.entityName
+    if (!acc[entity]) {
+      acc[entity] = []
+    }
+    acc[entity].push(loan)
+    return acc
+  }, {} as Record<string, Loan[]>)
+
+  // Calculate entity urgency (for sorting entities)
+  const getEntityUrgency = (entityLoans: Loan[]) => {
+    const hasOverdue = entityLoans.some(l => l.interestDueDate < now)
+    const earliestDue = Math.min(...entityLoans.map(l => l.interestDueDate.getTime()))
+    return { hasOverdue, earliestDue }
+  }
+
+  // Sort entities: overdue first, then by earliest due date
+  const sortedEntities = Object.entries(loansByEntity).sort(([, loansA], [, loansB]) => {
+    const urgencyA = getEntityUrgency(loansA)
+    const urgencyB = getEntityUrgency(loansB)
+    
+    if (urgencyA.hasOverdue && !urgencyB.hasOverdue) return -1
+    if (!urgencyA.hasOverdue && urgencyB.hasOverdue) return 1
+    return urgencyA.earliestDue - urgencyB.earliestDue
+  })
+
+  // Sort loans within entity: overdue first, then by due date
+  const sortLoansWithinEntity = (entityLoans: Loan[]) => {
+    return [...entityLoans].sort((a, b) => {
+      const aOverdue = a.interestDueDate < now
+      const bOverdue = b.interestDueDate < now
+      
+      if (aOverdue && !bOverdue) return -1
+      if (!aOverdue && bOverdue) return 1
+      return a.interestDueDate.getTime() - b.interestDueDate.getTime()
+    })
+  }
+
+  const formatDueDate = (date: Date) => {
+    const diffDays = Math.floor((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    
+    if (diffDays < 0) {
+      return { text: `${Math.abs(diffDays)} days overdue`, isOverdue: true }
+    }
+    if (diffDays === 0) {
+      return { text: 'Due today', isOverdue: false, isUrgent: true }
+    }
+    if (diffDays <= 7) {
+      return { text: `Due in ${diffDays} days`, isOverdue: false, isUrgent: true }
+    }
+    return { 
+      text: `Due ${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`, 
+      isOverdue: false,
+      isUrgent: false 
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent className="w-full max-w-2xl">
+        <DialogTitle>Interest Payments</DialogTitle>
+        
+        <p className="text-body-sm text-fg-muted mb-150">
+          Upcoming and overdue interest payments grouped by legal entity.
+        </p>
+
+        <div className="space-y-150 max-h-[60vh] overflow-y-auto">
+          {sortedEntities.map(([entityName, entityLoans]) => {
+            const sortedLoans = sortLoansWithinEntity(entityLoans)
+            const totalInterest = entityLoans.reduce((sum, l) => sum + l.interestAmountUsd, 0)
+            const hasOverdue = entityLoans.some(l => l.interestDueDate < now)
+
+            return (
+              <div key={entityName} className="space-y-75">
+                {/* Entity header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-75">
+                    <h3 className="text-label-md font-semibold text-fg-primary">
+                      {entityName}
+                    </h3>
+                    <span className="text-label-sm text-fg-muted">
+                      {entityLoans.length} loan{entityLoans.length > 1 ? 's' : ''}
+                    </span>
+                    {hasOverdue && (
+                      <Pill type="negative" appearance="subtle" size="20">
+                        Overdue
+                      </Pill>
+                    )}
+                  </div>
+                  <span className="text-label-sm font-medium text-fg-primary">
+                    {formatFullCurrency(totalInterest)} total
+                  </span>
+                </div>
+
+                {/* Loans in this entity */}
+                <div className="space-y-75">
+                  {sortedLoans.map((loan) => {
+                    const dueInfo = formatDueDate(loan.interestDueDate)
+
+                    return (
+                      <div
+                        key={loan.id}
+                        className={cn(
+                          'rounded-xl p-100 border flex items-center justify-between',
+                          dueInfo.isOverdue 
+                            ? 'bg-negative-subtle border-negative' 
+                            : dueInfo.isUrgent 
+                              ? 'bg-warning-subtle border-warning' 
+                              : 'bg-surface border-border-subtle'
+                        )}
+                      >
+                        <div className="flex items-center gap-100">
+                          <TokenLogo token={loan.collateralType} size="sm" />
+                          <div>
+                            <p className="text-label-sm font-medium text-fg-primary">
+                              Loan #{loan.id.split('-')[1]}
+                            </p>
+                            <p className={cn(
+                              'text-label-xs',
+                              dueInfo.isOverdue ? 'text-negative' : dueInfo.isUrgent ? 'text-warning' : 'text-fg-muted'
+                            )}>
+                              {dueInfo.text}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-100">
+                          <span className={cn(
+                            'text-label-md font-semibold',
+                            dueInfo.isOverdue ? 'text-negative' : 'text-fg-primary'
+                          )}>
+                            {formatFullCurrency(loan.interestAmountUsd)}
+                          </span>
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            disabled
+                            className="opacity-50"
+                          >
+                            Pay Interest
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        <p className="text-label-xs text-fg-muted mt-150 text-center">
+          Payment functionality coming soon
+        </p>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// =============================================================================
 // PORTFOLIO SUMMARY COMPONENT
 // =============================================================================
 
@@ -235,6 +407,7 @@ interface PortfolioSummaryProps {
 
 export function PortfolioSummary({ data, loans, className }: PortfolioSummaryProps) {
   const [showMarginCallModal, setShowMarginCallModal] = React.useState(false)
+  const [showInterestModal, setShowInterestModal] = React.useState(false)
 
   return (
     <>
@@ -258,18 +431,22 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
           highlighted={data.activeMarginCalls > 0}
         />
 
-        {/* Overdue interest */}
+        {/* Overdue interest - clickable */}
         <SummaryCard
           title="Overdue Interest"
           value={data.overdueInterest}
           highlighted={data.overdueInterest > 0}
+          clickable={true}
+          onClick={() => setShowInterestModal(true)}
         />
 
-        {/* Next payment */}
+        {/* Next payment - clickable */}
         <SummaryCard
           title="Next Payment"
           value={data.nextPayment ? formatFullCurrency(data.nextPayment.amount) : '—'}
           subtitle={data.nextPayment ? formatDate(data.nextPayment.date) : undefined}
+          clickable={!!data.nextPayment}
+          onClick={() => setShowInterestModal(true)}
         />
 
         {/* Nearest margin call - clickable */}
@@ -294,6 +471,13 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
       <MarginCallLevelsModal
         open={showMarginCallModal}
         onClose={() => setShowMarginCallModal(false)}
+        loans={loans}
+      />
+
+      {/* Interest Payments Modal */}
+      <InterestPaymentsModal
+        open={showInterestModal}
+        onClose={() => setShowInterestModal(false)}
         loans={loans}
       />
     </>
