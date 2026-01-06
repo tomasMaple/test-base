@@ -1,0 +1,659 @@
+'use client'
+
+import * as React from 'react'
+import { use } from 'react'
+import NextLink from 'next/link'
+import { cn } from '@/lib/utils'
+import {
+  Button,
+  IconButton,
+  Pill,
+  TokenLogo,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsPanel,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui'
+import {
+  ArrowLeft,
+  AlertTriangle,
+  Clock,
+  TrendingDown,
+  ExternalLink,
+  Copy,
+  Check,
+  CreditCard,
+  Plus,
+  FileText,
+  ArrowDownLeft,
+} from 'lucide-react'
+import { LtvGauge, LtvDisplay } from '../../components/ltv-gauge'
+import { getLoanById, getPaymentHistoryForLoan, CURRENT_PRICES } from '../../mock-data'
+import { Loan, LoanStatus, PaymentHistoryItem } from '../../types'
+
+// =============================================================================
+// HELPERS
+// =============================================================================
+
+function formatCurrency(value: number, decimals = 0): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(value)
+}
+
+function formatCollateralAmount(amount: number, type: string): string {
+  const isBtc = type.toLowerCase().includes('btc')
+  return amount.toLocaleString('en-US', {
+    minimumFractionDigits: isBtc ? 6 : 2,
+    maximumFractionDigits: isBtc ? 6 : 2,
+  })
+}
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+function formatCountdown(date: Date): string {
+  const now = new Date()
+  const diffMs = date.getTime() - now.getTime()
+  const hours = Math.floor(diffMs / (1000 * 60 * 60))
+  const days = Math.floor(hours / 24)
+  const remainingHours = hours % 24
+
+  if (days > 0) {
+    return `${days}d ${remainingHours}h`
+  }
+  return `${hours}h`
+}
+
+function getDaysUntil(date: Date): number {
+  const now = new Date()
+  const diffTime = date.getTime() - now.getTime()
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+}
+
+function truncateAddress(address: string): string {
+  if (address.length <= 16) return address
+  return `${address.slice(0, 10)}...${address.slice(-6)}`
+}
+
+// =============================================================================
+// STATUS CONFIG
+// =============================================================================
+
+const statusConfig: Record<
+  LoanStatus,
+  { label: string; type: 'positive' | 'negative' | 'primary'; icon?: React.ReactNode }
+> = {
+  healthy: { label: 'Healthy', type: 'positive' },
+  'margin-call': {
+    label: 'Margin call active',
+    type: 'negative',
+    icon: <AlertTriangle className="size-icon-sm" />,
+  },
+  overdue: {
+    label: 'Interest overdue',
+    type: 'negative',
+    icon: <Clock className="size-icon-sm" />,
+  },
+}
+
+// =============================================================================
+// CARD WRAPPER
+// =============================================================================
+
+function Card({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn('bg-surface border border-border-subtle rounded-xl p-150', className)}>
+      {children}
+    </div>
+  )
+}
+
+function CardHeader({ title }: { title: string }) {
+  return <h3 className="text-label-sm font-medium text-fg-secondary mb-100">{title}</h3>
+}
+
+// =============================================================================
+// SUB-COMPONENTS
+// =============================================================================
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = React.useState(false)
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <IconButton
+      variant="ghost"
+      size="xs"
+      aria-label="Copy address"
+      onClick={handleCopy}
+    >
+      {copied ? <Check className="size-icon-sm" /> : <Copy className="size-icon-sm" />}
+    </IconButton>
+  )
+}
+
+interface MetricRowProps {
+  label: string
+  value: React.ReactNode
+  className?: string
+}
+
+function MetricRow({ label, value, className }: MetricRowProps) {
+  return (
+    <div className={cn('flex items-center justify-between py-50', className)}>
+      <span className="text-label-sm text-fg-muted">{label}</span>
+      <span className="text-label-sm font-medium text-fg-primary">{value}</span>
+    </div>
+  )
+}
+
+// =============================================================================
+// ACTION ITEM
+// =============================================================================
+
+interface ActionItemProps {
+  icon: React.ReactNode
+  label: string
+  comingSoon?: boolean
+  highlighted?: boolean
+}
+
+function ActionItem({ icon, label, comingSoon = true, highlighted = false }: ActionItemProps) {
+  return (
+    <div
+      className={cn(
+        'flex items-center justify-between p-100 rounded-xl border transition-all',
+        highlighted
+          ? 'bg-inverse border-transparent'
+          : 'bg-surface border-border-subtle'
+      )}
+    >
+      <div className="flex items-center gap-75">
+        <span className={highlighted ? 'text-fg-inverse' : 'text-fg-muted'}>{icon}</span>
+        <span className={cn('text-label-md font-medium', highlighted ? 'text-fg-inverse' : 'text-fg-primary')}>
+          {label}
+        </span>
+      </div>
+      {comingSoon && (
+        <Pill type="secondary" appearance="subtle" size="20">
+          Coming soon
+        </Pill>
+      )}
+    </div>
+  )
+}
+
+// =============================================================================
+// TAB CONTENT: SUMMARY
+// =============================================================================
+
+interface SummaryTabProps {
+  loan: Loan
+}
+
+function SummaryTab({ loan }: SummaryTabProps) {
+  const [simulatedPrice, setSimulatedPrice] = React.useState(loan.currentCollateralPrice)
+  const simulatedCollateralValue = loan.collateralAmount * simulatedPrice
+  const simulatedLtv = (loan.principalUsd / simulatedCollateralValue) * 100
+  const priceChange = ((simulatedPrice - loan.currentCollateralPrice) / loan.currentCollateralPrice) * 100
+  const stepSize = loan.currentCollateralPrice > 1000 ? 100 : loan.currentCollateralPrice > 100 ? 1 : 0.1
+  const minPrice = Math.floor(loan.liquidationPrice * 0.7)
+  const maxPrice = Math.ceil(loan.currentCollateralPrice * 1.3)
+
+  const isMarginCall = loan.status === 'margin-call'
+  const daysUntilInterest = getDaysUntil(loan.interestDueDate)
+  const isOverdue = loan.status === 'overdue'
+
+  return (
+    <div className="space-y-150">
+      {/* Margin call alert (if active) */}
+      {isMarginCall && loan.marginCallDeadline && (
+        <div className="bg-negative-subtle border border-negative rounded-xl p-150">
+          <div className="flex items-start gap-100">
+            <AlertTriangle className="size-icon-xl text-negative shrink-0 mt-12" />
+            <div className="flex-1">
+              <h3 className="text-label-md font-medium text-negative mb-25">
+                Margin call active
+              </h3>
+              <p className="text-body-sm text-negative mb-100">
+                Add {formatCurrency(loan.marginCallRequiredUsd || 0)} in collateral
+                to restore your LTV to safe levels.
+              </p>
+              <div className="flex items-center gap-100">
+                <span className="text-label-sm text-negative">Cure by:</span>
+                <Pill type="negative" appearance="default" size="24">
+                  {formatCountdown(loan.marginCallDeadline)}
+                </Pill>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Position overview */}
+      <Card>
+        <CardHeader title="Position overview" />
+        <div className="grid grid-cols-2 gap-150 mb-150">
+          {/* Collateral */}
+          <div className="space-y-50">
+            <span className="text-label-xs text-fg-muted">Collateral</span>
+            <div className="flex items-center gap-75">
+              <TokenLogo token={loan.collateralType} size="lg" />
+              <div>
+                <p className="text-label-md font-medium text-fg-primary">
+                  {formatCollateralAmount(loan.collateralAmount, loan.collateralType)}{' '}
+                  {loan.collateralType.toUpperCase()}
+                </p>
+                <p className="text-label-xs text-fg-muted">
+                  ≈ {formatCurrency(loan.collateralValueUsd)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Principal */}
+          <div className="space-y-50">
+            <span className="text-label-xs text-fg-muted">Principal</span>
+            <p className="text-heading-h5 font-semibold text-fg-primary">
+              {formatCurrency(loan.principalUsd)}
+            </p>
+          </div>
+        </div>
+
+        {/* LTV Display */}
+        <div className="border-t border-border-subtle pt-150">
+          <LtvDisplay
+            currentLtv={loan.currentLtv}
+            marginCallLtv={loan.marginCallLtv}
+            liquidationLtv={loan.liquidationLtv}
+          />
+        </div>
+      </Card>
+
+      {/* Trigger thresholds */}
+      <div className="grid grid-cols-2 gap-100">
+        <Card>
+          <CardHeader title="Margin call trigger" />
+          <p className="text-heading-h5 font-semibold text-warning mb-25">
+            {formatCurrency(loan.marginCallPrice)}
+          </p>
+          <p className="text-label-xs text-fg-muted">
+            {loan.collateralType.toUpperCase()} price at {loan.marginCallLtv}% LTV
+          </p>
+        </Card>
+
+        <Card>
+          <CardHeader title="Liquidation trigger" />
+          <p className="text-heading-h5 font-semibold text-negative mb-25">
+            {formatCurrency(loan.liquidationPrice)}
+          </p>
+          <p className="text-label-xs text-fg-muted">
+            {loan.collateralType.toUpperCase()} price at {loan.liquidationLtv}% LTV
+          </p>
+        </Card>
+      </div>
+
+      {/* LTV Simulator */}
+      <Card>
+        <CardHeader title="LTV simulator" />
+        <div className="space-y-100">
+          <div className="flex items-center justify-between">
+            <span className="text-label-sm text-fg-muted">
+              If {loan.collateralType.toUpperCase()} price is
+            </span>
+            <div className="flex items-center gap-50">
+              <span className="text-label-sm font-medium text-fg-primary">
+                {formatCurrency(simulatedPrice)}
+              </span>
+              {Math.abs(priceChange) > 0.1 && (
+                <span
+                  className={cn(
+                    'text-label-xs',
+                    priceChange > 0 ? 'text-positive' : 'text-negative'
+                  )}
+                >
+                  ({priceChange > 0 ? '+' : ''}
+                  {priceChange.toFixed(1)}%)
+                </span>
+              )}
+            </div>
+          </div>
+
+          <input
+            type="range"
+            min={minPrice}
+            max={maxPrice}
+            step={stepSize}
+            value={simulatedPrice}
+            onChange={(e) => setSimulatedPrice(Number(e.target.value))}
+            className="w-full h-2 bg-secondary rounded-full appearance-none cursor-pointer accent-brand"
+          />
+
+          <div className="flex gap-50">
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => setSimulatedPrice(loan.currentCollateralPrice)}
+            >
+              Current
+            </Button>
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => setSimulatedPrice(loan.marginCallPrice)}
+            >
+              MC price
+            </Button>
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => setSimulatedPrice(loan.liquidationPrice)}
+            >
+              Liq price
+            </Button>
+          </div>
+
+          <div className="bg-primary rounded-lg p-100">
+            <div className="flex items-center justify-between mb-50">
+              <span className="text-label-sm text-fg-muted">Simulated LTV</span>
+              <span
+                className={cn(
+                  'text-heading-h6 font-semibold',
+                  simulatedLtv >= loan.liquidationLtv
+                    ? 'text-negative'
+                    : simulatedLtv >= loan.marginCallLtv
+                      ? 'text-warning'
+                      : 'text-positive'
+                )}
+              >
+                {simulatedLtv.toFixed(1)}%
+              </span>
+            </div>
+            <LtvGauge
+              currentLtv={simulatedLtv}
+              marginCallLtv={loan.marginCallLtv}
+              liquidationLtv={loan.liquidationLtv}
+              size="md"
+            />
+          </div>
+        </div>
+      </Card>
+
+      {/* Interest schedule */}
+      <Card>
+        <CardHeader title="Interest schedule" />
+        <div className="space-y-75">
+          <MetricRow
+            label="Next payment"
+            value={
+              isOverdue ? (
+                <span className="text-negative">
+                  {loan.interestOverdueDays} days overdue
+                </span>
+              ) : (
+                <span>
+                  {formatDate(loan.interestDueDate)} ({daysUntilInterest}d)
+                </span>
+              )
+            }
+          />
+          <MetricRow
+            label="Amount due"
+            value={formatCurrency(loan.interestAmountUsd, 2)}
+          />
+          <MetricRow
+            label="Interest rate"
+            value={`${(loan.interestRate * 100).toFixed(2)}% APR`}
+          />
+        </div>
+      </Card>
+    </div>
+  )
+}
+
+// =============================================================================
+// TAB CONTENT: HISTORY
+// =============================================================================
+
+interface HistoryTabProps {
+  payments: PaymentHistoryItem[]
+}
+
+function HistoryTab({ payments }: HistoryTabProps) {
+  if (payments.length === 0) {
+    return (
+      <Card>
+        <p className="text-body-sm text-fg-muted py-100 text-center">
+          No payment history yet
+        </p>
+      </Card>
+    )
+  }
+
+  return (
+    <Card>
+      <CardHeader title="Payment history" />
+      <div className="divide-y divide-border-subtle">
+        {payments.map((payment) => (
+          <div key={payment.id} className="flex items-center justify-between py-100">
+            <div className="flex flex-col gap-12">
+              <span className="text-label-md font-medium text-fg-primary capitalize">
+                {payment.type} payment
+              </span>
+              <span className="text-label-sm text-fg-muted">
+                {formatDate(payment.date)}
+              </span>
+            </div>
+            <div className="flex items-center gap-75">
+              <span className="text-label-md font-medium text-fg-primary">
+                {formatCurrency(payment.amountUsd, 2)}
+              </span>
+              <Pill
+                type={payment.status === 'completed' ? 'positive' : 'warning'}
+                appearance="subtle"
+                size="24"
+              >
+                {payment.status}
+              </Pill>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+// =============================================================================
+// TAB CONTENT: LOAN TERMS
+// =============================================================================
+
+interface LoanTermsTabProps {
+  loan: Loan
+}
+
+function LoanTermsTab({ loan }: LoanTermsTabProps) {
+  return (
+    <div className="space-y-150">
+      <Card>
+        <CardHeader title="Loan details" />
+        <div className="space-y-75">
+          <MetricRow label="Loan ID" value={loan.id} />
+          <MetricRow label="Entity" value={loan.entityName} />
+          <MetricRow label="Start date" value={formatDate(loan.startDate)} />
+          <MetricRow label="Maturity date" value={formatDate(loan.maturityDate)} />
+          <MetricRow label="Interest rate" value={`${(loan.interestRate * 100).toFixed(2)}% APR`} />
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader title="LTV thresholds" />
+        <div className="space-y-75">
+          <MetricRow label="Margin call LTV" value={`${loan.marginCallLtv}%`} />
+          <MetricRow label="Liquidation LTV" value={`${loan.liquidationLtv}%`} />
+          <MetricRow label="Margin call price" value={formatCurrency(loan.marginCallPrice)} />
+          <MetricRow label="Liquidation price" value={formatCurrency(loan.liquidationPrice)} />
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader title="Collateral wallet" />
+        <div className="flex items-center justify-between mb-75">
+          <Tooltip>
+            <TooltipTrigger className="text-label-sm text-fg-primary cursor-help">
+              {truncateAddress(loan.collateralWalletAddress)}
+            </TooltipTrigger>
+            <TooltipContent>{loan.collateralWalletAddress}</TooltipContent>
+          </Tooltip>
+          <div className="flex items-center gap-25">
+            <CopyButton text={loan.collateralWalletAddress} />
+            <IconButton variant="ghost" size="xs" aria-label="View on explorer">
+              <ExternalLink className="size-icon-sm" />
+            </IconButton>
+          </div>
+        </div>
+        <p className="text-label-xs text-fg-muted">
+          Current {loan.collateralType.toUpperCase()} price:{' '}
+          {formatCurrency(CURRENT_PRICES[loan.collateralType as keyof typeof CURRENT_PRICES])}
+        </p>
+      </Card>
+    </div>
+  )
+}
+
+// =============================================================================
+// MAIN PAGE COMPONENT
+// =============================================================================
+
+interface LoanDetailPageProps {
+  params: Promise<{ id: string }>
+}
+
+export default function LoanDetailPage({ params }: LoanDetailPageProps) {
+  const { id } = use(params)
+  const loan = getLoanById(id)
+  const paymentHistory = getPaymentHistoryForLoan(id)
+
+  if (!loan) {
+    return (
+      <div className="min-h-screen bg-canvas flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-heading-h5 text-fg-primary mb-50">Loan not found</h1>
+          <p className="text-body-sm text-fg-muted mb-150">
+            The loan you&apos;re looking for doesn&apos;t exist.
+          </p>
+          <NextLink href="/borrower">
+            <Button variant="secondary">Back to dashboard</Button>
+          </NextLink>
+        </div>
+      </div>
+    )
+  }
+
+  const status = statusConfig[loan.status]
+
+  return (
+    <div className="min-h-screen bg-canvas">
+      {/* Header */}
+      <header className="px-200 py-150">
+        <NextLink
+          href="/borrower"
+          className="inline-flex items-center gap-50 text-label-sm text-fg-muted hover:text-fg-primary transition-colors mb-100"
+        >
+          <ArrowLeft className="size-icon-md" />
+          Back to Dashboard
+        </NextLink>
+      </header>
+
+      <main className="px-200 pb-200">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
+          {/* Left column - Tabs */}
+          <div className="lg:col-span-2">
+            <Tabs defaultValue="summary">
+              <TabsList className="mb-150">
+                <TabsTrigger value="summary">Summary</TabsTrigger>
+                <TabsTrigger value="history">History</TabsTrigger>
+                <TabsTrigger value="terms">Loan terms</TabsTrigger>
+              </TabsList>
+
+              <TabsPanel value="summary">
+                <SummaryTab loan={loan} />
+              </TabsPanel>
+
+              <TabsPanel value="history">
+                <HistoryTab payments={paymentHistory} />
+              </TabsPanel>
+
+              <TabsPanel value="terms">
+                <LoanTermsTab loan={loan} />
+              </TabsPanel>
+            </Tabs>
+          </div>
+
+          {/* Right column - Actions */}
+          <div className="space-y-150">
+            {/* Loan header card */}
+            <Card>
+              <div className="flex items-center justify-between mb-100">
+                <h2 className="text-heading-h6 text-fg-primary">
+                  Loan #{loan.id.split('-')[1]}
+                </h2>
+                <Pill
+                  type={status.type}
+                  appearance="subtle"
+                  size="24"
+                  beforeIcon={status.icon}
+                >
+                  {status.label}
+                </Pill>
+              </div>
+              <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
+            </Card>
+
+            {/* Actions */}
+            <Card>
+              <h3 className="text-label-sm font-medium text-fg-secondary mb-100 uppercase tracking-wide">
+                Actions
+              </h3>
+              <div className="space-y-75">
+                <ActionItem
+                  icon={<CreditCard className="size-icon-lg" />}
+                  label="Pay Interest"
+                  highlighted={true}
+                />
+                <ActionItem
+                  icon={<Plus className="size-icon-lg" />}
+                  label="Add Collateral"
+                />
+                <ActionItem
+                  icon={<FileText className="size-icon-lg" />}
+                  label="Give Notice to Repay"
+                />
+                <ActionItem
+                  icon={<ArrowDownLeft className="size-icon-lg" />}
+                  label="Request Collateral Back"
+                />
+              </div>
+            </Card>
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}
