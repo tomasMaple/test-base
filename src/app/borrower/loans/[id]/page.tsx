@@ -13,9 +13,6 @@ import {
   TabsList,
   TabsTrigger,
   TabsPanel,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
 } from '@/components/ui'
 import {
   ArrowLeft,
@@ -84,11 +81,6 @@ function getDaysUntil(date: Date): number {
   const now = new Date()
   const diffTime = date.getTime() - now.getTime()
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-}
-
-function truncateAddress(address: string): string {
-  if (address.length <= 16) return address
-  return `${address.slice(0, 10)}...${address.slice(-6)}`
 }
 
 // =============================================================================
@@ -230,6 +222,14 @@ function SummaryTab({ loan }: SummaryTabProps) {
       <Card>
         <CardHeader title="Position overview" />
         <div className="grid grid-cols-2 gap-150 mb-150">
+          {/* Principal */}
+          <div className="space-y-50">
+            <span className="text-label-xs text-fg-muted">Principal</span>
+            <p className="text-heading-h5 font-semibold text-fg-primary">
+              {formatCurrency(loan.principalUsd)}
+            </p>
+          </div>
+
           {/* Collateral */}
           <div className="space-y-50">
             <span className="text-label-xs text-fg-muted">Collateral</span>
@@ -245,14 +245,6 @@ function SummaryTab({ loan }: SummaryTabProps) {
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Principal */}
-          <div className="space-y-50">
-            <span className="text-label-xs text-fg-muted">Principal</span>
-            <p className="text-heading-h5 font-semibold text-fg-primary">
-              {formatCurrency(loan.principalUsd)}
-            </p>
           </div>
         </div>
 
@@ -443,7 +435,7 @@ function HistoryTab({ payments }: HistoryTabProps) {
           <div key={payment.id} className="flex items-center justify-between py-100">
             <div className="flex flex-col gap-12">
               <span className="text-label-md font-medium text-fg-primary capitalize">
-                {payment.type} payment
+                {payment.type === 'drawdown' ? 'Principal drawdown' : `${payment.type} payment`}
               </span>
               <span className="text-label-sm text-fg-muted">
                 {formatDate(payment.date)}
@@ -477,15 +469,31 @@ interface LoanTermsTabProps {
 }
 
 function LoanTermsTab({ loan }: LoanTermsTabProps) {
+  const etherscanUrl = `https://etherscan.io/address/${loan.loanContractAddress}`
+  const truncatedAddress = loan.loanContractAddress.length > 12
+    ? `${loan.loanContractAddress.slice(0, 6)}...${loan.loanContractAddress.slice(-4)}`
+    : loan.loanContractAddress
+
   return (
     <div className="space-y-150">
       <Card>
         <CardHeader title="Loan details" />
         <div className="space-y-75">
-          <MetricRow label="Loan ID" value={loan.id} />
+          <div className="flex items-center justify-between py-50">
+            <span className="text-label-sm text-fg-muted">Loan ID</span>
+            <a
+              href={etherscanUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-label-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
+            >
+              {truncatedAddress}
+            </a>
+          </div>
           <MetricRow label="Entity" value={loan.entityName} />
           <MetricRow label="Start date" value={formatDate(loan.startDate)} />
-          <MetricRow label="Maturity date" value={formatDate(loan.maturityDate)} />
+          <MetricRow label="Maturity date" value="—" />
+          <MetricRow label="Recall period" value={`${loan.recallPeriodDays} days`} />
           <MetricRow label="Interest rate" value={`${(loan.interestRate * 100).toFixed(2)}% APR`} />
         </div>
       </Card>
@@ -501,14 +509,32 @@ function LoanTermsTab({ loan }: LoanTermsTabProps) {
       </Card>
 
       <Card>
-        <CardHeader title="Collateral wallet" />
+        <CardHeader title="Borrower wallet" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-50">
+            <TokenLogo token="eth" size="sm" />
+            <span className="text-label-sm text-fg-primary">
+              {loan.borrowerWalletAddress}
+            </span>
+          </div>
+          <div className="flex items-center gap-25">
+            <CopyButton text={loan.borrowerWalletAddress} />
+            <IconButton variant="ghost" size="xs" aria-label="View on explorer">
+              <ExternalLink className="size-icon-sm" />
+            </IconButton>
+          </div>
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader title="Collateral Deposit wallet" />
         <div className="flex items-center justify-between mb-75">
-          <Tooltip>
-            <TooltipTrigger className="text-label-sm text-fg-primary cursor-help">
-              {truncateAddress(loan.collateralWalletAddress)}
-            </TooltipTrigger>
-            <TooltipContent>{loan.collateralWalletAddress}</TooltipContent>
-          </Tooltip>
+          <div className="flex items-center gap-50">
+            <TokenLogo token={loan.collateralType} size="sm" />
+            <span className="text-label-sm text-fg-primary">
+              {loan.collateralWalletAddress}
+            </span>
+          </div>
           <div className="flex items-center gap-25">
             <CopyButton text={loan.collateralWalletAddress} />
             <IconButton variant="ghost" size="xs" aria-label="View on explorer">
@@ -571,7 +597,7 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
         </header>
 
         <main className="pb-200 space-y-150">
-          {/* Margin call alert (if active) - full width above columns */}
+          {/* Margin call alert (if active) - full width above everything */}
           {loan.status === 'margin-call' && loan.marginCallDeadline && (
             <div className="bg-negative-subtle border border-negative rounded-xl p-150">
               <div className="flex items-start gap-100">
@@ -593,76 +619,180 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-150 items-start">
-            {/* Left column - Tabs */}
-            <div className="lg:col-span-2">
-              <Tabs defaultValue="summary">
-                <TabsList className="mb-150">
-                  <TabsTrigger value="summary">Summary</TabsTrigger>
-                  <TabsTrigger value="history">History</TabsTrigger>
-                  <TabsTrigger value="terms">Loan terms</TabsTrigger>
-                </TabsList>
+          {/* Tabs - full width */}
+          <Tabs defaultValue="summary">
+            <TabsList className="mb-150">
+              <TabsTrigger value="summary">Summary</TabsTrigger>
+              <TabsTrigger value="history">History</TabsTrigger>
+              <TabsTrigger value="terms">Loan terms</TabsTrigger>
+            </TabsList>
 
-                <TabsPanel value="summary">
+            {/* Tab panels with two-column layout */}
+            <TabsPanel value="summary">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
+                {/* Left column - Summary content */}
+                <div className="lg:col-span-2">
                   <SummaryTab loan={loan} />
-                </TabsPanel>
+                </div>
 
-                <TabsPanel value="history">
+                {/* Right column - Loan info and Actions */}
+                <div className="space-y-150">
+                  {/* Loan header card */}
+                  <Card>
+                    <div className="flex items-center justify-between mb-100">
+                      <h2 className="text-heading-h6 text-fg-primary">
+                        Loan #{loan.loanContractAddress.slice(-4)}
+                      </h2>
+                      <Pill
+                        type={status.type}
+                        appearance="subtle"
+                        size="24"
+                        beforeIcon={status.icon}
+                      >
+                        {status.label}
+                      </Pill>
+                    </div>
+                    <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
+                  </Card>
+
+                  {/* Actions */}
+                  <Card>
+                    <h3 className="text-label-sm font-medium text-fg-secondary mb-100 uppercase tracking-wide">
+                      Actions
+                    </h3>
+                    <div className="space-y-75">
+                      <ActionItem
+                        icon={<CreditCard className="size-icon-lg" />}
+                        label="Pay Interest"
+                      />
+                      <ActionItem
+                        icon={<Plus className="size-icon-lg" />}
+                        label="Add Collateral"
+                      />
+                      <ActionItem
+                        icon={<FileText className="size-icon-lg" />}
+                        label="Give Notice to Repay"
+                      />
+                      <ActionItem
+                        icon={<ArrowDownLeft className="size-icon-lg" />}
+                        label="Request Collateral Back"
+                      />
+                    </div>
+                  </Card>
+                </div>
+              </div>
+            </TabsPanel>
+
+            <TabsPanel value="history">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
+                {/* Left column - History content */}
+                <div className="lg:col-span-2">
                   <HistoryTab payments={paymentHistory} />
-                </TabsPanel>
+                </div>
 
-                <TabsPanel value="terms">
+                {/* Right column - Loan info and Actions */}
+                <div className="space-y-150">
+                  {/* Loan header card */}
+                  <Card>
+                    <div className="flex items-center justify-between mb-100">
+                      <h2 className="text-heading-h6 text-fg-primary">
+                        Loan #{loan.loanContractAddress.slice(-4)}
+                      </h2>
+                      <Pill
+                        type={status.type}
+                        appearance="subtle"
+                        size="24"
+                        beforeIcon={status.icon}
+                      >
+                        {status.label}
+                      </Pill>
+                    </div>
+                    <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
+                  </Card>
+
+                  {/* Actions */}
+                  <Card>
+                    <h3 className="text-label-sm font-medium text-fg-secondary mb-100 uppercase tracking-wide">
+                      Actions
+                    </h3>
+                    <div className="space-y-75">
+                      <ActionItem
+                        icon={<CreditCard className="size-icon-lg" />}
+                        label="Pay Interest"
+                      />
+                      <ActionItem
+                        icon={<Plus className="size-icon-lg" />}
+                        label="Add Collateral"
+                      />
+                      <ActionItem
+                        icon={<FileText className="size-icon-lg" />}
+                        label="Give Notice to Repay"
+                      />
+                      <ActionItem
+                        icon={<ArrowDownLeft className="size-icon-lg" />}
+                        label="Request Collateral Back"
+                      />
+                    </div>
+                  </Card>
+                </div>
+              </div>
+            </TabsPanel>
+
+            <TabsPanel value="terms">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-150">
+                {/* Left column - Loan terms content */}
+                <div className="lg:col-span-2">
                   <LoanTermsTab loan={loan} />
-                </TabsPanel>
-              </Tabs>
-            </div>
+                </div>
 
-            {/* Right column - Actions - aligned with tab panel content */}
-            <div className="space-y-150 lg:pt-[58px]">
-            {/* Loan header card */}
-            <Card>
-              <div className="flex items-center justify-between mb-100">
-                <h2 className="text-heading-h6 text-fg-primary">
-                  Loan #{loan.id.split('-')[1]}
-                </h2>
-                <Pill
-                  type={status.type}
-                  appearance="subtle"
-                  size="24"
-                  beforeIcon={status.icon}
-                >
-                  {status.label}
-                </Pill>
-              </div>
-              <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
-            </Card>
+                {/* Right column - Loan info and Actions */}
+                <div className="space-y-150">
+                  {/* Loan header card */}
+                  <Card>
+                    <div className="flex items-center justify-between mb-100">
+                      <h2 className="text-heading-h6 text-fg-primary">
+                        Loan #{loan.loanContractAddress.slice(-4)}
+                      </h2>
+                      <Pill
+                        type={status.type}
+                        appearance="subtle"
+                        size="24"
+                        beforeIcon={status.icon}
+                      >
+                        {status.label}
+                      </Pill>
+                    </div>
+                    <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
+                  </Card>
 
-            {/* Actions */}
-            <Card>
-              <h3 className="text-label-sm font-medium text-fg-secondary mb-100 uppercase tracking-wide">
-                Actions
-              </h3>
-              <div className="space-y-75">
-                <ActionItem
-                  icon={<CreditCard className="size-icon-lg" />}
-                  label="Pay Interest"
-                />
-                <ActionItem
-                  icon={<Plus className="size-icon-lg" />}
-                  label="Add Collateral"
-                />
-                <ActionItem
-                  icon={<FileText className="size-icon-lg" />}
-                  label="Give Notice to Repay"
-                />
-                <ActionItem
-                  icon={<ArrowDownLeft className="size-icon-lg" />}
-                  label="Request Collateral Back"
-                />
+                  {/* Actions */}
+                  <Card>
+                    <h3 className="text-label-sm font-medium text-fg-secondary mb-100 uppercase tracking-wide">
+                      Actions
+                    </h3>
+                    <div className="space-y-75">
+                      <ActionItem
+                        icon={<CreditCard className="size-icon-lg" />}
+                        label="Pay Interest"
+                      />
+                      <ActionItem
+                        icon={<Plus className="size-icon-lg" />}
+                        label="Add Collateral"
+                      />
+                      <ActionItem
+                        icon={<FileText className="size-icon-lg" />}
+                        label="Give Notice to Repay"
+                      />
+                      <ActionItem
+                        icon={<ArrowDownLeft className="size-icon-lg" />}
+                        label="Request Collateral Back"
+                      />
+                    </div>
+                  </Card>
+                </div>
               </div>
-            </Card>
-          </div>
-        </div>
+            </TabsPanel>
+          </Tabs>
       </main>
       </div>
     </div>

@@ -28,8 +28,11 @@ export interface Loan {
   marginCallDeadline?: Date // If margin call active
   marginCallRequiredUsd?: number
   startDate: Date
-  maturityDate: Date
-  collateralWalletAddress: string
+  maturityDate: Date | null // null for revolving loans with no maturity
+  recallPeriodDays: number // Number of days notice required to recall the loan (30 or 60)
+  loanContractAddress: string // Ethereum smart contract address for the loan
+  borrowerWalletAddress: string // Ethereum wallet address that draws down the principal (entity-specific)
+  collateralWalletAddress: string // Blockchain-specific wallet address for collateral deposits
 }
 
 export interface LegalEntity {
@@ -43,7 +46,7 @@ export interface PaymentHistoryItem {
   loanId: string
   date: Date
   amountUsd: number
-  type: 'interest' | 'principal' | 'fee'
+  type: 'interest' | 'principal' | 'fee' | 'drawdown'
   status: 'completed' | 'pending' | 'failed'
 }
 
