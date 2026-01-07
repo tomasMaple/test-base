@@ -33,7 +33,8 @@ interface EntitySectionProps {
 }
 
 export function EntitySection({ entity, className }: EntitySectionProps) {
-  const sortedLoans = sortLoansByUrgency(entity.loans)
+  // Loans are already sorted by the page-level filterAndSortEntities function
+  // Do not re-sort here to preserve the user's selected sort order
 
   return (
     <section className={cn('space-y-100', className)}>
@@ -47,7 +48,7 @@ export function EntitySection({ entity, className }: EntitySectionProps) {
 
       {/* Loan cards - stacked vertically, full width */}
       <div className="flex flex-col gap-100">
-        {sortedLoans.map((loan) => (
+        {entity.loans.map((loan) => (
           <LoanCard key={loan.id} loan={loan} />
         ))}
       </div>

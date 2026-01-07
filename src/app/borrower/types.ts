@@ -6,6 +6,8 @@ export type LoanStatus = 'healthy' | 'margin-call' | 'overdue'
 
 export type CollateralType = 'btc' | 'eth' | 'sol' | 'wbtc' | 'weth'
 
+export type SortOption = 'urgency' | 'ltv-high' | 'ltv-margin' | 'interest-date'
+
 export interface Loan {
   id: string
   entityId: string
@@ -46,7 +48,45 @@ export interface PaymentHistoryItem {
   loanId: string
   date: Date
   amountUsd: number
-  type: 'interest' | 'principal' | 'fee' | 'drawdown'
+  type: 'interest' | 'principal' | 'fee' | 'drawdown' | 'refinance'
   status: 'completed' | 'pending' | 'failed'
+  transactionHash?: string
+  refinanceDetails?: RefinanceDetails
+}
+
+export interface RefinanceDetails {
+  oldInterestRate: number
+  newInterestRate: number
+  oldMarginCallLtv: number
+  newMarginCallLtv: number
+  oldLiquidationLtv: number
+  newLiquidationLtv: number
+  oldPrincipalUsd: number
+  newPrincipalUsd: number
+  reason?: string
+}
+
+export type DocumentType = 'mla' | 'amendment' | 'notice' | 'other'
+
+export interface LoanDocument {
+  id: string
+  loanId: string
+  name: string
+  type: DocumentType
+  date: Date
+  fileSize: string
+  fileType: string
+  downloadUrl: string
+  relatedTransactionId?: string
+}
+
+export type BlockchainNetwork = 'ethereum' | 'bitcoin' | 'solana'
+
+export const COLLATERAL_TO_NETWORK: Record<CollateralType, BlockchainNetwork> = {
+  btc: 'bitcoin',
+  eth: 'ethereum',
+  sol: 'solana',
+  wbtc: 'ethereum',
+  weth: 'ethereum',
 }
 

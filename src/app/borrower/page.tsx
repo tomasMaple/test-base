@@ -1,23 +1,47 @@
 'use client'
 
+import { useState, useMemo } from 'react'
 import {
   EntitySection,
   sortEntitiesByUrgency,
   PortfolioSummary,
+  FilterSortBar,
 } from './components'
 import {
   mockEntities,
   mockLoans,
   calculatePortfolioSummary,
+  filterAndSortEntities,
+  getAvailableCollateralTypes,
 } from './mock-data'
+import type { CollateralType, SortOption } from './types'
 
 // =============================================================================
 // BORROWER LOAN DASHBOARD
 // =============================================================================
 
 export default function BorrowerDashboardPage() {
-  const sortedEntities = sortEntitiesByUrgency(mockEntities)
+  // Filter & sort state
+  const [collateralFilter, setCollateralFilter] = useState<CollateralType[]>([])
+  const [entityFilter, setEntityFilter] = useState<string | null>(null)
+  const [sortBy, setSortBy] = useState<SortOption>('urgency')
+
+  // Computed values
   const portfolioSummary = calculatePortfolioSummary()
+  const availableCollateralTypes = getAvailableCollateralTypes()
+
+  // Apply filtering and sorting
+  const filteredEntities = useMemo(() => {
+    const baseEntities = sortEntitiesByUrgency(mockEntities)
+    return filterAndSortEntities(
+      baseEntities,
+      { collateralTypes: collateralFilter, entityId: entityFilter },
+      sortBy
+    )
+  }, [collateralFilter, entityFilter, sortBy])
+
+  // Entity options for filter dropdown
+  const entityOptions = mockEntities.map((e) => ({ id: e.id, name: e.name }))
 
   return (
     <div className="min-h-screen bg-canvas">
@@ -34,11 +58,31 @@ export default function BorrowerDashboardPage() {
           {/* Portfolio summary */}
           <PortfolioSummary data={portfolioSummary} loans={mockLoans} />
 
+          {/* Filter & sort bar */}
+          <FilterSortBar
+            collateralFilter={collateralFilter}
+            entityFilter={entityFilter}
+            sortBy={sortBy}
+            onCollateralFilterChange={setCollateralFilter}
+            onEntityFilterChange={setEntityFilter}
+            onSortChange={setSortBy}
+            entities={entityOptions}
+            availableCollateralTypes={availableCollateralTypes}
+          />
+
           {/* Entity sections */}
           <div className="space-y-200">
-            {sortedEntities.map((entity) => (
-              <EntitySection key={entity.id} entity={entity} />
-            ))}
+            {filteredEntities.length > 0 ? (
+              filteredEntities.map((entity) => (
+                <EntitySection key={entity.id} entity={entity} />
+              ))
+            ) : (
+              <div className="bg-surface rounded-lg border border-border-subtle p-200 text-center">
+                <p className="text-body-sm text-fg-muted">
+                  No loans match the current filters
+                </p>
+              </div>
+            )}
           </div>
         </main>
       </div>
