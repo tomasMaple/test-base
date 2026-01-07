@@ -1,4 +1,4 @@
-import { Loan, LegalEntity, PaymentHistoryItem } from './types'
+import { Loan, LegalEntity, PaymentHistoryItem, CollateralType, SortOption, LoanDocument, BlockchainNetwork, COLLATERAL_TO_NETWORK } from './types'
 
 // =============================================================================
 // MOCK LOAN DATA - Realistic institutional loan sizes ($5M+)
@@ -111,8 +111,8 @@ export const mockLoans: Loan[] = [
     collateralType: 'btc',
     collateralAmount: 205.13,
     collateralValueUsd: 205.13 * CURRENT_PRICES.btc, // ~$20M
-    principalUsd: 12000000,
-    currentLtv: 60,
+    principalUsd: 12000000, // Current principal after 2 refinances: $5M → $8M → $12M
+    currentLtv: 60, // Healthy LTV
     marginCallLtv: 70,
     liquidationLtv: 85,
     marginCallPrice: 83571, // 12000000 / (205.13 * 0.70)
@@ -192,6 +192,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 5000000,
     type: 'drawdown',
     status: 'completed',
+    transactionHash: '0xa1b2...abcd',
   },
   {
     id: 'pay-1-1',
@@ -200,6 +201,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 41667,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xb2c3...bcde',
   },
   {
     id: 'pay-1-2',
@@ -208,6 +210,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 41667,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xc3d4...cdef',
   },
   {
     id: 'pay-1-3',
@@ -216,6 +219,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 41667,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xd4e5...def0',
   },
   {
     id: 'pay-1-4',
@@ -224,6 +228,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 41667,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xe5f6...ef01',
   },
   {
     id: 'pay-1-5',
@@ -232,6 +237,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 41667,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xf678...0123',
   },
   {
     id: 'pay-1-6',
@@ -240,6 +246,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 41667,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x0789...0234',
   },
   {
     id: 'pay-1-7',
@@ -248,6 +255,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 41667,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x8901...2345',
   },
   {
     id: 'pay-1-8',
@@ -256,6 +264,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 41667,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x9012...4567',
   },
   // LOAN-9c1D8e3A - Galaxy US Loan 2 (Started 240 days ago - 8 months)
   {
@@ -265,6 +274,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 8500000,
     type: 'drawdown',
     status: 'completed',
+    transactionHash: '0x1a2b3c4d5e6f78901234567890abcdef1234567890abcdef1234567890abcdef',
   },
   {
     id: 'pay-2-1',
@@ -273,6 +283,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 70833,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x2b3c4d5e6f78901234567890abcdef1234567890abcdef1234567890abcdef12',
   },
   {
     id: 'pay-2-2',
@@ -281,6 +292,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 70833,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x3c4d5e6f78901234567890abcdef1234567890abcdef1234567890abcdef1234',
   },
   {
     id: 'pay-2-3',
@@ -289,6 +301,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 70833,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x4d5e6f78901234567890abcdef1234567890abcdef1234567890abcdef123456',
   },
   {
     id: 'pay-2-4',
@@ -297,6 +310,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 70833,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x5e6f78901234567890abcdef1234567890abcdef1234567890abcdef12345678',
   },
   {
     id: 'pay-2-5',
@@ -305,6 +319,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 70833,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x6f78901234567890abcdef1234567890abcdef1234567890abcdef1234567890',
   },
   {
     id: 'pay-2-6',
@@ -313,6 +328,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 70833,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x78901234567890abcdef1234567890abcdef1234567890abcdef12345678901a',
   },
   {
     id: 'pay-2-7',
@@ -321,6 +337,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 70833,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x8901234567890abcdef1234567890abcdef1234567890abcdef12345678901ab',
   },
   // LOAN-2b5F9d1C - Galaxy Cayman Loan 3 (Started 210 days ago - 7 months)
   {
@@ -330,6 +347,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 25000000,
     type: 'drawdown',
     status: 'completed',
+    transactionHash: '0x5abc...def1',
   },
   {
     id: 'pay-3-1',
@@ -338,6 +356,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 208333,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x6bcd...ef12',
   },
   {
     id: 'pay-3-2',
@@ -346,6 +365,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 208333,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x7cde...f123',
   },
   {
     id: 'pay-3-3',
@@ -354,6 +374,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 208333,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x8def...1234',
   },
   {
     id: 'pay-3-4',
@@ -362,6 +383,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 208333,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x9ef0...2345',
   },
   {
     id: 'pay-3-5',
@@ -370,6 +392,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 208333,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x0f01...3456',
   },
   {
     id: 'pay-3-6',
@@ -378,111 +401,168 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 208333,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x1012...4567',
   },
   // LOAN-4d7A2c8B - Galaxy Europe Loan 4 (Started 365 days ago - full year history)
+  // Structure: $5M initial → Refi 1 (+$2M upsize, rate/LTV improvement) = $7M → Refi 2 (+$5M upsize) = $12M
   {
     id: 'draw-4',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(365), // Start date of loan - MUST BE FIRST
-    amountUsd: 12000000,
+    amountUsd: 5000000,
     type: 'drawdown',
     status: 'completed',
+    transactionHash: '0x1a2b...3c4d',
   },
   {
-    id: 'pay-5-1',
+    id: 'pay-4-1',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(335),
-    amountUsd: 100000,
+    amountUsd: 50000, // Interest on $5M at 12% APR
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x2b3c...4d5e',
   },
   {
-    id: 'pay-5-2',
+    id: 'pay-4-2',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(305),
-    amountUsd: 100000,
+    amountUsd: 50000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x3c4d...5e6f',
   },
   {
-    id: 'pay-5-3',
+    id: 'pay-4-3',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(275),
-    amountUsd: 100000,
+    amountUsd: 50000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x4d5e...6f7a',
   },
   {
-    id: 'pay-5-4',
+    id: 'pay-4-4',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(245),
-    amountUsd: 100000,
+    amountUsd: 50000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x5e6f...7a8b',
   },
   {
-    id: 'pay-5-5',
+    id: 'pay-4-5',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(215),
-    amountUsd: 100000,
+    amountUsd: 50000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x6f7a...8b9c',
   },
   {
-    id: 'pay-5-6',
+    id: 'pay-4-6',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(185),
-    amountUsd: 100000,
+    amountUsd: 50000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x7a8b...9c0d',
+  },
+  // Refinance 1 - $2M upsize only (no rate or LTV changes)
+  {
+    id: 'refi-4-1',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(185),
+    amountUsd: 2000000,
+    type: 'refinance',
+    status: 'completed',
+    transactionHash: '0x8b9c...0d1e',
+    refinanceDetails: {
+      oldInterestRate: 0.12,
+      newInterestRate: 0.12,
+      oldMarginCallLtv: 65,
+      newMarginCallLtv: 65,
+      oldLiquidationLtv: 80,
+      newLiquidationLtv: 80,
+      oldPrincipalUsd: 5000000,
+      newPrincipalUsd: 7000000,
+      reason: 'Additional capital drawdown',
+    },
   },
   {
-    id: 'pay-5-7',
+    id: 'pay-4-7',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(155),
-    amountUsd: 100000,
+    amountUsd: 70000, // Interest on $7M at 12% APR
     type: 'interest',
     status: 'completed',
+    transactionHash: '0x9c0d...1e2f',
   },
   {
-    id: 'pay-5-8',
+    id: 'pay-4-8',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(125),
-    amountUsd: 100000,
+    amountUsd: 70000, // Interest on $7M at 12% APR
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xa0d1...2f3a',
   },
   {
-    id: 'pay-5-9',
+    id: 'pay-4-9',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(95),
-    amountUsd: 100000,
+    amountUsd: 70000, // Interest on $7M at 12% APR
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xb1e2...3a4b',
+  },
+  // Refinance 2 - $5M upsize from $7M to $12M
+  {
+    id: 'refi-4-2',
+    loanId: 'LOAN-4d7A2c8B',
+    date: daysAgo(90),
+    amountUsd: 5000000,
+    type: 'refinance',
+    status: 'completed',
+    transactionHash: '0xc2f3...4b5c',
+    refinanceDetails: {
+      oldInterestRate: 0.12,
+      newInterestRate: 0.10,
+      oldMarginCallLtv: 65,
+      newMarginCallLtv: 70,
+      oldLiquidationLtv: 80,
+      newLiquidationLtv: 85,
+      oldPrincipalUsd: 7000000,
+      newPrincipalUsd: 12000000,
+      reason: 'Rate reduction and improved terms for expansion',
+    },
   },
   {
-    id: 'pay-5-10',
+    id: 'pay-4-10',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(65),
-    amountUsd: 100000,
+    amountUsd: 100000, // Interest on $12M at 10% APR
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xd3a4...5c6d',
   },
   {
-    id: 'pay-5-11',
+    id: 'pay-4-11',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(35),
     amountUsd: 100000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xe4b5...6d7e',
   },
   {
-    id: 'pay-5-12',
+    id: 'pay-4-12',
     loanId: 'LOAN-4d7A2c8B',
     date: daysAgo(5),
     amountUsd: 100000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xf5c6...7e8f',
   },
   // LOAN-6e9C3f5D - Galaxy Europe Loan 5 (Started 180 days ago - 6 months)
   {
@@ -492,6 +572,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 15000000,
     type: 'drawdown',
     status: 'completed',
+    transactionHash: '0x9a0b1c2d3e4f567890abcdef1234567890abcdef1234567890abcdef12345678',
   },
   {
     id: 'pay-5-1',
@@ -500,6 +581,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 125000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xa0b1c2d3e4f5678901abcdef1234567890abcdef1234567890abcdef12345678',
   },
   {
     id: 'pay-5-2',
@@ -508,6 +590,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 125000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xb1c2d3e4f5678901abcdef1234567890abcdef1234567890abcdef123456789a',
   },
   {
     id: 'pay-5-3',
@@ -516,6 +599,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 125000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xc2d3e4f5678901abcdef1234567890abcdef1234567890abcdef123456789ab0',
   },
   {
     id: 'pay-5-4',
@@ -524,6 +608,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 125000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xd3e4f5678901abcdef1234567890abcdef1234567890abcdef123456789ab01c',
   },
   {
     id: 'pay-5-5',
@@ -532,6 +617,7 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     amountUsd: 125000,
     type: 'interest',
     status: 'completed',
+    transactionHash: '0xe4f5678901abcdef1234567890abcdef1234567890abcdef123456789ab01c2d',
   },
 ]
 
@@ -619,4 +705,206 @@ export function calculatePortfolioSummary() {
         }
       : null,
   }
+}
+
+// =============================================================================
+// FILTERING & SORTING UTILITIES
+// =============================================================================
+
+export interface FilterCriteria {
+  collateralTypes: CollateralType[]
+  entityId: string | null
+}
+
+export function filterLoans(loans: Loan[], filters: FilterCriteria): Loan[] {
+  return loans.filter((loan) => {
+    // Filter by collateral type (if any selected)
+    if (filters.collateralTypes.length > 0) {
+      if (!filters.collateralTypes.includes(loan.collateralType)) {
+        return false
+      }
+    }
+
+    // Filter by entity (if selected)
+    if (filters.entityId) {
+      if (loan.entityId !== filters.entityId) {
+        return false
+      }
+    }
+
+    return true
+  })
+}
+
+export function sortLoansBy(loans: Loan[], sortOption: SortOption): Loan[] {
+  const sorted = [...loans]
+
+  switch (sortOption) {
+    case 'urgency':
+      // Status priority: margin-call > overdue > healthy, then by interest due date
+      return sortLoansByUrgency(sorted)
+
+    case 'ltv-high':
+      // Highest current LTV first
+      return sorted.sort((a, b) => b.currentLtv - a.currentLtv)
+
+    case 'ltv-margin':
+      // Closest to margin call first (smallest headroom)
+      return sorted.sort((a, b) => {
+        const aHeadroom = a.marginCallLtv - a.currentLtv
+        const bHeadroom = b.marginCallLtv - b.currentLtv
+        return aHeadroom - bHeadroom
+      })
+
+    case 'interest-date':
+      // Soonest interest due date first
+      return sorted.sort(
+        (a, b) => a.interestDueDate.getTime() - b.interestDueDate.getTime()
+      )
+
+    default:
+      return sorted
+  }
+}
+
+export function filterAndSortEntities(
+  entities: LegalEntity[],
+  filters: FilterCriteria,
+  sortOption: SortOption
+): LegalEntity[] {
+  return entities
+    .map((entity) => {
+      // Filter loans within entity
+      const filteredLoans = filterLoans(entity.loans, filters)
+      // Sort the filtered loans
+      const sortedLoans = sortLoansBy(filteredLoans, sortOption)
+
+      return {
+        ...entity,
+        loans: sortedLoans,
+      }
+    })
+    .filter((entity) => entity.loans.length > 0) // Remove empty entities
+}
+
+// Get unique collateral types from loans (for filter options)
+export function getAvailableCollateralTypes(): CollateralType[] {
+  const types = new Set(mockLoans.map((loan) => loan.collateralType))
+  return Array.from(types)
+}
+
+// =============================================================================
+// LOAN DOCUMENTS - Master Loan Agreements and Amendments
+// =============================================================================
+
+export const mockLoanDocuments: LoanDocument[] = [
+  // LOAN-7a3B4f2E (Galaxy US - BTC) - MLA only
+  {
+    id: 'doc-1-1',
+    loanId: 'LOAN-7a3B4f2E',
+    name: 'Master Loan Agreement',
+    type: 'mla',
+    date: daysAgo(270),
+    fileSize: '2.1 MB',
+    fileType: 'PDF',
+    downloadUrl: '#',
+  },
+
+  // LOAN-9c1D8e3A (Galaxy US - ETH) - MLA only
+  {
+    id: 'doc-2-1',
+    loanId: 'LOAN-9c1D8e3A',
+    name: 'Master Loan Agreement',
+    type: 'mla',
+    date: daysAgo(240),
+    fileSize: '2.3 MB',
+    fileType: 'PDF',
+    downloadUrl: '#',
+  },
+
+  // LOAN-2b5F9d1C (Galaxy Cayman - SOL) - MLA only
+  {
+    id: 'doc-3-1',
+    loanId: 'LOAN-2b5F9d1C',
+    name: 'Master Loan Agreement',
+    type: 'mla',
+    date: daysAgo(210),
+    fileSize: '2.4 MB',
+    fileType: 'PDF',
+    downloadUrl: '#',
+  },
+
+  // LOAN-4d7A2c8B (Galaxy Europe - BTC) - MLA + 2 Amendments (has refis)
+  {
+    id: 'doc-4-1',
+    loanId: 'LOAN-4d7A2c8B',
+    name: 'Master Loan Agreement',
+    type: 'mla',
+    date: daysAgo(365),
+    fileSize: '2.4 MB',
+    fileType: 'PDF',
+    downloadUrl: '#',
+  },
+  {
+    id: 'doc-4-2',
+    loanId: 'LOAN-4d7A2c8B',
+    name: 'Amendment No. 1 - Rate & LTV Adjustment',
+    type: 'amendment',
+    date: daysAgo(185), // Same date as refi 1
+    fileSize: '856 KB',
+    fileType: 'PDF',
+    downloadUrl: '#',
+    relatedTransactionId: 'refi-4-1',
+  },
+  {
+    id: 'doc-4-3',
+    loanId: 'LOAN-4d7A2c8B',
+    name: 'Amendment No. 2 - Additional Drawdown',
+    type: 'amendment',
+    date: daysAgo(90), // Same date as refi 2
+    fileSize: '743 KB',
+    fileType: 'PDF',
+    downloadUrl: '#',
+    relatedTransactionId: 'refi-4-2',
+  },
+
+  // LOAN-8e2A1f9D (Galaxy Asia - WBTC) - MLA only
+  {
+    id: 'doc-5-1',
+    loanId: 'LOAN-8e2A1f9D',
+    name: 'Master Loan Agreement',
+    type: 'mla',
+    date: daysAgo(180),
+    fileSize: '2.2 MB',
+    fileType: 'PDF',
+    downloadUrl: '#',
+  },
+]
+
+// =============================================================================
+// HELPER FUNCTIONS - Documents and Block Explorer
+// =============================================================================
+
+/**
+ * Get all documents for a specific loan, sorted chronologically (oldest first)
+ */
+export function getDocumentsForLoan(loanId: string): LoanDocument[] {
+  return mockLoanDocuments
+    .filter((doc) => doc.loanId === loanId)
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+}
+
+/**
+ * Get the block explorer URL for a transaction based on the blockchain network
+ */
+export function getBlockExplorerUrl(
+  network: BlockchainNetwork,
+  transactionHash: string
+): string {
+  const explorers: Record<BlockchainNetwork, string> = {
+    ethereum: 'https://etherscan.io/tx/',
+    bitcoin: 'https://blockchain.com/btc/tx/',
+    solana: 'https://solscan.io/tx/',
+  }
+  return `${explorers[network]}${transactionHash}`
 }
