@@ -6,6 +6,8 @@ export type LoanStatus = 'healthy' | 'margin-call' | 'overdue'
 
 export type CollateralType = 'btc' | 'eth' | 'sol' | 'wbtc' | 'weth'
 
+export type PaymentCoin = 'usdc' | 'usdt'
+
 export type SortOption = 'urgency' | 'ltv-high' | 'ltv-margin' | 'interest-date'
 
 export interface Loan {
@@ -35,6 +37,7 @@ export interface Loan {
   loanContractAddress: string // Ethereum smart contract address for the loan
   borrowerWalletAddress: string // Ethereum wallet address that draws down the principal (entity-specific)
   collateralWalletAddress: string // Blockchain-specific wallet address for collateral deposits
+  paymentCoin: PaymentCoin // USDC or USDT used for payments on this loan
 }
 
 export interface LegalEntity {
@@ -48,10 +51,13 @@ export interface PaymentHistoryItem {
   loanId: string
   date: Date
   amountUsd: number
-  type: 'interest' | 'principal' | 'fee' | 'drawdown' | 'refinance'
+  type: 'interest' | 'principal' | 'fee' | 'drawdown' | 'refinance' | 'collateral-deposit'
   status: 'completed' | 'pending' | 'failed'
   transactionHash?: string
   refinanceDetails?: RefinanceDetails
+  paymentCoin: PaymentCoin // USDC or USDT used for this transaction
+  collateralAmount?: number // Amount in collateral token (only for collateral-deposit type)
+  collateralType?: CollateralType // Collateral token type (only for collateral-deposit type)
 }
 
 export interface RefinanceDetails {
