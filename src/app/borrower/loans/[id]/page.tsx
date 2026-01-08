@@ -5,6 +5,7 @@ import { use } from 'react'
 import NextLink from 'next/link'
 import { cn } from '@/lib/utils'
 import {
+  Badge,
   Button,
   IconButton,
   Pill,
@@ -1252,14 +1253,13 @@ function HistoryTab({ payments, loan }: HistoryTabProps) {
                       </span>
                     </div>
                   ) : null}
-                  <Pill
-                    type={payment.status === 'completed' ? 'positive' : 'warning'}
-                    appearance="subtle"
-                    size="24"
-                    beforeIcon={payment.status === 'completed' ? <CheckCircle className="size-icon-xs" /> : undefined}
-                  >
-                    {payment.status === 'completed' ? '' : payment.status}
-                  </Pill>
+                  {payment.status === 'completed' ? (
+                    <CheckCircle className="h-5 w-5 text-positive" strokeWidth={2.5} />
+                  ) : (
+                    <Pill type="warning" appearance="subtle" size="24">
+                      {payment.status}
+                    </Pill>
+                  )}
                 </div>
               </div>
             )
@@ -1415,36 +1415,49 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
         <main className="pb-200 space-y-100">
           {/* Margin call alert (if active) - full width above everything */}
           {loan.status === 'margin-call' && loan.marginCallDeadline && (() => {
-            // Calculate collateral amount required from USD value
-            const collateralAmountRequired = (loan.marginCallRequiredUsd || 0) / loan.currentCollateralPrice
+            // Calculate target LTV (margin call LTV - 5%)
+            const targetLtv = loan.marginCallLtv - 5
+
+            // Calculate required collateral value to reach target LTV
+            // LTV = Principal / Collateral Value, so Collateral Value = Principal / Target LTV
+            const currentCollateralValue = loan.collateralAmount * loan.currentCollateralPrice
+            const requiredCollateralValue = loan.principalUsd / (targetLtv / 100)
+            const additionalCollateralValueNeeded = requiredCollateralValue - currentCollateralValue
+
+            // Calculate collateral amount required
+            const collateralAmountRequired = additionalCollateralValueNeeded / loan.currentCollateralPrice
+
             const formatCollateralRequired = () => {
-              const decimals = loan.collateralType === 'btc' ? 6 : loan.collateralType === 'eth' ? 4 : 2
               return collateralAmountRequired.toLocaleString('en-US', {
-                minimumFractionDigits: decimals,
-                maximumFractionDigits: decimals,
+                minimumFractionDigits: 6,
+                maximumFractionDigits: 6,
+              })
+            }
+            const formatUsdRequired = () => {
+              return additionalCollateralValueNeeded.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
               })
             }
             return (
               <div className="bg-negative-subtle border border-negative rounded-xl px-150 py-100">
-                <div className="flex items-center gap-100">
-                  <AlertTriangle className="size-icon-lg text-negative shrink-0" />
-                  <div className="flex-1 flex items-center justify-between">
-                    <span className="text-label-sm text-negative">
-                      <span className="font-semibold">Margin call active:</span>
-                      {' '}
-                      Add{' '}
-                      <span className="font-semibold">
-                        {formatCollateralRequired()} {loan.collateralType.toUpperCase()}
-                      </span>
-                      {' '}
-                      <span className="font-semibold">({formatCurrency(loan.marginCallRequiredUsd || 0)})</span>
-                      {' '}to restore your LTV.
-                    </span>
-                    <span className="text-label-sm text-negative">
-                      Cure by:{' '}
-                      <span className="font-semibold">{formatDeadline(loan.marginCallDeadline)} UTC</span>
-                    </span>
+                <div className="flex gap-100">
+                  <AlertTriangle className="size-icon-lg text-negative shrink-0 mt-025" />
+                  <div className="flex-1 space-y-50">
+                    {/* Row 1: Alert message */}
+                    <div className="text-label-sm text-negative">
+                      <span className="font-semibold">Margin call active:</span>{' '}
+                      Add <span className="font-semibold">{formatCollateralRequired()} {loan.collateralType.toUpperCase()}</span>{' '}
+                      <span className="font-semibold">(${formatUsdRequired()})</span>{' '}
+                      by <span className="font-semibold">{formatDeadline(loan.marginCallDeadline)} UTC</span>{' '}
+                      to restore your LTV to {targetLtv}%.
+                    </div>
+                    {/* Row 2: Latest alert info */}
+                    <div className="text-label-xs text-negative">
+                      <span className="font-semibold">Latest Alert:</span> Jan 6, 2026 at 2:34 PM UTC to j.chen@galaxy.com, m.novak@galaxy.com, s.patel@galaxy.com
+                    </div>
                   </div>
+                  <CopyButton text={formatCollateralRequired()} />
                 </div>
               </div>
             )
@@ -1485,25 +1498,6 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
                       </Pill>
                     </div>
                     <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
-
-                    {/* Latest margin call alert */}
-                    {loan.status === 'margin-call' && (
-                      <div className="mt-100 pt-100 border-t border-border-subtle">
-                        <h3 className="text-label-xs font-semibold text-fg-primary mb-50">
-                          Latest Margin Call Alert
-                        </h3>
-                        <div className="space-y-25">
-                          <p className="text-label-xs text-fg-primary">
-                            <span className="font-semibold">Sent:</span>{' '}
-                            Jan 6, 2026 at 2:34 PM UTC
-                          </p>
-                          <p className="text-label-xs text-fg-primary">
-                            <span className="font-semibold">To:</span>{' '}
-                            j.chen@galaxy.com, m.novak@galaxy.com, s.patel@galaxy.com
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   </Card>
 
                   {/* Actions */}
@@ -1563,25 +1557,6 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
                       </Pill>
                     </div>
                     <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
-
-                    {/* Latest margin call alert */}
-                    {loan.status === 'margin-call' && (
-                      <div className="mt-100 pt-100 border-t border-border-subtle">
-                        <h3 className="text-label-xs font-semibold text-fg-primary mb-50">
-                          Latest Margin Call Alert
-                        </h3>
-                        <div className="space-y-25">
-                          <p className="text-label-xs text-fg-primary">
-                            <span className="font-semibold">Sent:</span>{' '}
-                            Jan 6, 2026 at 2:34 PM UTC
-                          </p>
-                          <p className="text-label-xs text-fg-primary">
-                            <span className="font-semibold">To:</span>{' '}
-                            j.chen@galaxy.com, m.novak@galaxy.com, s.patel@galaxy.com
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   </Card>
 
                   {/* Actions */}
@@ -1637,25 +1612,6 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
                       </Pill>
                     </div>
                     <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
-
-                    {/* Latest margin call alert */}
-                    {loan.status === 'margin-call' && (
-                      <div className="mt-100 pt-100 border-t border-border-subtle">
-                        <h3 className="text-label-xs font-semibold text-fg-primary mb-50">
-                          Latest Margin Call Alert
-                        </h3>
-                        <div className="space-y-25">
-                          <p className="text-label-xs text-fg-primary">
-                            <span className="font-semibold">Sent:</span>{' '}
-                            Jan 6, 2026 at 2:34 PM UTC
-                          </p>
-                          <p className="text-label-xs text-fg-primary">
-                            <span className="font-semibold">To:</span>{' '}
-                            j.chen@galaxy.com, m.novak@galaxy.com, s.patel@galaxy.com
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   </Card>
 
                   {/* Actions */}
