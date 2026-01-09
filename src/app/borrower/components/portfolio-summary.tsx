@@ -52,8 +52,12 @@ interface GroupedCardProps {
   clickable?: boolean
   onClick?: () => void
   buttonLabel?: string
+  buttonVariant?: 'primary' | 'secondary'
   className?: string
 }
+
+// REVERT: Change to false to use secondary buttons for action cards
+const USE_PRIMARY_BUTTONS_FOR_ACTION_CARDS = true
 
 function GroupedCard({
   title,
@@ -62,8 +66,12 @@ function GroupedCard({
   clickable = false,
   onClick,
   buttonLabel,
+  buttonVariant: buttonVariantProp,
   className,
 }: GroupedCardProps) {
+  // Use primary button for action cards when enabled, otherwise use prop or default to secondary
+  const buttonVariant = buttonVariantProp || (USE_PRIMARY_BUTTONS_FOR_ACTION_CARDS ? 'primary' : 'secondary')
+
   return (
     <div
       className={cn(
@@ -82,7 +90,7 @@ function GroupedCard({
       </div>
       {clickable && onClick ? (
         <Button
-          variant="secondary"
+          variant={buttonVariant}
           size="sm"
           onClick={onClick}
           className="w-full mt-100"
