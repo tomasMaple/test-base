@@ -14,6 +14,8 @@ import { Loan, LoanStatus } from '../types'
 // =============================================================================
 
 const SHOW_ACTION_BUTTONS = true // Set to false to revert to clickable card
+// REVERT: Change to false to use secondary buttons for View Details
+const USE_PRIMARY_VIEW_DETAILS_BUTTON = true
 
 // =============================================================================
 // HELPERS
@@ -191,7 +193,7 @@ export function LoanCard({ loan, className }: LoanCardProps) {
             {isMarginCall ? 'Add Collateral' : 'Pay Interest'}
           </Button>
           <Button
-            variant="secondary"
+            variant={USE_PRIMARY_VIEW_DETAILS_BUTTON ? 'primary' : 'secondary'}
             size="md"
             className="min-w-[120px]"
             onClick={handleViewDetails}
