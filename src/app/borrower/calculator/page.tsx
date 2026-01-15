@@ -580,13 +580,13 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
                 <TokenLogo token={loan.collateralType} size="xs" />
                 <span className="text-heading-h5 font-semibold">
                   {simulatedLtv < loan.initialLtv
-                    ? formatCollateralAmount(Math.abs(totalSimulatedCollateral - (simulatedPrincipal / (loan.currentCollateralPrice * (loan.initialLtv / 100)))))
+                    ? formatCollateralAmount(Math.abs(totalSimulatedCollateral - (simulatedPrincipal / (simulatedPrice * (loan.initialLtv / 100)))))
                     : '0.000000'}
                 </span>
               </div>
               <p className="text-label-xs text-fg-muted">
                 ≈ {simulatedLtv < loan.initialLtv
-                    ? formatCurrency(Math.abs((totalSimulatedCollateral - (simulatedPrincipal / (loan.currentCollateralPrice * (loan.initialLtv / 100)))) * loan.currentCollateralPrice), 2)
+                    ? formatCurrency(Math.abs((totalSimulatedCollateral - (simulatedPrincipal / (simulatedPrice * (loan.initialLtv / 100)))) * simulatedPrice), 2)
                     : '$0.00'}
               </p>
             </div>
