@@ -99,7 +99,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                 <div className="flex items-center gap-25">
                   <TokenLogo token={loan.collateralType} size="xs" />
                   <span className="text-label-sm text-fg-primary">
-                    {loan.collateralAmount.toLocaleString()} {loan.collateralType.toUpperCase()}
+                    {loan.collateralAmount.toLocaleString()}
                   </span>
                 </div>
               </td>

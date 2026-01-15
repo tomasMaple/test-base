@@ -13,16 +13,16 @@ import { Loan } from '../types'
 function formatCurrency(value: number, includeSymbol: boolean = true): string {
   const symbol = includeSymbol ? '$' : ''
   if (value >= 1000000) {
-    return `${symbol}${(value / 1000000).toFixed(1)}M`
+    return `${symbol}${(value / 1000000).toFixed(2)}M`
   }
   if (value >= 1000) {
-    return `${symbol}${(value / 1000).toFixed(0)}K`
+    return `${symbol}${(value / 1000).toFixed(2)}K`
   }
   return new Intl.NumberFormat('en-US', {
     style: includeSymbol ? 'currency' : 'decimal',
     currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value)
 }
 
@@ -30,8 +30,8 @@ function formatFullCurrency(value: number, includeSymbol: boolean = true): strin
   return new Intl.NumberFormat('en-US', {
     style: includeSymbol ? 'currency' : 'decimal',
     currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value)
 }
 
@@ -346,7 +346,7 @@ function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalPr
                           </div>
                         </div>
                         <div className="flex items-center gap-100">
-                          <div className="flex items-center gap-50">
+                          <div className="flex items-center gap-25">
                             <TokenLogo token={loan.paymentCoin} size="xs" />
                             <span className={cn(
                               'text-label-md font-semibold',
@@ -419,14 +419,22 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
   return (
     <>
       <div className={cn('grid grid-cols-1 md:grid-cols-3 gap-100', className)}>
-        {/* Card 1: Total Borrowed */}
+        {/* Card 1: Total Borrowed & Collateral */}
         <GroupedCard title="Total Borrowed">
-          <p className="text-heading-h4 font-semibold text-fg-primary">
-            {formatCurrency(data.totalPrincipal)}
-          </p>
-          <p className="text-label-sm text-fg-muted mt-50">
-            Collateral: {formatCurrency(data.totalCollateralUsd)}
-          </p>
+          <div className="flex flex-col h-full justify-center">
+            <div>
+              <p className="text-heading-h4 font-semibold text-fg-primary">
+                {formatCurrency(data.totalPrincipal)}
+              </p>
+            </div>
+            <div className="my-75 border-t border-border-subtle" />
+            <div>
+              <p className="text-label-xs uppercase tracking-wide text-fg-muted mb-25">Total Collateral</p>
+              <p className="text-heading-h4 font-semibold text-fg-primary">
+                {formatCurrency(data.totalCollateralUsd)}
+              </p>
+            </div>
+          </div>
         </GroupedCard>
 
         {/* Card 2: Interest Payments - shows overdue OR next payment */}
