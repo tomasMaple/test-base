@@ -58,9 +58,9 @@ if (typeof window !== 'undefined') {
 // HELPERS
 // =============================================================================
 
-function formatCurrency(value: number, decimals = 0): string {
+function formatCurrency(value: number, decimals = 0, includeSymbol: boolean = true): string {
   return new Intl.NumberFormat('en-US', {
-    style: 'currency',
+    style: includeSymbol ? 'currency' : 'decimal',
     currency: 'USD',
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -1063,9 +1063,12 @@ function SummaryTab({ loan }: SummaryTabProps) {
           {/* Principal */}
           <div className="space-y-50">
             <span className="text-label-xs text-fg-muted">Principal</span>
-            <p className="text-heading-h5 font-semibold text-fg-primary">
-              {formatCurrency(loan.principalUsd)}
-            </p>
+            <div className="flex items-center gap-25">
+              <TokenLogo token={loan.paymentCoin} size="md" />
+              <p className="text-heading-h5 font-semibold text-fg-primary">
+                {formatNumber(loan.principalUsd, 0)}
+              </p>
+            </div>
           </div>
 
           {/* Collateral */}
@@ -1092,6 +1095,7 @@ function SummaryTab({ loan }: SummaryTabProps) {
             currentLtv={loan.currentLtv}
             marginCallLtv={loan.marginCallLtv}
             liquidationLtv={loan.liquidationLtv}
+            refundLtv={loan.initialLtv}
           />
         </div>
       </Card>
@@ -1139,7 +1143,12 @@ function SummaryTab({ loan }: SummaryTabProps) {
           />
           <MetricRow
             label="Amount due"
-            value={formatCurrency(loan.interestAmountUsd, 2)}
+            value={
+              <div className="flex items-center gap-50">
+                <TokenLogo token={loan.paymentCoin} size="xs" />
+                <span>{formatNumber(loan.interestAmountUsd, 2)}</span>
+              </div>
+            }
           />
           <MetricRow
             label="Interest rate"
@@ -1320,6 +1329,7 @@ function LoanTermsTab({ loan }: LoanTermsTabProps) {
       <Card>
         <CardHeader title="LTV thresholds" />
         <div className="space-y-75">
+          <MetricRow label="Initial LTV" value={`${loan.initialLtv}%`} />
           <MetricRow label="Margin call LTV" value={`${loan.marginCallLtv}%`} />
           <MetricRow label="Liquidation LTV" value={`${loan.liquidationLtv}%`} />
           <MetricRow label="Margin call price" value={formatCurrency(loan.marginCallPrice)} />
@@ -1468,7 +1478,6 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
             <TabsList className="mb-100">
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="ltv-calculator">LTV Calculator</TabsTrigger>
-              <TabsTrigger value="history">History</TabsTrigger>
               <TabsTrigger value="terms">Loan terms</TabsTrigger>
             </TabsList>
 

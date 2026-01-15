@@ -49,6 +49,7 @@ export const mockLoans: Loan[] = [
     borrowerWalletAddress: '0x1a2B3c4D5e6F7g8H9i0J1k2L3m4N5o6P7q8R9s0T', // Galaxy US drawdown wallet
     collateralWalletAddress: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
     paymentCoin: 'usdc',
+    initialLtv: 42,
   },
   // Galaxy US - Loan 2 (Healthy, ETH loan, 8 months history)
   {
@@ -76,6 +77,7 @@ export const mockLoans: Loan[] = [
     borrowerWalletAddress: '0x1a2B3c4D5e6F7g8H9i0J1k2L3m4N5o6P7q8R9s0T', // Galaxy US drawdown wallet
     collateralWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb4',
     paymentCoin: 'usdc',
+    initialLtv: 50,
   },
   // Galaxy Cayman - Loan 3 (MARGIN CALL ACTIVE, 7 months history)
   {
@@ -105,6 +107,7 @@ export const mockLoans: Loan[] = [
     borrowerWalletAddress: '0x9A8b7C6d5E4f3G2h1I0j9K8l7M6n5O4p3Q2r1S0t', // Galaxy Cayman drawdown wallet
     collateralWalletAddress: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
     paymentCoin: 'usdc',
+    initialLtv: 55,
   },
   // Galaxy Europe - Loan 4 (Approaching trigger, 1 year of history)
   {
@@ -132,6 +135,7 @@ export const mockLoans: Loan[] = [
     borrowerWalletAddress: '0x5F4e3D2c1B0a9F8e7D6c5B4a3F2e1D0c9B8a7F6e', // Galaxy Europe drawdown wallet
     collateralWalletAddress: 'bc1qa5wkgaew2dkv56kfvj49j0av5nml45x9ek9hz6',
     paymentCoin: 'usdt',
+    initialLtv: 45,
   },
   // Galaxy Europe - Loan 5 (Healthy, 6 months history)
   {
@@ -159,6 +163,7 @@ export const mockLoans: Loan[] = [
     borrowerWalletAddress: '0x5F4e3D2c1B0a9F8e7D6c5B4a3F2e1D0c9B8a7F6e', // Galaxy Europe drawdown wallet
     collateralWalletAddress: '0x8e23Ee67d1332aD560396262C48fF9B6B144DFA5',
     paymentCoin: 'usdt',
+    initialLtv: 48,
   },
 ]
 
@@ -745,6 +750,15 @@ export function getPaymentHistoryForLoan(loanId: string): PaymentHistoryItem[] {
     .sort((a, b) => b.date.getTime() - a.date.getTime()) // Sort by date descending (most recent first)
 }
 
+export function getAllTransactions(): (PaymentHistoryItem & { entityName: string })[] {
+  return mockPaymentHistory
+    .map(tx => {
+      const loan = getLoanById(tx.loanId)
+      return { ...tx, entityName: loan?.entityName || '' }
+    })
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+}
+
 export function getEntitiesSortedByUrgency(): LegalEntity[] {
   return [...mockEntities].sort((a, b) => {
     const aHasUrgent = a.loans.some(
@@ -777,6 +791,7 @@ export function sortLoansByUrgency(loans: Loan[]): Loan[] {
 // Portfolio summary calculations
 export function calculatePortfolioSummary() {
   const totalPrincipal = mockLoans.reduce((sum, l) => sum + l.principalUsd, 0)
+  const totalCollateralUsd = mockLoans.reduce((sum, l) => sum + l.collateralValueUsd, 0)
   const activeLoans = mockLoans.length
   const activeMarginCalls = mockLoans.filter((l) => l.status === 'margin-call').length
   const overdueInterest = mockLoans.filter((l) => l.status === 'overdue').length
@@ -797,6 +812,7 @@ export function calculatePortfolioSummary() {
 
   return {
     totalPrincipal,
+    totalCollateralUsd,
     activeLoans,
     activeMarginCalls,
     overdueInterest,

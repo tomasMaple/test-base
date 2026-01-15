@@ -11,6 +11,7 @@ interface LtvGaugeProps {
   currentLtv: number
   marginCallLtv: number
   liquidationLtv: number
+  refundLtv?: number
   className?: string
   showLabels?: boolean
   size?: 'sm' | 'md' | 'lg'
@@ -28,6 +29,7 @@ export function LtvGauge({
   currentLtv,
   marginCallLtv,
   liquidationLtv,
+  refundLtv,
   className,
   showLabels = false,
   size = 'sm',
@@ -86,14 +88,28 @@ export function LtvGauge({
         {/* Liquidation threshold gate - darker/bolder red */}
         <div
           className="absolute rounded-sm bg-negative-emphasis"
-          style={{ 
-            left: `${liquidationLtv}%`, 
+          style={{
+            left: `${liquidationLtv}%`,
             top: '50%',
             transform: 'translate(-50%, -50%)',
             width: liqMarkerW,
             height: markerH
           }}
         />
+
+        {/* Refund level gate - green (left side of bar) */}
+        {refundLtv && (
+          <div
+            className="absolute rounded-sm bg-positive"
+            style={{
+              left: `${refundLtv}%`,
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: markerW,
+              height: markerH
+            }}
+          />
+        )}
       </div>
 
       {/* Labels below the bar */}
@@ -125,6 +141,7 @@ interface LtvDisplayProps {
   currentLtv: number
   marginCallLtv: number
   liquidationLtv: number
+  refundLtv?: number
   className?: string
 }
 
@@ -132,6 +149,7 @@ export function LtvDisplay({
   currentLtv,
   marginCallLtv,
   liquidationLtv,
+  refundLtv,
   className,
 }: LtvDisplayProps) {
   const status = getLtvStatus(currentLtv, marginCallLtv)
@@ -152,6 +170,12 @@ export function LtvDisplay({
           </span>
         </div>
         <div className="flex items-center gap-100">
+          {refundLtv && (
+            <div className="flex items-center gap-25">
+              <div className="w-2 h-2 rounded-sm bg-positive" />
+              <span className="text-label-sm text-fg-muted">Refund {refundLtv}%</span>
+            </div>
+          )}
           <div className="flex items-center gap-25">
             <div className="w-2 h-2 rounded-sm bg-negative" />
             <span className="text-label-sm text-fg-muted">Margin Call {marginCallLtv}%</span>
@@ -168,6 +192,7 @@ export function LtvDisplay({
         currentLtv={currentLtv}
         marginCallLtv={marginCallLtv}
         liquidationLtv={liquidationLtv}
+        refundLtv={refundLtv}
         size="md"
       />
     </div>

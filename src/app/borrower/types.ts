@@ -10,6 +10,8 @@ export type PaymentCoin = 'usdc' | 'usdt'
 
 export type SortOption = 'urgency' | 'ltv-high' | 'ltv-margin' | 'interest-date'
 
+export type ViewMode = 'cards' | 'table'
+
 export interface Loan {
   id: string
   entityId: string
@@ -38,6 +40,7 @@ export interface Loan {
   borrowerWalletAddress: string // Ethereum wallet address that draws down the principal (entity-specific)
   collateralWalletAddress: string // Blockchain-specific wallet address for collateral deposits
   paymentCoin: PaymentCoin // USDC or USDT used for payments on this loan
+  initialLtv: number // LTV at loan origination - serves as refund threshold
 }
 
 export interface LegalEntity {

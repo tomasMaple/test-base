@@ -6,7 +6,7 @@ import { LoanCard } from './loan-card'
 import { LegalEntity, Loan, LoanStatus } from '../types'
 
 // =============================================================================
-// LOAN SORTING
+// HELPER FUNCTIONS
 // =============================================================================
 
 const statusPriority: Record<LoanStatus, number> = {
@@ -46,7 +46,7 @@ export function EntitySection({ entity, className }: EntitySectionProps) {
         </span>
       </div>
 
-      {/* Loan cards - stacked vertically, full width */}
+      {/* Cards */}
       <div className="flex flex-col gap-100">
         {entity.loans.map((loan) => (
           <LoanCard key={loan.id} loan={loan} />

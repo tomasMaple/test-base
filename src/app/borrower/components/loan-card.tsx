@@ -21,9 +21,9 @@ const USE_PRIMARY_VIEW_DETAILS_BUTTON = true
 // HELPERS
 // =============================================================================
 
-function formatFullCurrency(value: number): string {
+function formatFullCurrency(value: number, includeSymbol: boolean = true): string {
   return new Intl.NumberFormat('en-US', {
-    style: 'currency',
+    style: includeSymbol ? 'currency' : 'decimal',
     currency: 'USD',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
@@ -40,6 +40,12 @@ function formatDate(date: Date): string {
 function truncateAddress(address: string): string {
   if (address.length <= 12) return address
   return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
+function calculatePriceChangePercent(currentPrice: number, triggerPrice: number): string {
+  const percentChange = ((triggerPrice - currentPrice) / currentPrice) * 100
+  const sign = percentChange > 0 ? '+' : ''
+  return `${sign}${percentChange.toFixed(0)}%`
 }
 
 // =============================================================================
@@ -126,8 +132,11 @@ export function LoanCard({ loan, className }: LoanCardProps) {
       </div>
 
       {/* Row 2: Principal */}
-      <div className="text-heading-h4 font-semibold text-fg-primary mb-100">
-        {formatFullCurrency(loan.principalUsd)}
+      <div className="flex items-center gap-25 mb-100">
+        <TokenLogo token={loan.paymentCoin} size="sm" />
+        <div className="text-heading-h4 font-semibold text-fg-primary">
+          {formatFullCurrency(loan.principalUsd, false)}
+        </div>
       </div>
 
       {/* Row 3: Full-width LTV bar */}
@@ -144,6 +153,10 @@ export function LoanCard({ loan, className }: LoanCardProps) {
           </div>
           <div className="flex items-center gap-100 text-label-sm text-fg-muted">
             <div className="flex items-center gap-50">
+              <div className="w-2 h-2 rounded-sm bg-positive" />
+              <span>Refund {loan.initialLtv}%</span>
+            </div>
+            <div className="flex items-center gap-50">
               <div className="w-2 h-2 rounded-sm bg-negative" />
               <span>Margin Call {loan.marginCallLtv}%</span>
             </div>
@@ -157,6 +170,7 @@ export function LoanCard({ loan, className }: LoanCardProps) {
           currentLtv={loan.currentLtv}
           marginCallLtv={loan.marginCallLtv}
           liquidationLtv={loan.liquidationLtv}
+          refundLtv={loan.initialLtv}
           size="sm"
         />
       </div>
@@ -166,16 +180,22 @@ export function LoanCard({ loan, className }: LoanCardProps) {
         <div className="flex items-center gap-125">
           <div className="flex items-center gap-50 text-fg-muted">
             <AlertTriangle className="size-icon-xs text-warning" />
-            <span>Margin call if {loan.collateralType.toUpperCase()} &lt; <span className="font-medium text-fg-primary">{formatFullCurrency(loan.marginCallPrice)}</span></span>
+            <span>
+              Margin call if {loan.collateralType.toUpperCase()} &lt; <span className="font-medium text-fg-primary">{formatFullCurrency(loan.marginCallPrice)}</span>
+              <span> ({calculatePriceChangePercent(loan.currentCollateralPrice, loan.marginCallPrice)})</span>
+            </span>
           </div>
           <div className="flex items-center gap-50 text-fg-muted">
             <TrendingDown className="size-icon-xs text-negative" />
-            <span>Liquidation if {loan.collateralType.toUpperCase()} &lt; <span className="font-medium text-fg-primary">{formatFullCurrency(loan.liquidationPrice)}</span></span>
+            <span>Liquidation if {loan.collateralType.toUpperCase()} &lt; <span className="font-medium text-fg-primary">{formatFullCurrency(loan.liquidationPrice)}</span> ({calculatePriceChangePercent(loan.currentCollateralPrice, loan.liquidationPrice)})</span>
           </div>
         </div>
         <div className="flex items-center gap-75 text-fg-muted">
           <span>Next interest</span>
-          <span className="font-medium text-fg-primary">{formatFullCurrency(loan.interestAmountUsd)}</span>
+          <div className="flex items-center gap-25">
+            <TokenLogo token={loan.paymentCoin} size="2xs" />
+            <span className="font-medium text-fg-primary">{formatFullCurrency(loan.interestAmountUsd, false)}</span>
+          </div>
           <span>due {formatDate(loan.interestDueDate)}</span>
         </div>
       </div>

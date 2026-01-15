@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button, Dialog, DialogContent, DialogTitle, Pill, TokenLogo } from '@/components/ui'
 import { Loan } from '../types'
@@ -9,27 +10,28 @@ import { Loan } from '../types'
 // HELPERS
 // =============================================================================
 
-function formatCurrency(value: number): string {
+function formatCurrency(value: number, includeSymbol: boolean = true): string {
+  const symbol = includeSymbol ? '$' : ''
   if (value >= 1000000) {
-    return `$${(value / 1000000).toFixed(1)}M`
+    return `${symbol}${(value / 1000000).toFixed(2)}M`
   }
   if (value >= 1000) {
-    return `$${(value / 1000).toFixed(0)}K`
+    return `${symbol}${(value / 1000).toFixed(2)}K`
   }
   return new Intl.NumberFormat('en-US', {
-    style: 'currency',
+    style: includeSymbol ? 'currency' : 'decimal',
     currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value)
 }
 
-function formatFullCurrency(value: number): string {
+function formatFullCurrency(value: number, includeSymbol: boolean = true): string {
   return new Intl.NumberFormat('en-US', {
-    style: 'currency',
+    style: includeSymbol ? 'currency' : 'decimal',
     currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value)
 }
 
@@ -115,6 +117,8 @@ interface MarginCallLevelsModalProps {
 }
 
 function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalProps) {
+  const router = useRouter()
+
   // Sort loans by how close they are to margin call (least headroom first)
   const sortedLoans = [...loans].sort((a, b) => {
     const aHeadroom = a.marginCallLtv - a.currentLtv
@@ -137,19 +141,19 @@ function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalPr
             const isMarginCalled = headroom <= 0
             const isClose = headroom > 0 && headroom < 15
             const loanShortId = loan.id.slice(-4)
-            const loanAmount = formatCurrency(loan.principalUsd)
 
             return (
               <div
                 key={loan.id}
                 className={cn(
-                  'rounded-xl p-100 border',
+                  'rounded-xl p-100 border cursor-pointer hover:border-border-strong transition-colors',
                   isMarginCalled
                     ? 'bg-negative-subtle border-negative'
                     : isClose
                       ? 'bg-warning-subtle border-warning'
                       : 'bg-surface border-border-subtle'
                 )}
+                onClick={() => router.push(`/borrower/loans/${loan.id}`)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-75">
@@ -158,8 +162,10 @@ function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalPr
                       <p className="text-label-md font-medium text-fg-primary">
                         {loan.collateralType.toUpperCase()}
                       </p>
-                      <p className="text-label-xs text-fg-muted">
-                        {loan.entityName} · {loanAmount} Loan #{loanShortId}
+                      <p className="text-label-xs text-fg-muted flex items-center gap-25">
+                        <span>{loan.entityName} ·</span>
+                        <TokenLogo token={loan.paymentCoin} size="3xs" />
+                        <span>{formatCurrency(loan.principalUsd, false)} Loan #{loanShortId}</span>
                       </p>
                     </div>
                   </div>
@@ -311,7 +317,6 @@ function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalPr
                   {sortedLoans.map((loan) => {
                     const dueInfo = formatDueDate(loan.interestDueDate)
                     const loanShortId = loan.id.slice(-4)
-                    const loanAmount = formatCurrency(loan.principalUsd)
 
                     return (
                       <div
@@ -328,8 +333,9 @@ function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalPr
                         <div className="flex items-center gap-100">
                           <TokenLogo token={loan.collateralType} size="sm" />
                           <div>
-                            <p className="text-label-sm font-medium text-fg-primary">
-                              {loanAmount} Loan #{loanShortId}
+                            <p className="text-label-sm font-medium text-fg-primary flex items-center gap-50">
+                              <TokenLogo token={loan.paymentCoin} size="3xs" />
+                              <span>{formatCurrency(loan.principalUsd, false)} Loan #{loanShortId}</span>
                             </p>
                             <p className={cn(
                               'text-label-xs',
@@ -340,12 +346,15 @@ function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalPr
                           </div>
                         </div>
                         <div className="flex items-center gap-100">
-                          <span className={cn(
-                            'text-label-md font-semibold',
-                            dueInfo.isOverdue ? 'text-negative' : 'text-fg-primary'
-                          )}>
-                            {formatFullCurrency(loan.interestAmountUsd)}
-                          </span>
+                          <div className="flex items-center gap-25">
+                            <TokenLogo token={loan.paymentCoin} size="xs" />
+                            <span className={cn(
+                              'text-label-md font-semibold',
+                              dueInfo.isOverdue ? 'text-negative' : 'text-fg-primary'
+                            )}>
+                              {formatFullCurrency(loan.interestAmountUsd, false)}
+                            </span>
+                          </div>
                           <Button
                             variant="secondary"
                             size="sm"
@@ -378,6 +387,7 @@ function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalPr
 
 interface PortfolioSummaryData {
   totalPrincipal: number
+  totalCollateralUsd: number
   activeLoans: number
   activeMarginCalls: number
   overdueInterest: number
@@ -409,11 +419,22 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
   return (
     <>
       <div className={cn('grid grid-cols-1 md:grid-cols-3 gap-100', className)}>
-        {/* Card 1: Total Borrowed */}
+        {/* Card 1: Total Borrowed & Collateral */}
         <GroupedCard title="Total Borrowed">
-          <p className="text-heading-h4 font-semibold text-fg-primary">
-            {formatCurrency(data.totalPrincipal)}
-          </p>
+          <div className="flex flex-col h-full justify-center">
+            <div>
+              <p className="text-heading-h4 font-semibold text-fg-primary">
+                {formatCurrency(data.totalPrincipal)}
+              </p>
+            </div>
+            <div className="my-75 border-t border-border-subtle" />
+            <div>
+              <p className="text-label-xs uppercase tracking-wide text-fg-muted mb-25">Total Collateral</p>
+              <p className="text-heading-h4 font-semibold text-fg-primary">
+                {formatCurrency(data.totalCollateralUsd)}
+              </p>
+            </div>
+          </div>
         </GroupedCard>
 
         {/* Card 2: Interest Payments - shows overdue OR next payment */}
