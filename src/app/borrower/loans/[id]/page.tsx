@@ -40,7 +40,7 @@ import {
   ArrowDownLeft,
 } from 'lucide-react'
 import { LtvGauge, LtvDisplay } from '../../components/ltv-gauge'
-import { getLoanById, getBlockExplorerUrl } from '../../mock-data'
+import { getLoanById, getPaymentHistoryForLoan, getBlockExplorerUrl } from '../../mock-data'
 import { Loan, LoanStatus, PaymentHistoryItem, COLLATERAL_TO_NETWORK, BlockchainNetwork, CollateralType } from '../../types'
 
 // Suppress flushSync warning from Base UI Toast (React 19 compatibility issue)
@@ -1387,6 +1387,7 @@ interface LoanDetailPageProps {
 export default function LoanDetailPage({ params }: LoanDetailPageProps) {
   const { id } = use(params)
   const loan = getLoanById(id)
+  const paymentHistory = getPaymentHistoryForLoan(id)
 
   if (!loan) {
     return (
@@ -1538,6 +1539,61 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
 
             <TabsPanel value="ltv-calculator">
               <LtvCalculatorLayout loan={loan} status={status} />
+            </TabsPanel>
+
+            <TabsPanel value="history">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-100">
+                {/* Left column - History content */}
+                <div className="lg:col-span-2">
+                  <HistoryTab payments={paymentHistory} loan={loan} />
+                </div>
+
+                {/* Right column - Loan info and Actions */}
+                <div className="space-y-100">
+                  {/* Loan header card */}
+                  <Card>
+                    <div className="flex items-center justify-between mb-100">
+                      <h2 className="text-heading-h6 text-fg-primary">
+                        Loan #{loan.loanContractAddress.slice(-4)}
+                      </h2>
+                      <Pill
+                        type={status.type}
+                        appearance="subtle"
+                        size="24"
+                        beforeIcon={status.icon}
+                      >
+                        {status.label}
+                      </Pill>
+                    </div>
+                    <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
+                  </Card>
+
+                  {/* Actions */}
+                  <Card>
+                    <h3 className="text-label-sm font-medium text-fg-secondary mb-75 uppercase tracking-wide">
+                      Actions
+                    </h3>
+                    <div className="space-y-75">
+                      <ActionItem
+                        icon={<CreditCard className="size-icon-lg" />}
+                        label="Pay Interest"
+                      />
+                      <ActionItem
+                        icon={<Plus className="size-icon-lg" />}
+                        label="Add Collateral"
+                      />
+                      <ActionItem
+                        icon={<FileText className="size-icon-lg" />}
+                        label="Give Notice to Repay"
+                      />
+                      <ActionItem
+                        icon={<ArrowDownLeft className="size-icon-lg" />}
+                        label="Request Collateral Back"
+                      />
+                    </div>
+                  </Card>
+                </div>
+              </div>
             </TabsPanel>
 
             <TabsPanel value="terms">

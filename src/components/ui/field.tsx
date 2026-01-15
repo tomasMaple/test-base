@@ -152,7 +152,7 @@ const FieldDescription = React.forwardRef<HTMLParagraphElement, FieldDescription
 FieldDescription.displayName = 'FieldDescription'
 
 interface FieldControlProps
-  extends React.ComponentPropsWithoutRef<typeof BaseField.Control>,
+  extends Omit<React.ComponentPropsWithoutRef<typeof BaseField.Control>, 'size'>,
     VariantProps<typeof fieldControlVariants> {
   size?: FieldSize
 }
@@ -187,7 +187,7 @@ FieldError.displayName = 'FieldError'
 // SIMPLIFIED FIELD COMPONENT
 // =============================================================================
 
-interface FieldProps extends Omit<React.ComponentPropsWithoutRef<typeof BaseField.Root>, 'children'> {
+interface FieldProps extends Omit<React.ComponentPropsWithoutRef<typeof BaseField.Root>, 'children' | 'onChange'> {
   /** Label text displayed above the input */
   label?: string
   /** Description text below the label */

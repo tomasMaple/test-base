@@ -4,7 +4,8 @@ import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn, tv } from '@/lib/utils'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Search } from 'lucide-react'
+import { FieldControl } from './field'
 
 // =============================================================================
 // VARIANTS
@@ -131,6 +132,30 @@ interface SidebarProps {
 
 export const Sidebar = ({ items, groups, title = 'Navigation', className }: SidebarProps) => {
   const pathname = usePathname()
+  const [searchQuery, setSearchQuery] = React.useState('')
+
+  // Filter logic for groups
+  const filteredGroups = React.useMemo(() => {
+    if (!groups || !searchQuery.trim()) return groups
+
+    return groups
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) =>
+          item.label.toLowerCase().includes(searchQuery.toLowerCase())
+        ),
+      }))
+      .filter((group) => group.items.length > 0)
+  }, [groups, searchQuery])
+
+  // Filter logic for flat items
+  const filteredItems = React.useMemo(() => {
+    if (!items || !searchQuery.trim()) return items
+
+    return items.filter((item) =>
+      item.label.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [items, searchQuery])
 
   return (
     <aside
@@ -142,25 +167,35 @@ export const Sidebar = ({ items, groups, title = 'Navigation', className }: Side
     >
       {/* Header */}
       <div className="px-75 py-75 border-b border-border-subtle shrink-0">
-        <h2 className="text-label-sm font-semibold text-fg-primary">{title}</h2>
+        <div className="relative">
+          <Search className="absolute left-50 top-1/2 -translate-y-1/2 size-icon-xs text-fg-muted pointer-events-none" />
+          <FieldControl
+            size="sm"
+            variant="ghost"
+            placeholder="Search components..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-150"
+          />
+        </div>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-50 py-75 space-y-75">
         {/* Grouped items */}
-        {groups?.map((group, index) => (
+        {filteredGroups?.map((group, index) => (
           <React.Fragment key={group.label}>
             <SidebarGroupComponent group={group} pathname={pathname} />
-            {index < groups.length - 1 && (
+            {index < filteredGroups.length - 1 && (
               <div className="border-t border-border-weak my-50" />
             )}
           </React.Fragment>
         ))}
 
         {/* Flat items (backwards compatibility) */}
-        {items && !groups && (
+        {filteredItems && !groups && (
           <div className="space-y-2">
-            {items.map((item) => (
+            {filteredItems.map((item) => (
               <SidebarItemComponent
                 key={item.href}
                 item={item}
