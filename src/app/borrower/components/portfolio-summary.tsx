@@ -4,6 +4,7 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button, Dialog, DialogContent, DialogTitle, Pill, TokenLogo } from '@/components/ui'
+import { Plus } from 'lucide-react'
 import { Loan } from '../types'
 
 // =============================================================================
@@ -55,7 +56,10 @@ interface GroupedCardProps {
   onClick?: () => void
   buttonLabel?: string
   buttonVariant?: 'primary' | 'secondary'
+  buttonDisabled?: boolean
+  buttonIcon?: React.ReactNode
   className?: string
+  headerAction?: React.ReactNode
 }
 
 // REVERT: Change to false to use secondary buttons for action cards
@@ -69,10 +73,16 @@ function GroupedCard({
   onClick,
   buttonLabel,
   buttonVariant: buttonVariantProp,
+  buttonDisabled = false,
+  buttonIcon,
   className,
+  headerAction,
 }: GroupedCardProps) {
   // Use primary button for action cards when enabled, otherwise use prop or default to secondary
   const buttonVariant = buttonVariantProp || (USE_PRIMARY_BUTTONS_FOR_ACTION_CARDS ? 'primary' : 'secondary')
+
+  // Show button if clickable (with or without onClick) or if buttonLabel is provided
+  const showButton = clickable || buttonLabel
 
   return (
     <div
@@ -84,17 +94,22 @@ function GroupedCard({
         className
       )}
     >
-      <span className={cn('text-label-xs uppercase tracking-wide', highlighted ? 'text-negative' : 'text-fg-muted')}>
-        {title}
-      </span>
+      <div className="flex items-center justify-between">
+        <span className={cn('text-label-xs uppercase tracking-wide', highlighted ? 'text-negative' : 'text-fg-muted')}>
+          {title}
+        </span>
+        {headerAction}
+      </div>
       <div className="mt-75 space-y-50 flex-1">
         {children}
       </div>
-      {clickable && onClick ? (
+      {showButton ? (
         <Button
           variant={buttonVariant}
           size="sm"
           onClick={onClick}
+          disabled={buttonDisabled}
+          beforeIcon={buttonIcon}
           className="w-full mt-100"
         >
           {buttonLabel || 'View details'}
@@ -217,8 +232,11 @@ interface InterestPaymentsModalProps {
 function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalProps) {
   const now = new Date()
 
+  // Filter to only active loans (exclude past/closed loans)
+  const activeLoans = loans.filter(loan => loan.isActive)
+
   // Group loans by entity
-  const loansByEntity = loans.reduce((acc, loan) => {
+  const loansByEntity = activeLoans.reduce((acc, loan) => {
     const entity = loan.entityName
     if (!acc[entity]) {
       acc[entity] = []
@@ -420,7 +438,13 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
     <>
       <div className={cn('grid grid-cols-1 md:grid-cols-3 gap-100', className)}>
         {/* Card 1: Total Borrowed & Collateral */}
-        <GroupedCard title="Total Borrowed">
+        <GroupedCard
+          title="Total Borrowed"
+          buttonLabel="New loan (Coming Soon)"
+          buttonVariant="secondary"
+          buttonDisabled={true}
+          buttonIcon={<Plus className="size-icon-xs" />}
+        >
           <div className="flex flex-col h-full justify-center">
             <div>
               <p className="text-heading-h4 font-semibold text-fg-primary">
@@ -437,9 +461,10 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
           </div>
         </GroupedCard>
 
-        {/* Card 2: Interest Payments - shows overdue OR next payment */}
+        {/* Card 2: Next Interest Payment - shows overdue OR next payment */}
+        {/* Note: Interest payment amount includes fees */}
         <GroupedCard
-          title="Interest Payments"
+          title="Next Interest Payment"
           highlighted={hasOverdueInterest}
           clickable={true}
           onClick={() => setShowInterestModal(true)}
@@ -474,7 +499,7 @@ export function PortfolioSummary({ data, loans, className }: PortfolioSummaryPro
           highlighted={hasActiveMarginCalls}
           clickable={true}
           onClick={() => setShowMarginCallModal(true)}
-          buttonLabel="View Details"
+          buttonLabel="Cure Margin Call"
         >
           <div className="flex items-baseline justify-between">
             <span className={cn(

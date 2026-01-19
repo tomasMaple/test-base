@@ -7,6 +7,8 @@ import {
   PortfolioSummary,
   FilterSortBar,
   LoansTable,
+  ClosedLoanCard,
+  ClosedLoansTable,
 } from './components'
 import {
   mockEntities,
@@ -14,6 +16,8 @@ import {
   calculatePortfolioSummary,
   filterAndSortEntities,
   getAvailableCollateralTypes,
+  getPastLoans,
+  getCurrentLoans,
 } from './mock-data'
 import type { CollateralType, SortOption, ViewMode } from './types'
 
@@ -27,13 +31,13 @@ export default function BorrowerDashboardPage() {
   const [entityFilter, setEntityFilter] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortOption>('urgency')
 
-  // View mode state with localStorage persistence
+  // View mode state with localStorage persistence (default to table view)
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('loanViewMode')
-      return (saved as ViewMode) || 'cards'
+      return (saved as ViewMode) || 'table'
     }
-    return 'cards'
+    return 'table'
   })
 
   useEffect(() => {
@@ -58,6 +62,12 @@ export default function BorrowerDashboardPage() {
   const allFilteredLoans = useMemo(() => {
     return filteredEntities.flatMap(entity => entity.loans)
   }, [filteredEntities])
+
+  // Get active loans (for export CSV)
+  const activeLoans = useMemo(() => getCurrentLoans(), [])
+
+  // Get closed/past loans
+  const closedLoans = useMemo(() => getPastLoans(), [])
 
   // Entity options for filter dropdown
   const entityOptions = mockEntities.map((e) => ({ id: e.id, name: e.name }))
@@ -89,7 +99,7 @@ export default function BorrowerDashboardPage() {
             onViewModeChange={setViewMode}
             entities={entityOptions}
             availableCollateralTypes={availableCollateralTypes}
-            loans={mockLoans}
+            loans={activeLoans}
           />
 
           {/* Entity sections OR unified table */}
@@ -120,6 +130,22 @@ export default function BorrowerDashboardPage() {
               )
             )}
           </div>
+
+          {/* Closed Loans Section */}
+          {closedLoans.length > 0 && (
+            <div className="space-y-100 mt-200">
+              <h2 className="text-heading-h6 text-fg-muted">Closed Loans</h2>
+              {viewMode === 'cards' ? (
+                <div className="space-y-100">
+                  {closedLoans.map((loan) => (
+                    <ClosedLoanCard key={loan.id} loan={loan} />
+                  ))}
+                </div>
+              ) : (
+                <ClosedLoansTable loans={closedLoans} />
+              )}
+            </div>
+          )}
         </main>
       </div>
     </div>

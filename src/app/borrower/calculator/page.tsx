@@ -5,7 +5,7 @@ import { AlertTriangle, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button, Pill, TokenLogo } from '@/components/ui'
 import { LtvGauge } from '../components/ltv-gauge'
-import { mockLoans, sortLoansByUrgency } from '../mock-data'
+import { mockLoans, sortLoansByUrgency, getPaymentHistoryForLoan } from '../mock-data'
 import { Loan, LoanStatus } from '../types'
 
 // =============================================================================
@@ -265,10 +265,27 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
   const newMarginCallPrice = simulatedPrincipal / (totalSimulatedCollateral * (loan.marginCallLtv / 100))
   const newLiquidationPrice = simulatedPrincipal / (totalSimulatedCollateral * (loan.liquidationLtv / 100))
 
-  // Make-whole fee calculation
+  // Calculate accrued interest since last payment
+  const paymentHistory = getPaymentHistoryForLoan(loan.id)
+  const lastInterestPayment = paymentHistory
+    .filter(p => p.type === 'interest')
+    .sort((a, b) => b.date.getTime() - a.date.getTime())[0]
+
+  const daysSincePayment = lastInterestPayment
+    ? Math.floor((Date.now() - lastInterestPayment.date.getTime()) / (1000 * 60 * 60 * 24))
+    : 0
+
+  const accruedInterest = principalPaydown > 0
+    ? (loan.interestRate / 365) * daysSincePayment * loan.principalUsd
+    : 0
+
+  // Make-whole fee calculation (interest for recall period on the paydown amount)
   const makeWholeFee = principalPaydown > 0
     ? (loan.interestRate / 365) * loan.recallPeriodDays * principalPaydown
     : 0
+
+  // Total amount to pay for principal repayment
+  const totalRepaymentAmount = principalPaydown + accruedInterest + makeWholeFee
 
   // Reset function - resets all simulation inputs
   const handleReset = () => {
@@ -314,19 +331,35 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
           {/* Simulated LTV Display */}
           <div className="bg-primary rounded-lg p-100 overflow-visible mb-100">
             <div className="flex items-center justify-between mb-50">
-              <span className="text-label-sm text-fg-muted">Simulated LTV</span>
-              <span
-                className={cn(
-                  'text-heading-h6 font-semibold',
-                  simulatedLtv >= loan.liquidationLtv
-                    ? 'text-negative'
-                    : simulatedLtv >= loan.marginCallLtv
-                      ? 'text-warning'
-                      : 'text-positive'
-                )}
-              >
-                {simulatedLtv.toFixed(1)}%
-              </span>
+              <div className="flex items-baseline gap-50">
+                <span className="text-label-sm text-fg-muted">Simulated LTV</span>
+                <span
+                  className={cn(
+                    'text-heading-h6 font-semibold',
+                    simulatedLtv >= loan.liquidationLtv
+                      ? 'text-negative'
+                      : simulatedLtv >= loan.marginCallLtv
+                        ? 'text-warning'
+                        : 'text-positive'
+                  )}
+                >
+                  {simulatedLtv.toFixed(1)}%
+                </span>
+              </div>
+              <div className="flex items-center gap-100">
+                <div className="flex items-center gap-25">
+                  <div className="w-2 h-2 rounded-sm bg-positive" />
+                  <span className="text-label-sm text-fg-muted">Initial LTV {loan.initialLtv}%</span>
+                </div>
+                <div className="flex items-center gap-25">
+                  <div className="w-2 h-2 rounded-sm bg-negative" />
+                  <span className="text-label-sm text-fg-muted">Margin Call {loan.marginCallLtv}%</span>
+                </div>
+                <div className="flex items-center gap-25">
+                  <div className="w-2.5 h-2.5 rounded-sm bg-negative-emphasis" />
+                  <span className="text-label-sm font-medium text-fg-muted">Liq. Level {loan.liquidationLtv}%</span>
+                </div>
+              </div>
             </div>
             <LtvGauge
               currentLtv={simulatedLtv}
@@ -515,18 +548,35 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
             </div>
           </div>
 
-          {/* Make-whole fee display */}
-          {makeWholeFee > 0 && (
-            <div className="mt-75 p-75 bg-primary-subtle border border-primary rounded-lg">
-              <div className="flex items-center justify-between text-label-sm">
-                <span className="text-fg-muted">
-                  Make-whole fee ({loan.recallPeriodDays}-day notice period):
-                </span>
-                <div className="flex items-center gap-25">
-                  <TokenLogo token={loan.paymentCoin} size="3xs" />
-                  <span className="font-medium text-fg-primary">
-                    {formatNumber(makeWholeFee, 2)}
-                  </span>
+          {/* Principal repayment breakdown */}
+          {principalPaydown > 0 && (
+            <div className="mt-75 p-100 bg-primary rounded-lg border border-border-subtle">
+              <div className="space-y-75">
+                {/* Total to pay - highlighted */}
+                <div className="flex items-center justify-between">
+                  <span className="text-label-sm font-medium text-fg-primary">Total to pay</span>
+                  <div className="flex items-center gap-50">
+                    <TokenLogo token={loan.paymentCoin} size="xs" />
+                    <span className="text-label-md font-semibold text-fg-primary">
+                      {formatNumber(totalRepaymentAmount, 2)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Breakdown */}
+                <div className="pt-75 border-t border-border-subtle space-y-50">
+                  <div className="flex items-center justify-between text-label-xs">
+                    <span className="text-fg-muted">Principal</span>
+                    <span className="text-fg-secondary">{formatNumber(principalPaydown, 2)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-label-xs">
+                    <span className="text-fg-muted">Accrued interest ({daysSincePayment}d since last payment)</span>
+                    <span className="text-fg-secondary">{formatNumber(accruedInterest, 2)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-label-xs">
+                    <span className="text-fg-muted">Make-whole fee ({loan.recallPeriodDays}-day notice)</span>
+                    <span className="text-fg-secondary">{formatNumber(makeWholeFee, 2)}</span>
+                  </div>
                 </div>
               </div>
             </div>
