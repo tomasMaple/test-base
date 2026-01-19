@@ -41,6 +41,7 @@ export const mockLoans: Loan[] = [
     interestDueDate: daysFromNow(9),
     interestAmountUsd: 41667,
     interestRate: 0.10,
+    protocolFee: 0.0025, // 0.25%
     status: 'healthy',
     startDate: daysAgo(270), // 9 months ago
     maturityDate: null, // Revolving loan with no maturity
@@ -50,6 +51,7 @@ export const mockLoans: Loan[] = [
     collateralWalletAddress: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
     paymentCoin: 'usdc',
     initialLtv: 42,
+    isActive: true,
   },
   // Galaxy US - Loan 2 (Healthy, ETH loan, 8 months history)
   {
@@ -69,6 +71,7 @@ export const mockLoans: Loan[] = [
     interestDueDate: daysFromNow(15),
     interestAmountUsd: 70833,
     interestRate: 0.10,
+    protocolFee: 0.0025, // 0.25%
     status: 'healthy',
     startDate: daysAgo(240), // 8 months ago
     maturityDate: null, // Revolving loan with no maturity
@@ -78,6 +81,7 @@ export const mockLoans: Loan[] = [
     collateralWalletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb4',
     paymentCoin: 'usdc',
     initialLtv: 50,
+    isActive: true,
   },
   // Galaxy Cayman - Loan 3 (MARGIN CALL ACTIVE, 7 months history)
   {
@@ -97,6 +101,7 @@ export const mockLoans: Loan[] = [
     interestDueDate: daysFromNow(3),
     interestAmountUsd: 208333,
     interestRate: 0.10,
+    protocolFee: 0.0025, // 0.25%
     status: 'margin-call',
     marginCallDeadline: daysFromNow(2),
     marginCallRequiredUsd: 2500000,
@@ -108,6 +113,7 @@ export const mockLoans: Loan[] = [
     collateralWalletAddress: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
     paymentCoin: 'usdc',
     initialLtv: 55,
+    isActive: true,
   },
   // Galaxy Europe - Loan 4 (Approaching trigger, 1 year of history)
   {
@@ -127,6 +133,7 @@ export const mockLoans: Loan[] = [
     interestDueDate: daysFromNow(21),
     interestAmountUsd: 100000,
     interestRate: 0.10,
+    protocolFee: 0.0025, // 0.25%
     status: 'healthy',
     startDate: daysAgo(365), // Loan started 1 year ago
     maturityDate: null, // Revolving loan with no maturity
@@ -136,6 +143,7 @@ export const mockLoans: Loan[] = [
     collateralWalletAddress: 'bc1qa5wkgaew2dkv56kfvj49j0av5nml45x9ek9hz6',
     paymentCoin: 'usdt',
     initialLtv: 45,
+    isActive: true,
   },
   // Galaxy Europe - Loan 5 (Healthy, 6 months history)
   {
@@ -155,6 +163,7 @@ export const mockLoans: Loan[] = [
     interestDueDate: daysFromNow(12),
     interestAmountUsd: 125000,
     interestRate: 0.10,
+    protocolFee: 0.0025, // 0.25%
     status: 'healthy',
     startDate: daysAgo(180), // 6 months ago
     maturityDate: null, // Revolving loan with no maturity
@@ -164,6 +173,67 @@ export const mockLoans: Loan[] = [
     collateralWalletAddress: '0x8e23Ee67d1332aD560396262C48fF9B6B144DFA5',
     paymentCoin: 'usdt',
     initialLtv: 48,
+    isActive: true,
+  },
+  // Galaxy US - Past Loan 1 (Repaid 60 days ago)
+  {
+    id: 'LOAN-PAST-001',
+    entityId: 'entity-1',
+    entityName: 'Galaxy US',
+    collateralType: 'btc',
+    collateralAmount: 51.28,
+    collateralValueUsd: 51.28 * CURRENT_PRICES.btc, // ~$5M
+    principalUsd: 2500000,
+    currentLtv: 0, // Loan closed
+    marginCallLtv: 70,
+    liquidationLtv: 85,
+    marginCallPrice: 0,
+    liquidationPrice: 0,
+    currentCollateralPrice: CURRENT_PRICES.btc,
+    interestDueDate: daysAgo(60), // Last interest payment was 60 days ago
+    interestAmountUsd: 0,
+    interestRate: 0.09,
+    protocolFee: 0.0025,
+    status: 'healthy', // Was healthy when closed
+    startDate: daysAgo(365), // Started 1 year ago
+    maturityDate: daysAgo(60), // Matured/closed 60 days ago
+    recallPeriodDays: 30,
+    loanContractAddress: '0xPAST001a2B3c4D5e6F7g8H9i0J1k2L3m4N5o6P7q8R',
+    borrowerWalletAddress: '0x1a2B3c4D5e6F7g8H9i0J1k2L3m4N5o6P7q8R9s0T',
+    collateralWalletAddress: 'bc1past001kgdygjrsqtzq2n0yrf2493p83kkfjhx0',
+    paymentCoin: 'usdc',
+    initialLtv: 50,
+    isActive: false,
+  },
+  // Galaxy Cayman - Past Loan 2 (Repaid 120 days ago)
+  {
+    id: 'LOAN-PAST-002',
+    entityId: 'entity-2',
+    entityName: 'Galaxy Cayman',
+    collateralType: 'eth',
+    collateralAmount: 2898.55,
+    collateralValueUsd: 2898.55 * CURRENT_PRICES.eth, // ~$10M
+    principalUsd: 5000000,
+    currentLtv: 0, // Loan closed
+    marginCallLtv: 70,
+    liquidationLtv: 85,
+    marginCallPrice: 0,
+    liquidationPrice: 0,
+    currentCollateralPrice: CURRENT_PRICES.eth,
+    interestDueDate: daysAgo(120),
+    interestAmountUsd: 0,
+    interestRate: 0.10,
+    protocolFee: 0.0025,
+    status: 'healthy',
+    startDate: daysAgo(400), // Started over a year ago
+    maturityDate: daysAgo(120), // Matured/closed 120 days ago
+    recallPeriodDays: 60,
+    loanContractAddress: '0xPAST002e3A7b4F5c2D1e0A9b8C7d6E5f4A3b2C1d',
+    borrowerWalletAddress: '0x9A8b7C6d5E4f3G2h1I0j9K8l7M6n5O4p3Q2r1S0t',
+    collateralWalletAddress: '0xPast002Cc6634C0532925a3b844Bc9e7595f0bEb',
+    paymentCoin: 'usdc',
+    initialLtv: 50,
+    isActive: false,
   },
 ]
 
@@ -175,17 +245,17 @@ export const mockEntities: LegalEntity[] = [
   {
     id: 'entity-1',
     name: 'Galaxy US',
-    loans: mockLoans.filter((l) => l.entityId === 'entity-1'),
+    loans: mockLoans.filter((l) => l.entityId === 'entity-1' && l.isActive),
   },
   {
     id: 'entity-2',
     name: 'Galaxy Cayman',
-    loans: mockLoans.filter((l) => l.entityId === 'entity-2'),
+    loans: mockLoans.filter((l) => l.entityId === 'entity-2' && l.isActive),
   },
   {
     id: 'entity-3',
     name: 'Galaxy Europe',
-    loans: mockLoans.filter((l) => l.entityId === 'entity-3'),
+    loans: mockLoans.filter((l) => l.entityId === 'entity-3' && l.isActive),
   },
 ]
 
@@ -734,6 +804,262 @@ export const mockPaymentHistory: PaymentHistoryItem[] = [
     transactionHash: '0xe4f5678901abcdef1234567890abcdef1234567890abcdef123456789ab01c2d',
     paymentCoin: 'usdt',
   },
+  // LOAN-PAST-001 - Galaxy US Past Loan (Started 365 days ago, closed 60 days ago)
+  {
+    id: 'collateral-past-1',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(366),
+    amountUsd: 5000000,
+    type: 'collateral-deposit',
+    status: 'completed',
+    transactionHash: 'bc1past001collatdepositqtzq2n0yrf2493p83kkfj',
+    paymentCoin: 'usdc',
+    collateralAmount: 51.280000,
+    collateralType: 'btc',
+  },
+  {
+    id: 'draw-past-1',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(365),
+    amountUsd: 2500000,
+    type: 'drawdown',
+    status: 'completed',
+    transactionHash: '0xpast1draw...abcd',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-1',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(335),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int1...bcde',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-2',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(305),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int2...cdef',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-3',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(275),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int3...def0',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-4',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(245),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int4...ef01',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-5',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(215),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int5...f012',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-6',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(185),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int6...0123',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-7',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(155),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int7...1234',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-8',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(125),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int8...2345',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-9',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(95),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int9...3456',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-10',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(65),
+    amountUsd: 18750,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast1int10...4567',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-1-principal',
+    loanId: 'LOAN-PAST-001',
+    date: daysAgo(60),
+    amountUsd: 2500000,
+    type: 'principal',
+    status: 'completed',
+    transactionHash: '0xpast1principal...5678',
+    paymentCoin: 'usdc',
+  },
+  // LOAN-PAST-002 - Galaxy Cayman Past Loan (Started 400 days ago, closed 120 days ago)
+  {
+    id: 'collateral-past-2',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(401),
+    amountUsd: 10000000,
+    type: 'collateral-deposit',
+    status: 'completed',
+    transactionHash: '0xpast2collat...abcd',
+    paymentCoin: 'usdc',
+    collateralAmount: 2898.550000,
+    collateralType: 'eth',
+  },
+  {
+    id: 'draw-past-2',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(400),
+    amountUsd: 5000000,
+    type: 'drawdown',
+    status: 'completed',
+    transactionHash: '0xpast2draw...bcde',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-1',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(370),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast2int1...cdef',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-2',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(340),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast2int2...def0',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-3',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(310),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast2int3...ef01',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-4',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(280),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast2int4...f012',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-5',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(250),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast2int5...0123',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-6',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(220),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast2int6...1234',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-7',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(190),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast2int7...2345',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-8',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(160),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast2int8...3456',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-9',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(130),
+    amountUsd: 41667,
+    type: 'interest',
+    status: 'completed',
+    transactionHash: '0xpast2int9...4567',
+    paymentCoin: 'usdc',
+  },
+  {
+    id: 'pay-past-2-principal',
+    loanId: 'LOAN-PAST-002',
+    date: daysAgo(120),
+    amountUsd: 5000000,
+    type: 'principal',
+    status: 'completed',
+    transactionHash: '0xpast2principal...5678',
+    paymentCoin: 'usdc',
+  },
 ]
 
 // =============================================================================
@@ -1033,4 +1359,64 @@ export function getBlockExplorerUrl(
     solana: 'https://solscan.io/tx/',
   }
   return `${explorers[network]}${transactionHash}`
+}
+
+// =============================================================================
+// CURRENT/PAST LOAN HELPERS
+// =============================================================================
+
+/**
+ * Get all currently active loans
+ */
+export function getCurrentLoans(): Loan[] {
+  return mockLoans.filter(l => l.isActive)
+}
+
+/**
+ * Get all past/closed loans
+ */
+export function getPastLoans(): Loan[] {
+  return mockLoans.filter(l => !l.isActive)
+}
+
+/**
+ * Get transactions within a date range
+ */
+export function getTransactionsInRange(start: Date, end: Date): PaymentHistoryItem[] {
+  return mockPaymentHistory.filter(tx =>
+    tx.date >= start && tx.date <= end
+  ).sort((a, b) => b.date.getTime() - a.date.getTime())
+}
+
+/**
+ * Get loan states as-of a specific date (for audit snapshot)
+ * Returns loans with their state at that point in time
+ */
+export function getLoansAtDate(date: Date): Loan[] {
+  return mockLoans.filter(loan => {
+    // Loan existed at this date if start date is before or equal
+    return loan.startDate <= date
+  }).map(loan => {
+    // If loan was closed before this date, mark as inactive
+    const wasActive = !loan.maturityDate || loan.maturityDate > date
+    return {
+      ...loan,
+      isActive: wasActive,
+    }
+  })
+}
+
+/**
+ * Calculate accrued interest for a loan since last payment
+ */
+export function calculateAccruedInterest(loan: Loan): number {
+  const loanPayments = mockPaymentHistory
+    .filter(tx => tx.loanId === loan.id && tx.type === 'interest')
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+
+  const lastPaymentDate = loanPayments.length > 0 ? loanPayments[0].date : loan.startDate
+  const daysSinceLastPayment = Math.floor((now.getTime() - lastPaymentDate.getTime()) / (1000 * 60 * 60 * 24))
+
+  const dailyRate = loan.interestRate / 365
+  return dailyRate * daysSinceLastPayment * loan.principalUsd
 }

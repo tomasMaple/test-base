@@ -13,7 +13,6 @@ export function AppNavbar() {
           <Navbar.Link href="/borrower">Borrower</Navbar.Link>
           <Navbar.Link href="/borrower/calculator">LTV Calculator</Navbar.Link>
           <Navbar.Link href="/borrower/transactions">Transactions</Navbar.Link>
-          <Navbar.Link href="/templates/test">Test</Navbar.Link>
           <Navbar.Link href="/overview/navbar">Overview</Navbar.Link>
         </Navbar.Links>
       </Navbar.Brand>

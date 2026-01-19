@@ -173,7 +173,7 @@ export function LtvDisplay({
           {refundLtv && (
             <div className="flex items-center gap-25">
               <div className="w-2 h-2 rounded-sm bg-positive" />
-              <span className="text-label-sm text-fg-muted">Refund {refundLtv}%</span>
+              <span className="text-label-sm text-fg-muted">Initial LTV {refundLtv}%</span>
             </div>
           )}
           <div className="flex items-center gap-25">

@@ -104,47 +104,51 @@ export function FilterSortBar({
   }
 
   const handleExportCSV = () => {
-    // CSV headers
+    // CSV headers - extended with discrete columns for all subline data
     const headers = [
       'Loan ID',
       'Entity',
-      'Collateral Type',
-      'Collateral Amount',
-      'Collateral Value (USD)',
       'Principal (USD)',
       'Payment Coin',
+      'Collateral Amount',
+      'Collateral Coin',
+      'Collateral Value (USD)',
       'Current LTV (%)',
+      'Margin Call Price',
       'Margin Call LTV (%)',
+      'Liquidation Price',
       'Liquidation LTV (%)',
       'Initial LTV (%)',
       'Status',
       'Interest Due Date',
       'Interest Amount (USD)',
-      'Interest Rate (%)',
-      'Margin Call Price',
-      'Liquidation Price',
+      'Net Interest Rate (%)',
+      'Protocol Fee (%)',
+      'Total Interest Rate (%)',
       'Current Price',
     ]
 
-    // CSV rows
+    // CSV rows - with extended columns
     const rows = loans.map((loan) => [
       loan.loanContractAddress,
       loan.entityName,
-      loan.collateralType.toUpperCase(),
-      loan.collateralAmount,
-      loan.collateralValueUsd,
       loan.principalUsd,
       loan.paymentCoin.toUpperCase(),
+      loan.collateralAmount,
+      loan.collateralType.toUpperCase(),
+      loan.collateralValueUsd,
       loan.currentLtv,
+      loan.marginCallPrice,
       loan.marginCallLtv,
+      loan.liquidationPrice,
       loan.liquidationLtv,
       loan.initialLtv,
       loan.status,
       loan.interestDueDate.toISOString().split('T')[0],
       loan.interestAmountUsd,
       (loan.interestRate * 100).toFixed(2),
-      loan.marginCallPrice,
-      loan.liquidationPrice,
+      (loan.protocolFee * 100).toFixed(2),
+      ((loan.interestRate + loan.protocolFee) * 100).toFixed(2),
       loan.currentCollateralPrice,
     ])
 

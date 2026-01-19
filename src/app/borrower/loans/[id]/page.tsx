@@ -39,9 +39,9 @@ import {
   FileText,
   ArrowDownLeft,
 } from 'lucide-react'
-import { LtvGauge, LtvDisplay } from '../../components/ltv-gauge'
+import { LtvDisplay } from '../../components/ltv-gauge'
 import { getLoanById, getPaymentHistoryForLoan, getBlockExplorerUrl } from '../../mock-data'
-import { Loan, LoanStatus, PaymentHistoryItem, COLLATERAL_TO_NETWORK, BlockchainNetwork, CollateralType } from '../../types'
+import { Loan, LoanStatus, PaymentHistoryItem, COLLATERAL_TO_NETWORK, BlockchainNetwork } from '../../types'
 
 // Suppress flushSync warning from Base UI Toast (React 19 compatibility issue)
 const originalError = console.error
@@ -423,622 +423,6 @@ function RefinanceDetailsModal({ open, onClose, refinance, loan }: RefinanceDeta
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
-
-// =============================================================================
-// SIMULATION RESULTS CARD (for LTV Calculator right column)
-// =============================================================================
-
-interface SimulationResults {
-  withdrawableAmount: number
-  withdrawableValueUsd: number
-  canWithdraw: boolean
-  remainingPrincipal: number
-  collateralType: CollateralType
-  newMarginCallPrice: number
-  newLiquidationPrice: number
-  hasTriggerPriceChanges: boolean
-}
-
-interface SimulationResultsCardProps {
-  results: SimulationResults
-}
-
-function SimulationResultsCard({ results }: SimulationResultsCardProps) {
-  const formatCollateralAmt = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 6,
-      maximumFractionDigits: 6,
-    }).format(amount)
-  }
-
-  return (
-    <Card>
-      <CardHeader title="Simulation Results" />
-      <div className="space-y-75">
-        {/* Remaining Principal - FIRST */}
-        <div className="space-y-25">
-          <span className="text-label-xs text-fg-muted">Remaining principal</span>
-          <p className="text-heading-h5 font-semibold text-fg-primary">
-            {formatCurrency(results.remainingPrincipal)}
-          </p>
-        </div>
-
-        {/* Collateral Available to Withdraw */}
-        <div className="space-y-25 pt-75 border-t border-border-subtle">
-          <span className="text-label-xs text-fg-muted">Collateral available to withdraw</span>
-          <div className={cn(
-            'flex items-center gap-25',
-            results.canWithdraw && results.withdrawableAmount > 0 ? 'text-positive' : 'text-fg-primary'
-          )}>
-            <TokenLogo token={results.collateralType} size="xs" />
-            <span className="text-heading-h5 font-semibold">
-              {results.canWithdraw && results.withdrawableAmount > 0
-                ? formatCollateralAmt(results.withdrawableAmount)
-                : '0.000000'}
-            </span>
-          </div>
-          <p className="text-label-xs text-fg-muted">
-            ≈ {formatCurrency(results.canWithdraw ? results.withdrawableValueUsd : 0, 2)}
-          </p>
-        </div>
-
-        {/* Trigger Prices - always show */}
-        <div className="pt-75 border-t border-border-subtle">
-          <div className="grid grid-cols-2 gap-75">
-            <div className="space-y-25">
-              <span className="text-label-xs text-fg-muted">Margin Call</span>
-              <p className={cn(
-                'text-label-md font-semibold',
-                results.hasTriggerPriceChanges ? 'text-negative' : 'text-fg-primary'
-              )}>
-                {formatCurrency(results.newMarginCallPrice)}
-              </p>
-            </div>
-            <div className="space-y-25">
-              <span className="text-label-xs text-fg-muted">Liquidation</span>
-              <p className={cn(
-                'text-label-md font-semibold',
-                results.hasTriggerPriceChanges ? 'text-negative-emphasis' : 'text-fg-primary'
-              )}>
-                {formatCurrency(results.newLiquidationPrice)}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Card>
-  )
-}
-
-// =============================================================================
-// TAB CONTENT: LTV CALCULATOR
-// =============================================================================
-
-interface LtvCalculatorTabProps {
-  loan: Loan
-  onSimulationChange?: (results: SimulationResults) => void
-}
-
-function LtvCalculatorTab({ loan, onSimulationChange }: LtvCalculatorTabProps) {
-  // State for price simulation (EXISTING functionality)
-  const [simulatedPrice, setSimulatedPrice] = React.useState(loan.currentCollateralPrice)
-
-  // State for collateral management
-  const [collateralMode, setCollateralMode] = React.useState<'add' | 'remove'>('add')
-  const [collateralInputValue, setCollateralInputValue] = React.useState(0)
-  const [collateralInputDisplay, setCollateralInputDisplay] = React.useState('')
-
-  // State for principal paydown (NEW)
-  const [principalPaydown, setPrincipalPaydown] = React.useState(0)
-  const [principalPaydownDisplay, setPrincipalPaydownDisplay] = React.useState('')
-
-  // State for precise price input
-  const [priceInputDisplay, setPriceInputDisplay] = React.useState('')
-
-  // Calculate the actual added/removed amount based on mode
-  const simulatedCollateralAdded = collateralMode === 'add' ? collateralInputValue : -collateralInputValue
-
-  // Handler for collateral input with live comma formatting
-  const handleCollateralInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target
-    const cursorPos = input.selectionStart || 0
-    const oldValue = collateralInputDisplay
-    const rawValue = e.target.value.replace(/[^0-9.]/g, '')
-
-    // Handle empty or invalid input
-    if (!rawValue || rawValue === '.') {
-      setCollateralInputValue(0)
-      setCollateralInputDisplay('')
-      return
-    }
-
-    // Parse and format
-    const numValue = parseFloat(rawValue) || 0
-    setCollateralInputValue(numValue)
-
-    // Format with commas
-    const parts = rawValue.split('.')
-    const integerPart = parts[0].replace(/^0+(?=\d)/, '') // Remove leading zeros
-    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    const formatted = parts.length > 1 ? `${formattedInteger}.${parts[1]}` : formattedInteger
-
-    setCollateralInputDisplay(formatted || '0')
-
-    // Restore cursor position accounting for added/removed commas
-    requestAnimationFrame(() => {
-      const oldCommasBefore = (oldValue.slice(0, cursorPos).match(/,/g) || []).length
-      const newCommasBefore = (formatted.slice(0, cursorPos).match(/,/g) || []).length
-      const newCursorPos = cursorPos + (newCommasBefore - oldCommasBefore)
-      input.setSelectionRange(newCursorPos, newCursorPos)
-    })
-  }
-
-  const handleCollateralInputBlur = () => {
-    // Format with thousands separators on blur - 6 decimals for collateral
-    if (collateralInputValue) {
-      const formatted = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 6,
-        maximumFractionDigits: 6,
-      }).format(collateralInputValue)
-      setCollateralInputDisplay(formatted)
-    } else {
-      setCollateralInputDisplay('')
-    }
-  }
-
-  const handleCollateralInputFocus = () => {
-    // Keep the formatted value on focus (don't strip commas)
-  }
-
-  // Handler for principal paydown input with live comma formatting
-  const handlePrincipalPaydownChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target
-    const cursorPos = input.selectionStart || 0
-    const oldValue = principalPaydownDisplay
-    const rawValue = e.target.value.replace(/[^0-9.]/g, '')
-
-    // Handle empty or invalid input
-    if (!rawValue || rawValue === '.') {
-      setPrincipalPaydown(0)
-      setPrincipalPaydownDisplay('')
-      return
-    }
-
-    // Parse and clamp to max principal
-    const numValue = parseFloat(rawValue) || 0
-    const clampedValue = Math.min(numValue, loan.principalUsd)
-    setPrincipalPaydown(clampedValue)
-
-    // Format with commas
-    const parts = rawValue.split('.')
-    const integerPart = parts[0].replace(/^0+(?=\d)/, '') // Remove leading zeros
-    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    const formatted = parts.length > 1 ? `${formattedInteger}.${parts[1]}` : formattedInteger
-
-    setPrincipalPaydownDisplay(formatted || '0')
-
-    // Restore cursor position accounting for added/removed commas
-    requestAnimationFrame(() => {
-      const oldCommasBefore = (oldValue.slice(0, cursorPos).match(/,/g) || []).length
-      const newCommasBefore = (formatted.slice(0, cursorPos).match(/,/g) || []).length
-      const newCursorPos = cursorPos + (newCommasBefore - oldCommasBefore)
-      input.setSelectionRange(newCursorPos, newCursorPos)
-    })
-  }
-
-  const handlePrincipalPaydownBlur = () => {
-    if (principalPaydown) {
-      const formatted = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(principalPaydown)
-      setPrincipalPaydownDisplay(formatted)
-    } else {
-      setPrincipalPaydownDisplay('')
-    }
-  }
-
-  const handlePrincipalPaydownFocus = () => {
-    // Keep the formatted value on focus (don't strip commas)
-  }
-
-  // Handler for precise price input with live comma formatting
-  const handlePriceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target
-    const cursorPos = input.selectionStart || 0
-    const oldValue = priceInputDisplay
-    const rawValue = e.target.value.replace(/[^0-9.]/g, '')
-
-    // Handle empty or invalid input
-    if (!rawValue || rawValue === '.') {
-      setSimulatedPrice(0)
-      setPriceInputDisplay('')
-      return
-    }
-
-    // Parse and format
-    const numValue = parseFloat(rawValue) || 0
-    setSimulatedPrice(numValue)
-
-    // Format with commas
-    const parts = rawValue.split('.')
-    const integerPart = parts[0].replace(/^0+(?=\d)/, '') // Remove leading zeros
-    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    const formatted = parts.length > 1 ? `${formattedInteger}.${parts[1]}` : formattedInteger
-
-    setPriceInputDisplay(formatted || '0')
-
-    // Restore cursor position accounting for added/removed commas
-    requestAnimationFrame(() => {
-      const oldCommasBefore = (oldValue.slice(0, cursorPos).match(/,/g) || []).length
-      const newCommasBefore = (formatted.slice(0, cursorPos).match(/,/g) || []).length
-      const newCursorPos = cursorPos + (newCommasBefore - oldCommasBefore)
-      input.setSelectionRange(newCursorPos, newCursorPos)
-    })
-  }
-
-  const handlePriceInputBlur = () => {
-    if (simulatedPrice) {
-      const formatted = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-      }).format(simulatedPrice)
-      setPriceInputDisplay(formatted)
-    } else {
-      setPriceInputDisplay('')
-    }
-  }
-
-  const handlePriceInputFocus = () => {
-    // Keep the formatted value on focus (don't strip commas)
-  }
-
-  // Price simulation calculations
-  const priceChange = ((simulatedPrice - loan.currentCollateralPrice) / loan.currentCollateralPrice) * 100
-  const stepSize = loan.currentCollateralPrice > 1000 ? 100 : loan.currentCollateralPrice > 100 ? 1 : 0.1
-  const minPrice = Math.floor(loan.liquidationPrice * 0.7 / stepSize) * stepSize
-  const maxPrice = Math.ceil(loan.currentCollateralPrice * 1.3 / stepSize) * stepSize
-
-  // Combined calculations (works with price, collateral, AND principal changes)
-  const totalSimulatedCollateral = loan.collateralAmount + simulatedCollateralAdded
-  const simulatedCollateralValue = totalSimulatedCollateral * simulatedPrice
-  const simulatedPrincipal = loan.principalUsd - principalPaydown
-  const simulatedLtv = simulatedCollateralValue > 0 ? (simulatedPrincipal / simulatedCollateralValue) * 100 : 0
-
-  // Recalculated trigger prices (when collateral OR principal changes)
-  const newMarginCallPrice = simulatedPrincipal / (totalSimulatedCollateral * (loan.marginCallLtv / 100))
-  const newLiquidationPrice = simulatedPrincipal / (totalSimulatedCollateral * (loan.liquidationLtv / 100))
-
-  // Check if trigger prices have changed (collateral or principal changed)
-  const hasTriggerPriceChanges = simulatedCollateralAdded !== 0 || principalPaydown > 0
-
-  // Withdrawable collateral calculation (only when LTV < 50%)
-  const canWithdraw = simulatedLtv < 50
-  const maxWithdrawableValue = canWithdraw ? (simulatedCollateralValue - (simulatedPrincipal / 0.50)) : 0
-  const maxWithdrawableAmount = maxWithdrawableValue / simulatedPrice
-
-  // Report simulation results to parent component
-  React.useEffect(() => {
-    if (onSimulationChange) {
-      onSimulationChange({
-        withdrawableAmount: maxWithdrawableAmount,
-        withdrawableValueUsd: maxWithdrawableValue,
-        canWithdraw,
-        remainingPrincipal: simulatedPrincipal,
-        collateralType: loan.collateralType,
-        newMarginCallPrice,
-        newLiquidationPrice,
-        hasTriggerPriceChanges,
-      })
-    }
-  }, [maxWithdrawableAmount, maxWithdrawableValue, canWithdraw, simulatedPrincipal, loan.collateralType, onSimulationChange, newMarginCallPrice, newLiquidationPrice, hasTriggerPriceChanges])
-
-  // Reset function - resets all simulation inputs
-  const handleReset = () => {
-    setSimulatedPrice(loan.currentCollateralPrice)
-    setPriceInputDisplay('')
-    setCollateralInputValue(0)
-    setCollateralInputDisplay('')
-    setCollateralMode('add')
-    setPrincipalPaydown(0)
-    setPrincipalPaydownDisplay('')
-  }
-
-  // Helper to format collateral amount - always 6 decimals for all assets
-  const formatCollateralAmount = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 6,
-      maximumFractionDigits: 6,
-    }).format(amount)
-  }
-
-  // Determine appropriate step for collateral input
-  const collateralStep = loan.collateralType === 'btc' || loan.collateralType === 'wbtc' ? 0.01 :
-                         loan.collateralType === 'eth' || loan.collateralType === 'weth' ? 0.1 : 1
-
-  return (
-    <div className="space-y-100">
-      <Card>
-        {/* Header with Reset */}
-        <div className="flex items-center justify-between mb-100">
-          <CardHeader title="LTV Calculator" />
-          <Button size="sm" variant="secondary" onClick={handleReset}>
-            Reset
-          </Button>
-        </div>
-
-        {/* Simulated LTV Display */}
-        <div className="bg-primary rounded-lg p-100 overflow-visible">
-          <div className="flex items-center justify-between mb-50">
-            <span className="text-label-sm text-fg-muted">Simulated LTV</span>
-            <span
-              className={cn(
-                'text-heading-h6 font-semibold',
-                simulatedLtv >= loan.liquidationLtv
-                  ? 'text-negative'
-                  : simulatedLtv >= loan.marginCallLtv
-                    ? 'text-warning'
-                    : 'text-positive'
-              )}
-            >
-              {simulatedLtv.toFixed(1)}%
-            </span>
-          </div>
-          <LtvGauge
-            currentLtv={simulatedLtv}
-            marginCallLtv={loan.marginCallLtv}
-            liquidationLtv={loan.liquidationLtv}
-            size="md"
-          />
-        </div>
-
-        {/* Section 1: Collateral Price - Compact */}
-        <div className="pt-100 mt-100 border-t border-border-subtle">
-          <div className="flex items-center justify-between mb-50">
-            <span className="text-label-sm text-fg-muted">
-              {loan.collateralType.toUpperCase()} Price
-              <span className={cn(
-                'ml-50',
-                priceChange > 0.1 ? 'text-positive' : priceChange < -0.1 ? 'text-negative' : 'text-fg-muted'
-              )}>
-                ({priceChange > 0 ? '+' : ''}{priceChange.toFixed(1)}%)
-              </span>
-            </span>
-            <div className="flex items-center gap-50">
-              <Button variant="secondary" size="xs" onClick={() => {
-                const price = loan.currentCollateralPrice
-                setSimulatedPrice(price)
-                setPriceInputDisplay(new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(price))
-              }}>
-                Current
-              </Button>
-              <Button
-                variant="secondary"
-                size="xs"
-                onClick={() => {
-                  const price = loan.principalUsd / (loan.collateralAmount * loan.marginCallLtv / 100)
-                  setSimulatedPrice(price)
-                  setPriceInputDisplay(new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(price))
-                }}
-              >
-                Margin Call
-              </Button>
-              <Button
-                variant="secondary"
-                size="xs"
-                onClick={() => {
-                  const price = loan.principalUsd / (loan.collateralAmount * loan.liquidationLtv / 100)
-                  setSimulatedPrice(price)
-                  setPriceInputDisplay(new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(price))
-                }}
-              >
-                Liq. Level
-              </Button>
-            </div>
-          </div>
-          {/* Slider + Input on same row */}
-          <div className="flex items-center gap-100">
-            <input
-              type="range"
-              min={minPrice}
-              max={maxPrice}
-              step={stepSize}
-              value={simulatedPrice}
-              onChange={(e) => {
-                const val = Number(e.target.value)
-                setSimulatedPrice(val)
-                // Format with commas for display
-                const formatted = new Intl.NumberFormat('en-US', {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
-                }).format(val)
-                setPriceInputDisplay(formatted)
-              }}
-              className="flex-1 h-2 bg-secondary rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-fg-primary [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-fg-primary [&::-moz-range-thumb]:border-0"
-            />
-            <div className="flex items-center gap-50 w-[140px]">
-              <span className="text-label-sm text-fg-muted">$</span>
-              <input
-                type="text"
-                value={priceInputDisplay}
-                onChange={handlePriceInputChange}
-                onBlur={handlePriceInputBlur}
-                onFocus={handlePriceInputFocus}
-                placeholder={formatCurrency(simulatedPrice).replace('$', '')}
-                className="w-full h-control-sm px-75 rounded-lg border border-border-subtle bg-surface text-fg-primary text-right text-label-sm"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Section 2: Collateral - Compact */}
-        <div className="pt-100 mt-100 border-t border-border-subtle">
-          <div className="flex items-center justify-between mb-50">
-            <span className="text-label-sm text-fg-muted">
-              Collateral ({formatCollateralAmount(loan.collateralAmount)} {loan.collateralType.toUpperCase()})
-            </span>
-            <select
-              value={collateralMode}
-              onChange={(e) => {
-                setCollateralMode(e.target.value as 'add' | 'remove')
-                setCollateralInputValue(0)
-                setCollateralInputDisplay('')
-              }}
-              className="h-control-sm px-50 rounded-lg border border-border-subtle bg-surface text-fg-primary text-label-xs"
-            >
-              <option value="add">Add</option>
-              <option value="remove">Remove</option>
-            </select>
-          </div>
-          {/* Slider + Input on same row */}
-          <div className="flex items-center gap-100">
-            <input
-              type="range"
-              min={0}
-              max={loan.collateralAmount}
-              step={collateralStep}
-              value={collateralInputValue}
-              onChange={(e) => {
-                const val = Number(e.target.value)
-                setCollateralInputValue(val)
-                // Format with commas for display
-                if (val > 0) {
-                  const formatted = new Intl.NumberFormat('en-US', {
-                    minimumFractionDigits: 6,
-                    maximumFractionDigits: 6,
-                  }).format(val)
-                  setCollateralInputDisplay(formatted)
-                } else {
-                  setCollateralInputDisplay('')
-                }
-              }}
-              className="flex-1 h-2 bg-secondary rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-fg-primary [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-fg-primary [&::-moz-range-thumb]:border-0"
-            />
-            <div className="flex items-center gap-50 w-[180px]">
-              <input
-                type="text"
-                value={collateralInputDisplay}
-                onChange={handleCollateralInputChange}
-                onBlur={handleCollateralInputBlur}
-                onFocus={handleCollateralInputFocus}
-                placeholder="0.000000"
-                className="w-full h-control-sm px-75 rounded-lg border border-border-subtle bg-surface text-fg-primary text-right text-label-sm"
-              />
-              <span className="text-label-xs text-fg-muted whitespace-nowrap">
-                {loan.collateralType.toUpperCase()}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Section 3: Principal Paydown - Compact */}
-        <div className="pt-100 mt-100 border-t border-border-subtle">
-          <div className="flex items-center justify-between mb-50">
-            <span className="text-label-sm text-fg-muted">
-              Principal Paydown (of {formatCurrency(loan.principalUsd)})
-            </span>
-          </div>
-          {/* Slider + Input on same row */}
-          <div className="flex items-center gap-100">
-            <input
-              type="range"
-              min={0}
-              max={loan.principalUsd}
-              step={1000}
-              value={principalPaydown}
-              onChange={(e) => {
-                const val = Number(e.target.value)
-                setPrincipalPaydown(val)
-                // Format with commas for display
-                if (val > 0) {
-                  const formatted = new Intl.NumberFormat('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  }).format(val)
-                  setPrincipalPaydownDisplay(formatted)
-                } else {
-                  setPrincipalPaydownDisplay('')
-                }
-              }}
-              className="flex-1 h-2 bg-secondary rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-fg-primary [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-fg-primary [&::-moz-range-thumb]:border-0"
-            />
-            <div className="flex items-center gap-50 w-[140px]">
-              <span className="text-label-sm text-fg-muted">$</span>
-              <input
-                type="text"
-                value={principalPaydownDisplay}
-                onChange={handlePrincipalPaydownChange}
-                onBlur={handlePrincipalPaydownBlur}
-                onFocus={handlePrincipalPaydownFocus}
-                placeholder="0.00"
-                className="w-full h-control-sm px-75 rounded-lg border border-border-subtle bg-surface text-fg-primary text-right text-label-sm"
-              />
-            </div>
-          </div>
-        </div>
-      </Card>
-    </div>
-  )
-}
-
-// =============================================================================
-// LTV CALCULATOR TAB LAYOUT (wrapper that renders calculator + results card)
-// =============================================================================
-
-interface LtvCalculatorLayoutProps {
-  loan: Loan
-  status: { label: string; type: 'positive' | 'negative' | 'primary'; icon?: React.ReactNode }
-}
-
-function LtvCalculatorLayout({ loan, status }: LtvCalculatorLayoutProps) {
-  // Calculate initial trigger prices for default state
-  const initialMarginCallPrice = loan.principalUsd / (loan.collateralAmount * (loan.marginCallLtv / 100))
-  const initialLiquidationPrice = loan.principalUsd / (loan.collateralAmount * (loan.liquidationLtv / 100))
-
-  const [simulationResults, setSimulationResults] = React.useState<SimulationResults>({
-    withdrawableAmount: 0,
-    withdrawableValueUsd: 0,
-    canWithdraw: false,
-    remainingPrincipal: loan.principalUsd,
-    collateralType: loan.collateralType,
-    newMarginCallPrice: initialMarginCallPrice,
-    newLiquidationPrice: initialLiquidationPrice,
-    hasTriggerPriceChanges: false,
-  })
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-100">
-      {/* Left column - LTV Calculator */}
-      <div className="lg:col-span-2">
-        <LtvCalculatorTab loan={loan} onSimulationChange={setSimulationResults} />
-      </div>
-
-      {/* Right column - Loan info and Simulation Results */}
-      <div className="space-y-100">
-        {/* Loan header card */}
-        <Card>
-          <div className="flex items-center justify-between mb-100">
-            <h2 className="text-heading-h6 text-fg-primary">
-              Loan #{loan.loanContractAddress.slice(-4)}
-            </h2>
-            <Pill
-              type={status.type}
-              appearance="subtle"
-              size="24"
-              beforeIcon={status.icon}
-            >
-              {status.label}
-            </Pill>
-          </div>
-          <p className="text-label-sm text-fg-muted">{loan.entityName}</p>
-        </Card>
-
-        {/* Simulation Results Card */}
-        <SimulationResultsCard results={simulationResults} />
-      </div>
-    </div>
   )
 }
 
@@ -1425,8 +809,8 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
         <main className="pb-200 space-y-100">
           {/* Margin call alert (if active) - full width above everything */}
           {loan.status === 'margin-call' && loan.marginCallDeadline && (() => {
-            // Calculate target LTV (margin call LTV - 5%)
-            const targetLtv = loan.marginCallLtv - 5
+            // Calculate target LTV - restore to initial LTV (not marginCallLtv - 5%)
+            const targetLtv = loan.initialLtv
 
             // Calculate required collateral value to reach target LTV
             // LTV = Principal / Collateral Value, so Collateral Value = Principal / Target LTV
@@ -1434,8 +818,32 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
             const requiredCollateralValue = loan.principalUsd / (targetLtv / 100)
             const additionalCollateralValueNeeded = requiredCollateralValue - currentCollateralValue
 
-            // Calculate collateral amount required
+            // Calculate collateral amount required (Option A)
             const collateralAmountRequired = additionalCollateralValueNeeded / loan.currentCollateralPrice
+
+            // Calculate principal paydown option (Option B)
+            // Principal paydown required to reach initial LTV with current collateral
+            // Target LTV = (Principal - Paydown) / Current Collateral Value
+            // Paydown = Principal - (Target LTV * Current Collateral Value)
+            const principalPaydownRequired = loan.principalUsd - (targetLtv / 100 * currentCollateralValue)
+
+            // Calculate accrued interest since last payment
+            const paymentHistory = getPaymentHistoryForLoan(loan.id)
+            const lastInterestPayment = paymentHistory
+              .filter(p => p.type === 'interest')
+              .sort((a, b) => b.date.getTime() - a.date.getTime())[0]
+
+            const daysSincePayment = lastInterestPayment
+              ? Math.floor((Date.now() - lastInterestPayment.date.getTime()) / (1000 * 60 * 60 * 24))
+              : 0
+
+            const accruedInterest = (loan.interestRate / 365) * daysSincePayment * loan.principalUsd
+
+            // Calculate make-whole fee (interest for recall period)
+            const makeWholeFee = (loan.interestRate / 365) * loan.recallPeriodDays * principalPaydownRequired
+
+            // Total payment for Option B
+            const totalPaydownAmount = principalPaydownRequired + accruedInterest + makeWholeFee
 
             const formatCollateralRequired = () => {
               return collateralAmountRequired.toLocaleString('en-US', {
@@ -1443,31 +851,67 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
                 maximumFractionDigits: 6,
               })
             }
-            const formatUsdRequired = () => {
-              return additionalCollateralValueNeeded.toLocaleString('en-US', {
+
+            const formatCurrencyValue = (value: number) => {
+              return value.toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })
             }
+
             return (
               <div className="bg-negative-subtle border border-negative rounded-xl px-150 py-100">
                 <div className="flex gap-100">
                   <AlertTriangle className="size-icon-lg text-negative shrink-0 mt-025" />
-                  <div className="flex-1 space-y-50">
-                    {/* Row 1: Alert message */}
+                  <div className="flex-1 space-y-75">
+                    {/* Header */}
                     <div className="text-label-sm text-negative">
                       <span className="font-semibold">Margin call active:</span>{' '}
-                      Add <span className="font-semibold">{formatCollateralRequired()} {loan.collateralType.toUpperCase()}</span>{' '}
-                      <span className="font-semibold">(${formatUsdRequired()})</span>{' '}
-                      by <span className="font-semibold">{formatDeadline(loan.marginCallDeadline)} UTC</span>{' '}
-                      to restore your LTV to {targetLtv}%.
+                      Restore your LTV to {targetLtv}% by{' '}
+                      <span className="font-semibold">{formatDeadline(loan.marginCallDeadline)} UTC</span>
                     </div>
-                    {/* Row 2: Latest alert info */}
+
+                    {/* Two options - boxes with red background */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-50 mt-50">
+                      {/* Option A: Add Collateral */}
+                      <div className="bg-negative/15 rounded-lg p-75">
+                        <div className="flex items-center justify-between mb-25">
+                          <span className="text-label-xs text-negative font-medium uppercase tracking-wide">Add collateral</span>
+                          <CopyButton text={formatCollateralRequired()} />
+                        </div>
+                        <div className="flex items-center gap-50">
+                          <TokenLogo token={loan.collateralType} size="sm" />
+                          <div>
+                            <span className="text-label-md font-semibold text-fg-primary">
+                              {formatCollateralRequired()} {loan.collateralType.toUpperCase()}
+                            </span>
+                            <p className="text-label-xs text-fg-muted">
+                              ≈ ${formatCurrencyValue(additionalCollateralValueNeeded)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Option B: Pay Down Principal */}
+                      <div className="bg-negative/15 rounded-lg p-75">
+                        <div className="flex items-center justify-between mb-25">
+                          <span className="text-label-xs text-negative font-medium uppercase tracking-wide">Pay down principal</span>
+                          <CopyButton text={formatCurrencyValue(totalPaydownAmount)} />
+                        </div>
+                        <div className="flex items-center gap-50">
+                          <TokenLogo token={loan.paymentCoin} size="sm" />
+                          <span className="text-label-md font-semibold text-fg-primary">
+                            {formatCurrencyValue(totalPaydownAmount)} {loan.paymentCoin.toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Latest alert info */}
                     <div className="text-label-xs text-negative">
-                      <span className="font-semibold">Latest Alert:</span> Jan 6, 2026 at 2:34 PM UTC to j.chen@galaxy.com, m.novak@galaxy.com, s.patel@galaxy.com
+                      <span className="font-semibold">Latest alert:</span> Jan 6, 2026 at 2:34 PM UTC to j.chen@galaxy.com, m.novak@galaxy.com, s.patel@galaxy.com
                     </div>
                   </div>
-                  <CopyButton text={formatCollateralRequired()} />
                 </div>
               </div>
             )
@@ -1477,7 +921,6 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
           <Tabs defaultValue="summary">
             <TabsList className="mb-100">
               <TabsTrigger value="summary">Summary</TabsTrigger>
-              <TabsTrigger value="ltv-calculator">LTV Calculator</TabsTrigger>
               <TabsTrigger value="terms">Loan terms</TabsTrigger>
             </TabsList>
 
@@ -1535,10 +978,6 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
                   </Card>
                 </div>
               </div>
-            </TabsPanel>
-
-            <TabsPanel value="ltv-calculator">
-              <LtvCalculatorLayout loan={loan} status={status} />
             </TabsPanel>
 
             <TabsPanel value="history">

@@ -5,7 +5,8 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button, Pill, TokenLogo } from '@/components/ui'
-import { AlertTriangle, Clock, TrendingDown, CreditCard, Plus } from 'lucide-react'
+import { Tooltip as BaseTooltip } from '@base-ui-components/react/tooltip'
+import { AlertTriangle, Clock, TrendingDown, CreditCard, Plus, Info } from 'lucide-react'
 import { LtvGauge } from './ltv-gauge'
 import { Loan, LoanStatus } from '../types'
 
@@ -28,6 +29,32 @@ function formatFullCurrency(value: number, includeSymbol: boolean = true): strin
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value)
+}
+
+function formatCollateralUsd(value: number): string {
+  if (value >= 1000000) {
+    return `$${(value / 1000000).toFixed(2)}M`
+  }
+  if (value >= 1000) {
+    return `$${(value / 1000).toFixed(2)}K`
+  }
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+function formatInterestRate(netRate: number, protocolFee: number): string {
+  const totalRate = (netRate + protocolFee) * 100
+  return `${totalRate.toFixed(2)}%`
+}
+
+function formatRateBreakdown(netRate: number, protocolFee: number): string {
+  const netPercent = (netRate * 100).toFixed(2)
+  const feePercent = (protocolFee * 100).toFixed(2)
+  return `Net: ${netPercent}% + Protocol: ${feePercent}%`
 }
 
 function formatDate(date: Date): string {
@@ -107,7 +134,7 @@ export function LoanCard({ loan, className }: LoanCardProps) {
       )}
       onClick={handleCardClick}
     >
-      {/* Row 1: Header - Address, Status, Entity, Collateral type */}
+      {/* Row 1: Header - Address, Status, Entity, Interest Rate, Collateral type */}
       <div className="flex items-center justify-between mb-100">
         <div className="flex items-center gap-75">
           <Pill type="secondary" appearance="default" size="24">
@@ -122,13 +149,24 @@ export function LoanCard({ loan, className }: LoanCardProps) {
             {status.label}
           </Pill>
           <span className="text-label-sm text-fg-muted">{loan.entityName}</span>
+          <BaseTooltip.Root>
+            <BaseTooltip.Trigger
+              className="text-label-sm text-fg-primary font-medium flex items-center gap-25 cursor-pointer hover:text-brand transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {formatInterestRate(loan.interestRate, loan.protocolFee)}
+              <Info className="size-icon-xs text-fg-muted" />
+            </BaseTooltip.Trigger>
+            <BaseTooltip.Portal>
+              <BaseTooltip.Positioner sideOffset={4}>
+                <BaseTooltip.Popup className="z-50 bg-inverse text-fg-inverse px-100 py-75 rounded-lg text-label-sm shadow-200">
+                  {formatRateBreakdown(loan.interestRate, loan.protocolFee)}
+                </BaseTooltip.Popup>
+              </BaseTooltip.Positioner>
+            </BaseTooltip.Portal>
+          </BaseTooltip.Root>
         </div>
-        <div className="flex items-center gap-50">
-          <TokenLogo token={loan.collateralType} size="sm" />
-          <span className="text-label-md font-medium text-fg-primary">
-            {loan.collateralType.toUpperCase()}
-          </span>
-        </div>
+        <TokenLogo token={loan.collateralType} size="sm" />
       </div>
 
       {/* Row 2: Principal */}
@@ -154,7 +192,7 @@ export function LoanCard({ loan, className }: LoanCardProps) {
           <div className="flex items-center gap-100 text-label-sm text-fg-muted">
             <div className="flex items-center gap-50">
               <div className="w-2 h-2 rounded-sm bg-positive" />
-              <span>Refund {loan.initialLtv}%</span>
+              <span>Initial LTV {loan.initialLtv}%</span>
             </div>
             <div className="flex items-center gap-50">
               <div className="w-2 h-2 rounded-sm bg-negative" />
@@ -226,4 +264,63 @@ export function LoanCard({ loan, className }: LoanCardProps) {
   )
 
   return CardContent
+}
+
+// =============================================================================
+// CLOSED LOAN CARD COMPONENT - Simplified display for inactive loans
+// =============================================================================
+
+interface ClosedLoanCardProps {
+  loan: Loan
+  className?: string
+}
+
+export function ClosedLoanCard({ loan, className }: ClosedLoanCardProps) {
+  return (
+    <div
+      className={cn(
+        'rounded-xl p-125 border transition-all duration-fast',
+        'bg-muted border-border-subtle opacity-75',
+        className
+      )}
+    >
+      {/* Row 1: Header - Address, Status, Entity */}
+      <div className="flex items-center justify-between mb-100">
+        <div className="flex items-center gap-75">
+          <Pill type="secondary" appearance="default" size="24">
+            {truncateAddress(loan.loanContractAddress)}
+          </Pill>
+          <Pill type="secondary" appearance="subtle" size="24">
+            Closed
+          </Pill>
+          <span className="text-label-sm text-fg-muted">{loan.entityName}</span>
+        </div>
+        <TokenLogo token={loan.collateralType} size="sm" />
+      </div>
+
+      {/* Row 2: Principal */}
+      <div className="flex items-center gap-25 mb-100">
+        <TokenLogo token={loan.paymentCoin} size="sm" />
+        <div className="text-heading-h4 font-semibold text-fg-muted">
+          {formatFullCurrency(loan.principalUsd, false)}
+        </div>
+      </div>
+
+      {/* Row 3: Basic info */}
+      <div className="flex items-center justify-between text-label-sm text-fg-muted">
+        <div className="flex items-center gap-100">
+          <span>
+            Collateral: {loan.collateralAmount.toLocaleString()} {loan.collateralType.toUpperCase()}
+          </span>
+          <span>•</span>
+          <span>
+            Initial LTV: {loan.initialLtv}%
+          </span>
+        </div>
+        <span>
+          Closed {loan.maturityDate ? formatDate(loan.maturityDate) : ''}
+        </span>
+      </div>
+    </div>
+  )
 }

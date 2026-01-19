@@ -4,7 +4,8 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button, Pill, TokenLogo } from '@/components/ui'
-import { AlertTriangle, Clock } from 'lucide-react'
+import { Tooltip as BaseTooltip } from '@base-ui-components/react/tooltip'
+import { AlertTriangle, Clock, Info } from 'lucide-react'
 import type { Loan, LoanStatus } from '../types'
 
 // =============================================================================
@@ -26,10 +27,15 @@ function formatDate(date: Date): string {
   })
 }
 
-function calculatePriceChangePercent(currentPrice: number, triggerPrice: number): string {
-  const percentChange = ((triggerPrice - currentPrice) / currentPrice) * 100
-  const sign = percentChange > 0 ? '+' : ''
-  return `${sign}${percentChange.toFixed(0)}%`
+function formatInterestRate(netRate: number, protocolFee: number): string {
+  const totalRate = (netRate + protocolFee) * 100
+  return `${totalRate.toFixed(2)}%`
+}
+
+function formatRateBreakdown(netRate: number, protocolFee: number): string {
+  const netPercent = (netRate * 100).toFixed(2)
+  const feePercent = (protocolFee * 100).toFixed(2)
+  return `Net: ${netPercent}% + Protocol: ${feePercent}%`
 }
 
 const statusConfig: Record<
@@ -69,9 +75,10 @@ export function LoansTable({ loans, className }: LoansTableProps) {
             <th className="text-left text-label-xs text-fg-muted p-75">Entity</th>
             <th className="text-left text-label-xs text-fg-muted p-75">Principal</th>
             <th className="text-left text-label-xs text-fg-muted p-75">Collateral</th>
-            <th className="text-left text-label-xs text-fg-muted p-75">LTV</th>
+            <th className="text-left text-label-xs text-fg-muted p-75">LTV / Initial LTV</th>
+            <th className="text-left text-label-xs text-fg-muted p-75">Interest Rate</th>
             <th className="text-left text-label-xs text-fg-muted p-75">Margin Call</th>
-            <th className="text-left text-label-xs text-fg-muted p-75">Liquidation Level</th>
+            <th className="text-left text-label-xs text-fg-muted p-75">Liquidation</th>
             <th className="text-left text-label-xs text-fg-muted p-75">Interest Due</th>
             <th className="text-left text-label-xs text-fg-muted p-75">Status</th>
             <th className="text-right text-label-xs text-fg-muted p-75">Actions</th>
@@ -111,24 +118,46 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                   {loan.currentLtv}%
                 </span>
                 <span className="text-label-xs text-fg-muted ml-25">
-                  / {loan.marginCallLtv}%
+                  / {loan.initialLtv}%
                 </span>
               </td>
               <td className="p-75">
-                <span className="text-label-sm text-fg-primary">
-                  ${formatCurrency(loan.marginCallPrice)}
-                </span>
-                <span className="text-label-xs text-fg-muted ml-25">
-                  ({calculatePriceChangePercent(loan.currentCollateralPrice, loan.marginCallPrice)})
-                </span>
+                <BaseTooltip.Root>
+                  <BaseTooltip.Trigger
+                    className="text-label-sm text-fg-primary flex items-center gap-25 cursor-pointer hover:text-brand transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {formatInterestRate(loan.interestRate, loan.protocolFee)}
+                    <Info className="size-icon-xs text-fg-muted" />
+                  </BaseTooltip.Trigger>
+                  <BaseTooltip.Portal>
+                    <BaseTooltip.Positioner sideOffset={4}>
+                      <BaseTooltip.Popup className="z-50 bg-inverse text-fg-inverse px-100 py-75 rounded-lg text-label-sm shadow-200">
+                        {formatRateBreakdown(loan.interestRate, loan.protocolFee)}
+                      </BaseTooltip.Popup>
+                    </BaseTooltip.Positioner>
+                  </BaseTooltip.Portal>
+                </BaseTooltip.Root>
               </td>
               <td className="p-75">
-                <span className="text-label-sm text-fg-primary">
-                  ${formatCurrency(loan.liquidationPrice)}
-                </span>
-                <span className="text-label-xs text-fg-muted ml-25">
-                  ({calculatePriceChangePercent(loan.currentCollateralPrice, loan.liquidationPrice)})
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-label-sm text-fg-primary">
+                    ${formatCurrency(loan.marginCallPrice)}
+                  </span>
+                  <span className="text-label-xs text-fg-muted">
+                    at {loan.marginCallLtv}% LTV
+                  </span>
+                </div>
+              </td>
+              <td className="p-75">
+                <div className="flex flex-col">
+                  <span className="text-label-sm text-fg-primary">
+                    ${formatCurrency(loan.liquidationPrice)}
+                  </span>
+                  <span className="text-label-xs text-fg-muted">
+                    at {loan.liquidationLtv}% LTV
+                  </span>
+                </div>
               </td>
               <td className="p-75">
                 <div className="flex flex-col">
@@ -164,6 +193,86 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                 >
                   View
                 </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+// =============================================================================
+// CLOSED LOANS TABLE COMPONENT - Simplified display for inactive loans
+// =============================================================================
+
+interface ClosedLoansTableProps {
+  loans: Loan[]
+  className?: string
+}
+
+function formatClosedDate(date: Date | null): string {
+  if (!date) return '-'
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+export function ClosedLoansTable({ loans, className }: ClosedLoansTableProps) {
+  return (
+    <div className={cn('bg-surface rounded-lg border border-border-subtle overflow-hidden', className)} suppressHydrationWarning>
+      <table className="w-full" suppressHydrationWarning>
+        <thead suppressHydrationWarning>
+          <tr className="border-b border-border-subtle bg-muted" suppressHydrationWarning>
+            <th className="text-left text-label-xs text-fg-muted p-75">Entity</th>
+            <th className="text-left text-label-xs text-fg-muted p-75">Principal</th>
+            <th className="text-left text-label-xs text-fg-muted p-75">Collateral</th>
+            <th className="text-left text-label-xs text-fg-muted p-75">Initial LTV</th>
+            <th className="text-left text-label-xs text-fg-muted p-75">Closed Date</th>
+            <th className="text-left text-label-xs text-fg-muted p-75">Status</th>
+          </tr>
+        </thead>
+        <tbody suppressHydrationWarning>
+          {loans.map((loan) => (
+            <tr
+              key={loan.id}
+              className="border-b border-border-subtle last:border-b-0 opacity-75"
+            >
+              <td className="p-75">
+                <span className="text-label-sm text-fg-muted">{loan.entityName}</span>
+              </td>
+              <td className="p-75">
+                <div className="flex items-center gap-25">
+                  <TokenLogo token={loan.paymentCoin} size="xs" />
+                  <span className="text-label-sm text-fg-muted">
+                    ${formatCurrency(loan.principalUsd)}
+                  </span>
+                </div>
+              </td>
+              <td className="p-75">
+                <div className="flex items-center gap-25">
+                  <TokenLogo token={loan.collateralType} size="xs" />
+                  <span className="text-label-sm text-fg-muted">
+                    {loan.collateralAmount.toLocaleString()}
+                  </span>
+                </div>
+              </td>
+              <td className="p-75">
+                <span className="text-label-sm text-fg-muted">
+                  {loan.initialLtv}%
+                </span>
+              </td>
+              <td className="p-75">
+                <span className="text-label-sm text-fg-muted">
+                  {formatClosedDate(loan.maturityDate)}
+                </span>
+              </td>
+              <td className="p-75">
+                <Pill type="secondary" appearance="subtle" size="24">
+                  Closed
+                </Pill>
               </td>
             </tr>
           ))}

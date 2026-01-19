@@ -29,7 +29,8 @@ export interface Loan {
   interestDueDate: Date
   interestAmountUsd: number
   interestOverdueDays?: number
-  interestRate: number // Annual rate as decimal (e.g., 0.08 = 8%)
+  interestRate: number // Annual rate as decimal (e.g., 0.08 = 8%) - this is the net rate paid to lender
+  protocolFee: number // Protocol fee as decimal (e.g., 0.0025 = 0.25%) - variable per loan
   status: LoanStatus
   marginCallDeadline?: Date // If margin call active
   marginCallRequiredUsd?: number
@@ -41,6 +42,7 @@ export interface Loan {
   collateralWalletAddress: string // Blockchain-specific wallet address for collateral deposits
   paymentCoin: PaymentCoin // USDC or USDT used for payments on this loan
   initialLtv: number // LTV at loan origination - serves as refund threshold
+  isActive: boolean // true for current loans, false for closed/repaid
 }
 
 export interface LegalEntity {
