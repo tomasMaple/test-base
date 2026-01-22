@@ -11,18 +11,23 @@
  * Strip decimals only if ALL decimal digits are zeros
  * e.g., "100.00" → "100", but "100.50" stays as "100.50"
  * Handles suffixes like M, K: "1.00M" → "1M"
+ * When preserveSuffixDecimals is true, keeps decimals for M/K values
  */
-function stripAllZeroDecimals(formatted: string): string {
+function stripAllZeroDecimals(formatted: string, preserveSuffixDecimals: boolean = false): string {
+  if (preserveSuffixDecimals && /[MK]$/.test(formatted)) {
+    return formatted // Keep decimals for M/K values
+  }
   return formatted.replace(/\.0+([MK]?)$/, '$1')
 }
 
 /**
  * Format USD/stablecoin amounts with abbreviations for large values
- * Shows 2 decimals, strips if all zeros
+ * Always shows 2 decimals for M/K values
+ * Strips decimals only for non-abbreviated values if all zeros
  *
  * Examples:
- * - 25000000 → "$25M"
- * - 5000 → "$5K"
+ * - 25000000 → "$25.00M"
+ * - 5000 → "$5.00K"
  * - 100.50 → "$100.50"
  * - 100.00 → "$100"
  */
@@ -30,11 +35,11 @@ export function formatCurrency(value: number, includeSymbol: boolean = true): st
   const symbol = includeSymbol ? '$' : ''
   if (value >= 1000000) {
     const formatted = (value / 1000000).toFixed(2)
-    return `${symbol}${stripAllZeroDecimals(formatted)}M`
+    return `${symbol}${formatted}M`
   }
   if (value >= 1000) {
     const formatted = (value / 1000).toFixed(2)
-    return `${symbol}${stripAllZeroDecimals(formatted)}K`
+    return `${symbol}${formatted}K`
   }
   const formatted = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
@@ -95,16 +100,16 @@ export function formatNumber(value: number, decimals: number = 0): string {
 
 /**
  * Format USD collateral values with abbreviations
- * Shows 2 decimals, strips if all zeros
+ * Always shows 2 decimals for M/K values
  */
 export function formatCollateralUsd(value: number): string {
   if (value >= 1000000) {
     const formatted = (value / 1000000).toFixed(2)
-    return `$${stripAllZeroDecimals(formatted)}M`
+    return `$${formatted}M`
   }
   if (value >= 1000) {
     const formatted = (value / 1000).toFixed(2)
-    return `$${stripAllZeroDecimals(formatted)}K`
+    return `$${formatted}K`
   }
   const formatted = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,

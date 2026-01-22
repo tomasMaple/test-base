@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { formatCurrency, formatFullCurrency, formatCollateralAmount, formatNumber } from '../formatters'
+import { formatCurrency, formatFullCurrency, formatCollateralAmount, formatNumber, formatPercent } from '../formatters'
 import { Button, Pill, TokenLogo } from '@/components/ui'
 import { Tooltip as BaseTooltip } from '@base-ui-components/react/tooltip'
 import { AlertTriangle, Clock, Info } from 'lucide-react'
@@ -113,10 +113,10 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                   'text-label-sm font-medium',
                   loan.currentLtv >= loan.marginCallLtv ? 'text-negative' : 'text-positive'
                 )}>
-                  {loan.currentLtv}%
+                  {formatPercent(loan.currentLtv)}
                 </span>
                 <span className="text-label-xs text-fg-muted ml-25">
-                  / {loan.initialLtv}%
+                  / {formatPercent(loan.initialLtv)}
                 </span>
               </td>
               <td className="p-75">
@@ -143,7 +143,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                     ${formatFullCurrency(loan.marginCallPrice, false)}
                   </span>
                   <span className="text-label-xs text-fg-muted">
-                    at {loan.marginCallLtv}% LTV
+                    at {formatPercent(loan.marginCallLtv)} LTV
                   </span>
                 </div>
               </td>
@@ -153,7 +153,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                     ${formatFullCurrency(loan.liquidationPrice, false)}
                   </span>
                   <span className="text-label-xs text-fg-muted">
-                    at {loan.liquidationLtv}% LTV
+                    at {formatPercent(loan.liquidationLtv)} LTV
                   </span>
                 </div>
               </td>
@@ -259,7 +259,7 @@ export function ClosedLoansTable({ loans, className }: ClosedLoansTableProps) {
               </td>
               <td className="p-75">
                 <span className="text-label-sm text-fg-muted">
-                  {loan.initialLtv}%
+                  {formatPercent(loan.initialLtv)}
                 </span>
               </td>
               <td className="p-75">

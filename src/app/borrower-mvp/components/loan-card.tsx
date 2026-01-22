@@ -4,7 +4,7 @@ import * as React from 'react'
 import NextLink from 'next/link'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { formatFullCurrency, formatCollateralAmount, formatCollateralUsd } from '../formatters'
+import { formatFullCurrency, formatCollateralAmount, formatCollateralUsd, formatPercent } from '../formatters'
 import { Button, Pill, TokenLogo } from '@/components/ui'
 import { Tooltip as BaseTooltip } from '@base-ui-components/react/tooltip'
 import { AlertTriangle, Clock, TrendingDown, CreditCard, Plus, Info } from 'lucide-react'
@@ -163,21 +163,21 @@ export function LoanCard({ loan, className }: LoanCardProps) {
               'text-label-md font-semibold',
               loan.currentLtv >= loan.marginCallLtv ? 'text-negative' : 'text-positive'
             )}>
-              {loan.currentLtv}%
+              {formatPercent(loan.currentLtv)}
             </span>
           </div>
           <div className="flex items-center gap-100 text-label-sm text-fg-muted">
             <div className="flex items-center gap-50">
               <div className="w-2 h-2 rounded-sm bg-positive" />
-              <span>Initial LTV {loan.initialLtv}%</span>
+              <span>Initial LTV {formatPercent(loan.initialLtv)}</span>
             </div>
             <div className="flex items-center gap-50">
               <div className="w-2 h-2 rounded-sm bg-negative" />
-              <span>Margin Call {loan.marginCallLtv}%</span>
+              <span>Margin Call {formatPercent(loan.marginCallLtv)}</span>
             </div>
             <div className="flex items-center gap-50">
               <div className="w-2.5 h-2.5 rounded-sm bg-negative-emphasis" />
-              <span className="font-medium">Liq. Level {loan.liquidationLtv}%</span>
+              <span className="font-medium">Liq. Level {formatPercent(loan.liquidationLtv)}</span>
             </div>
           </div>
         </div>
@@ -291,7 +291,7 @@ export function ClosedLoanCard({ loan, className }: ClosedLoanCardProps) {
           </span>
           <span>•</span>
           <span>
-            Initial LTV: {loan.initialLtv}%
+            Initial LTV: {formatPercent(loan.initialLtv)}
           </span>
         </div>
         <span>

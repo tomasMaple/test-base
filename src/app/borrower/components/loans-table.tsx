@@ -91,16 +91,21 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                 <div className="flex items-center gap-25">
                   <TokenLogo token={loan.paymentCoin} size="xs" />
                   <span className="text-label-sm text-fg-primary">
-                    {formatFullCurrency(loan.principalUsd)}
+                    {formatCurrency(loan.principalUsd)}
                   </span>
                 </div>
               </td>
               <td className="p-75">
                 <div className="flex items-center gap-25 whitespace-nowrap">
                   <TokenLogo token={loan.collateralType} size="xs" />
-                  <span className="text-label-sm text-fg-primary">
-                    {formatCollateralAmount(loan.collateralAmount)}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-label-sm text-fg-primary">
+                      {formatCollateralAmount(loan.collateralAmount)}
+                    </span>
+                    <span className="text-label-xs text-fg-muted">
+                      ≈ {formatCurrency(loan.collateralValueUsd)}
+                    </span>
+                  </div>
                 </div>
               </td>
               <td className="p-75">
@@ -240,7 +245,7 @@ export function ClosedLoansTable({ loans, className }: ClosedLoansTableProps) {
                 <div className="flex items-center gap-25">
                   <TokenLogo token={loan.paymentCoin} size="xs" />
                   <span className="text-label-sm text-fg-muted">
-                    {formatFullCurrency(loan.principalUsd)}
+                    {formatCurrency(loan.principalUsd)}
                   </span>
                 </div>
               </td>

@@ -440,8 +440,7 @@ function SummaryTab({ loan }: SummaryTabProps) {
               <TokenLogo token={loan.collateralType} size="lg" />
               <div>
                 <p className="text-label-md font-medium text-fg-primary">
-                  {formatCollateralAmount(loan.collateralAmount)}{' '}
-                  {loan.collateralType.toUpperCase()}
+                  {formatCollateralAmount(loan.collateralAmount)}
                 </p>
                 <p className="text-label-xs text-fg-muted">
                   ≈ {formatFullCurrency(loan.collateralValueUsd)}

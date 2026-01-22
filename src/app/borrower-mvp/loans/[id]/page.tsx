@@ -82,6 +82,15 @@ function formatNumber(value: number, decimals = 0): string {
   }).format(value)
 }
 
+function formatPercent(value: number): string {
+  const formatted = value.toFixed(1)
+  // Strip .0 suffix
+  if (formatted.endsWith('.0')) {
+    return `${formatted.slice(0, -2)}%`
+  }
+  return `${formatted}%`
+}
+
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
     month: 'short',
@@ -491,7 +500,7 @@ function SummaryTab({ loan }: SummaryTabProps) {
             {formatCurrency(loan.marginCallPrice)}
           </p>
           <p className="text-label-xs text-fg-muted">
-            {loan.collateralType.toUpperCase()} price at {loan.marginCallLtv}% LTV
+            {loan.collateralType.toUpperCase()} price at {formatPercent(loan.marginCallLtv)} LTV
           </p>
         </Card>
 
@@ -501,7 +510,7 @@ function SummaryTab({ loan }: SummaryTabProps) {
             {formatCurrency(loan.liquidationPrice)}
           </p>
           <p className="text-label-xs text-fg-muted">
-            {loan.collateralType.toUpperCase()} price at {loan.liquidationLtv}% LTV
+            {loan.collateralType.toUpperCase()} price at {formatPercent(loan.liquidationLtv)} LTV
           </p>
         </Card>
       </div>
@@ -712,9 +721,9 @@ function LoanTermsTab({ loan }: LoanTermsTabProps) {
       <Card>
         <CardHeader title="LTV thresholds" />
         <div className="space-y-75">
-          <MetricRow label="Initial LTV" value={`${loan.initialLtv}%`} />
-          <MetricRow label="Margin call LTV" value={`${loan.marginCallLtv}%`} />
-          <MetricRow label="Liquidation LTV" value={`${loan.liquidationLtv}%`} />
+          <MetricRow label="Initial LTV" value={formatPercent(loan.initialLtv)} />
+          <MetricRow label="Margin call LTV" value={formatPercent(loan.marginCallLtv)} />
+          <MetricRow label="Liquidation LTV" value={formatPercent(loan.liquidationLtv)} />
           <MetricRow label="Margin call price" value={formatCurrency(loan.marginCallPrice)} />
           <MetricRow label="Liquidation price" value={formatCurrency(loan.liquidationPrice)} />
         </div>

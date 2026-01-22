@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { formatCurrency, formatFullCurrency } from '../formatters'
+import { formatCurrency, formatFullCurrency, formatPercent } from '../formatters'
 import { Button, Dialog, DialogContent, DialogTitle, Pill, TokenLogo } from '@/components/ui'
 import { Plus } from 'lucide-react'
 import { Loan } from '../types'
@@ -184,13 +184,13 @@ function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalPr
                       LTV: <span className={cn(
                         'font-medium',
                         isMarginCalled ? 'text-negative' : 'text-fg-primary'
-                      )}>{loan.currentLtv}%</span> / {loan.marginCallLtv}% margin call
+                      )}>{formatPercent(loan.currentLtv)}</span> / {formatPercent(loan.marginCallLtv)} margin call
                     </span>
                     <span className={cn(
                       'font-medium',
                       isMarginCalled ? 'text-negative' : 'text-warning'
                     )}>
-                      {isMarginCalled ? 'Margin called' : `${headroom.toFixed(0)}% headroom`}
+                      {isMarginCalled ? 'Margin called' : `${formatPercent(headroom)} headroom`}
                     </span>
                   </div>
                 </div>

@@ -99,6 +99,24 @@ export function formatNumber(value: number, decimals: number = 0): string {
 }
 
 /**
+ * Format percentage values
+ * Always shows 1 decimal, unless it's .0 in which case no decimal
+ *
+ * Examples:
+ * - 72 → "72%"
+ * - 72.5 → "72.5%"
+ * - 72.0 → "72%"
+ */
+export function formatPercent(value: number): string {
+  const formatted = value.toFixed(1)
+  // Strip .0 suffix
+  if (formatted.endsWith('.0')) {
+    return `${formatted.slice(0, -2)}%`
+  }
+  return `${formatted}%`
+}
+
+/**
  * Format USD collateral values with abbreviations
  * Always shows 2 decimals for M/K values
  */
