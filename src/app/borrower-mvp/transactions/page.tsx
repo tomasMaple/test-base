@@ -2,17 +2,11 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import { CheckCircle, ExternalLink, Download, FileText, Calendar, ChevronDown, RotateCcw } from 'lucide-react'
+import { CheckCircle, ExternalLink, Download, ChevronDown, RotateCcw } from 'lucide-react'
 import { TokenLogo } from '@/components/ui/token-logo'
 import { Pill } from '@/components/ui/pill'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import {
   getAllTransactions,
@@ -20,9 +14,6 @@ import {
   getBlockExplorerUrl,
   getCurrentLoans,
   getPastLoans,
-  getTransactionsInRange,
-  getLoansAtDate,
-  mockLoans,
 } from '../mock-data'
 import { PaymentHistoryItem, COLLATERAL_TO_NETWORK, Loan } from '../types'
 import { formatNumber, formatCollateralAmount } from '../formatters'
@@ -50,11 +41,6 @@ function formatDate(date: Date): string {
     year: 'numeric',
   })
 }
-
-function formatDateISO(date: Date): string {
-  return date.toISOString().split('T')[0]
-}
-
 
 // Helper to format transaction type label
 function formatTransactionType(type: PaymentHistoryItem['type']): string {
@@ -117,278 +103,13 @@ function exportTransactionsToCSV(transactions: TransactionWithEntity[]) {
   const link = document.createElement('a')
   const url = URL.createObjectURL(blob)
   link.setAttribute('href', url)
-  link.setAttribute('download', `transactions_${formatDateISO(new Date())}.csv`)
+  link.setAttribute('download', `transactions_${new Date().toISOString().split('T')[0]}.csv`)
   link.style.visibility = 'hidden'
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
 }
 
-// CSV Export for audit snapshot
-function exportAuditSnapshotToCSV(loans: Loan[], asOfDate: Date) {
-  const headers = [
-    'Loan ID',
-    'Entity',
-    'Principal (USD)',
-    'Payment Coin',
-    'Collateral Amount',
-    'Collateral Coin',
-    'Collateral Value (USD)',
-    'Current LTV (%)',
-    'Margin Call Price',
-    'Margin Call LTV (%)',
-    'Liquidation Price',
-    'Liquidation LTV (%)',
-    'Initial LTV (%)',
-    'Status',
-    'Net Interest Rate (%)',
-    'Protocol Fee (%)',
-    'Total Interest Rate (%)',
-    'Current Price',
-    'Start Date',
-    'Maturity Date',
-    'Is Active',
-  ]
-
-  const rows = loans.map((loan) => [
-    loan.id,
-    loan.entityName,
-    loan.principalUsd.toFixed(2),
-    loan.paymentCoin.toUpperCase(),
-    loan.collateralAmount.toFixed(6),
-    loan.collateralType.toUpperCase(),
-    loan.collateralValueUsd.toFixed(2),
-    loan.currentLtv.toFixed(2),
-    loan.marginCallPrice,
-    loan.marginCallLtv.toFixed(2),
-    loan.liquidationPrice,
-    loan.liquidationLtv.toFixed(2),
-    loan.initialLtv.toFixed(2),
-    loan.status,
-    (loan.interestRate * 100).toFixed(2),
-    (loan.protocolFee * 100).toFixed(2),
-    ((loan.interestRate + loan.protocolFee) * 100).toFixed(2),
-    loan.currentCollateralPrice,
-    formatDate(loan.startDate),
-    loan.maturityDate ? formatDate(loan.maturityDate) : 'Revolving',
-    loan.isActive ? 'Yes' : 'No',
-  ])
-
-  const csvContent = [
-    `# Audit Snapshot as of ${formatDate(asOfDate)}`,
-    '',
-    headers.join(','),
-    ...rows.map((row) => row.join(',')),
-  ].join('\n')
-
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-  const link = document.createElement('a')
-  const url = URL.createObjectURL(blob)
-  link.setAttribute('href', url)
-  link.setAttribute('download', `audit_snapshot_${formatDateISO(asOfDate)}.csv`)
-  link.style.visibility = 'hidden'
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-}
-
-// Statement Modal Component
-function StatementModal({
-  open,
-  onOpenChange,
-}: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}) {
-  const [startDate, setStartDate] = React.useState<string>(
-    formatDateISO(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
-  )
-  const [endDate, setEndDate] = React.useState<string>(formatDateISO(new Date()))
-
-  const start = new Date(startDate)
-  const end = new Date(endDate)
-  const transactions = getTransactionsInRange(start, end)
-
-  // Calculate summary values
-  const summary = React.useMemo(() => {
-    const interestPayments = transactions.filter((tx) => tx.type === 'interest')
-    const feePayments = transactions.filter((tx) => tx.type === 'fee')
-    const principalDrawdowns = transactions.filter((tx) => tx.type === 'drawdown')
-    const principalPayments = transactions.filter((tx) => tx.type === 'principal')
-
-    return {
-      interestCount: interestPayments.length,
-      interestTotal: interestPayments.reduce((sum, tx) => sum + tx.amountUsd, 0),
-      feeTotal: feePayments.reduce((sum, tx) => sum + tx.amountUsd, 0),
-      principalIssued: principalDrawdowns.reduce((sum, tx) => sum + tx.amountUsd, 0),
-      principalRepaid: principalPayments.reduce((sum, tx) => sum + tx.amountUsd, 0),
-      totalPaid: interestPayments.reduce((sum, tx) => sum + tx.amountUsd, 0) +
-        feePayments.reduce((sum, tx) => sum + tx.amountUsd, 0),
-    }
-  }, [transactions])
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[480px]">
-        <DialogTitle>Get Statement</DialogTitle>
-        <DialogDescription>
-          Generate a statement for a specific date range.
-        </DialogDescription>
-
-        <div className="mt-100 space-y-100">
-          {/* Date Range */}
-          <div className="grid grid-cols-2 gap-75">
-            <div className="flex flex-col gap-25">
-              <label className="text-label-xs font-medium text-fg-primary">Start Date</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="h-control-md px-75 text-body-sm rounded-md border border-border-strong bg-surface text-fg-primary focus-visible:outline focus-visible:outline-brand cursor-text"
-              />
-            </div>
-            <div className="flex flex-col gap-25">
-              <label className="text-label-xs font-medium text-fg-primary">End Date</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="h-control-md px-75 text-body-sm rounded-md border border-border-strong bg-surface text-fg-primary focus-visible:outline focus-visible:outline-brand cursor-text"
-              />
-            </div>
-          </div>
-
-          {/* Preview Card */}
-          <div className="bg-primary rounded-lg p-100">
-            <h4 className="text-label-sm font-medium text-fg-primary mb-75">Statement Preview</h4>
-
-            {/* Section 1: Balances */}
-            <div className="space-y-50 mb-75">
-              <div className="flex justify-between text-body-sm">
-                <span className="text-fg-muted">Transactions</span>
-                <span className="text-fg-primary font-medium">{transactions.length}</span>
-              </div>
-              <div className="flex justify-between text-body-sm">
-                <span className="text-fg-muted">Principal Issued</span>
-                <span className="text-fg-primary font-medium">${formatNumber(summary.principalIssued, 2)}</span>
-              </div>
-              <div className="flex justify-between text-body-sm">
-                <span className="text-fg-muted">Principal Repaid</span>
-                <span className="text-fg-primary font-medium">${formatNumber(summary.principalRepaid, 2)}</span>
-              </div>
-            </div>
-
-            {/* Section 2: Interest & Fees */}
-            <div className="border-t border-border-subtle pt-75 space-y-50 mb-75">
-              <div className="flex justify-between text-body-sm">
-                <span className="text-fg-muted">Interest Payments</span>
-                <span className="text-fg-primary font-medium">{summary.interestCount}</span>
-              </div>
-              <div className="flex justify-between text-body-sm">
-                <span className="text-fg-muted">Interest Paid</span>
-                <span className="text-fg-primary font-medium">${formatNumber(summary.interestTotal, 2)}</span>
-              </div>
-              <div className="flex justify-between text-body-sm">
-                <span className="text-fg-muted">Fees Paid</span>
-                <span className="text-fg-primary font-medium">${formatNumber(summary.feeTotal, 2)}</span>
-              </div>
-            </div>
-
-            {/* Section 3: Total */}
-            <div className="border-t border-border-subtle pt-75">
-              <div className="flex justify-between text-body-sm">
-                <span className="text-fg-primary font-medium">Total Paid</span>
-                <span className="text-fg-primary font-semibold">${formatNumber(summary.totalPaid, 2)}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Download Button - Disabled Placeholder */}
-          <Button
-            variant="primary"
-            fullWidth
-            disabled
-            beforeIcon={<Download />}
-          >
-            Download PDF (Coming Soon)
-          </Button>
-          <p className="text-body-xs text-fg-muted text-center">
-            PDF generation will be available in a future release.
-          </p>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-// Audit Snapshot Modal Component
-function AuditSnapshotModal({
-  open,
-  onOpenChange,
-}: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}) {
-  const [snapshotDate, setSnapshotDate] = React.useState<string>(formatDateISO(new Date()))
-  const date = new Date(snapshotDate)
-  const loans = getLoansAtDate(date)
-
-  const handleDownload = () => {
-    exportAuditSnapshotToCSV(loans, date)
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[400px]">
-        <DialogTitle>Get Audit Snapshot</DialogTitle>
-        <DialogDescription>
-          Download loan data as-of a specific date.
-        </DialogDescription>
-
-        <div className="mt-100 space-y-100">
-          {/* Date Picker */}
-          <div className="flex flex-col gap-25">
-            <label className="text-label-xs font-medium text-fg-primary">Snapshot Date</label>
-            <input
-              type="date"
-              value={snapshotDate}
-              max={formatDateISO(new Date())}
-              onChange={(e) => setSnapshotDate(e.target.value)}
-              className="h-control-md px-75 text-body-sm rounded-md border border-border-strong bg-surface text-fg-primary focus-visible:outline focus-visible:outline-brand cursor-text"
-            />
-          </div>
-
-          {/* Preview */}
-          <div className="bg-primary rounded-lg p-100 space-y-50">
-            <h4 className="text-label-sm font-medium text-fg-primary">Snapshot Preview</h4>
-            <div className="flex justify-between text-body-sm">
-              <span className="text-fg-muted">Loans at this date</span>
-              <span className="text-fg-primary font-medium">{loans.length}</span>
-            </div>
-            <div className="flex justify-between text-body-sm">
-              <span className="text-fg-muted">Active loans</span>
-              <span className="text-fg-primary font-medium">{loans.filter(l => l.isActive).length}</span>
-            </div>
-            <div className="flex justify-between text-body-sm">
-              <span className="text-fg-muted">Closed loans</span>
-              <span className="text-fg-primary font-medium">{loans.filter(l => !l.isActive).length}</span>
-            </div>
-          </div>
-
-          {/* Download Button */}
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={handleDownload}
-            beforeIcon={<Download />}
-          >
-            Download CSV
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
-}
 
 // Generic Multi-Select Filter Popover Component
 function MultiSelectFilterPopover({
@@ -681,10 +402,6 @@ export default function TransactionsPage() {
   const [selectedEntityIds, setSelectedEntityIds] = React.useState<Set<string>>(getDefaultEntityIds)
   const [selectedTypeIds, setSelectedTypeIds] = React.useState<Set<string>>(getDefaultTypeIds)
 
-  // Modal state
-  const [statementModalOpen, setStatementModalOpen] = React.useState(false)
-  const [auditSnapshotModalOpen, setAuditSnapshotModalOpen] = React.useState(false)
-
   // Check if filters are at default state
   const isFiltersDefault = React.useMemo(() => {
     const defaultLoans = getDefaultLoanIds()
@@ -730,32 +447,14 @@ export default function TransactionsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-150">
           <h1 className="text-heading-h4 text-fg-primary">Transactions</h1>
-          <div className="flex items-center gap-75">
-            <Button
-              variant="secondary"
-              size="sm"
-              beforeIcon={<Download />}
-              onClick={() => exportTransactionsToCSV(filteredTransactions)}
-            >
-              Export CSV
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              beforeIcon={<FileText />}
-              onClick={() => setStatementModalOpen(true)}
-            >
-              Get Statement
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              beforeIcon={<Calendar />}
-              onClick={() => setAuditSnapshotModalOpen(true)}
-            >
-              Audit Snapshot
-            </Button>
-          </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            beforeIcon={<Download />}
+            onClick={() => exportTransactionsToCSV(filteredTransactions)}
+          >
+            Export CSV
+          </Button>
         </div>
 
         {/* Filters */}
@@ -843,7 +542,7 @@ export default function TransactionsPage() {
                     >
                       {/* Loan ID - clickable */}
                       <button
-                        onClick={() => router.push(`/borrower/loans/${tx.loanId}`)}
+                        onClick={() => router.push(`/borrower-mvp/loans/${tx.loanId}`)}
                         className="text-label-sm text-brand hover:underline text-left cursor-pointer font-medium"
                       >
                         #{loanLast4}
@@ -941,9 +640,6 @@ export default function TransactionsPage() {
         </Card>
       </div>
 
-      {/* Modals */}
-      <StatementModal open={statementModalOpen} onOpenChange={setStatementModalOpen} />
-      <AuditSnapshotModal open={auditSnapshotModalOpen} onOpenChange={setAuditSnapshotModalOpen} />
     </div>
   )
 }

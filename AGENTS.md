@@ -84,6 +84,20 @@ src/
 
 ---
 
+## Prototype Registry
+
+When modifying files in a prototype, update the `lastChanged` date in `src/app/page.tsx`:
+
+| Prototype               | Folder            | Update date when changing files in...    |
+| ----------------------- | ----------------- | ---------------------------------------- |
+| BEXP Dash View Only MVP | `/borrower-mvp`   | `src/app/borrower-mvp/**`                |
+| BEXP Dash View Only Full| `/borrower`       | `src/app/borrower/**`                    |
+| Components              | `/overview`       | `src/app/overview/**`, `src/components/**` |
+
+**Format:** `YYYY-MM-DD` (e.g., `2026-01-22`)
+
+---
+
 ## Critical Rules (All Agents)
 
 ### NEVER

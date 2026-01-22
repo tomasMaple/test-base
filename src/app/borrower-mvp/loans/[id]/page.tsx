@@ -42,7 +42,6 @@ import {
 import { LtvDisplay } from '../../components/ltv-gauge'
 import { getLoanById, getPaymentHistoryForLoan, getBlockExplorerUrl } from '../../mock-data'
 import { Loan, LoanStatus, PaymentHistoryItem, COLLATERAL_TO_NETWORK, BlockchainNetwork } from '../../types'
-import { formatNumber, formatCollateralAmount, formatFullCurrency } from '../../formatters'
 
 // Suppress flushSync warning from Base UI Toast (React 19 compatibility issue)
 const originalError = console.error
@@ -59,6 +58,38 @@ if (typeof window !== 'undefined') {
 // HELPERS
 // =============================================================================
 
+function formatCurrency(value: number, decimals = 0, includeSymbol: boolean = true): string {
+  return new Intl.NumberFormat('en-US', {
+    style: includeSymbol ? 'currency' : 'decimal',
+    currency: 'USD',
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(value)
+}
+
+function formatCollateralAmount(amount: number, _type?: string): string {
+  // All collateral types use 6 decimals for consistency
+  return amount.toLocaleString('en-US', {
+    minimumFractionDigits: 6,
+    maximumFractionDigits: 6,
+  })
+}
+
+function formatNumber(value: number, decimals = 0): string {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(value)
+}
+
+function formatPercent(value: number): string {
+  const formatted = value.toFixed(1)
+  // Strip .0 suffix
+  if (formatted.endsWith('.0')) {
+    return `${formatted.slice(0, -2)}%`
+  }
+  return `${formatted}%`
+}
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -440,10 +471,10 @@ function SummaryTab({ loan }: SummaryTabProps) {
               <TokenLogo token={loan.collateralType} size="lg" />
               <div>
                 <p className="text-label-md font-medium text-fg-primary">
-                  {formatCollateralAmount(loan.collateralAmount)}
+                  {formatCollateralAmount(loan.collateralAmount, loan.collateralType)}
                 </p>
                 <p className="text-label-xs text-fg-muted">
-                  ≈ {formatFullCurrency(loan.collateralValueUsd)}
+                  ≈ {formatCurrency(loan.collateralValueUsd)}
                 </p>
               </div>
             </div>
@@ -466,20 +497,20 @@ function SummaryTab({ loan }: SummaryTabProps) {
         <Card>
           <CardHeader title="Margin call trigger" />
           <p className="text-heading-h5 font-semibold text-warning mb-25">
-            {formatFullCurrency(loan.marginCallPrice)}
+            {formatCurrency(loan.marginCallPrice)}
           </p>
           <p className="text-label-xs text-fg-muted">
-            {loan.collateralType.toUpperCase()} price at {loan.marginCallLtv}% LTV
+            {loan.collateralType.toUpperCase()} price at {formatPercent(loan.marginCallLtv)} LTV
           </p>
         </Card>
 
         <Card>
           <CardHeader title="Liquidation trigger" />
           <p className="text-heading-h5 font-semibold text-negative mb-25">
-            {formatFullCurrency(loan.liquidationPrice)}
+            {formatCurrency(loan.liquidationPrice)}
           </p>
           <p className="text-label-xs text-fg-muted">
-            {loan.collateralType.toUpperCase()} price at {loan.liquidationLtv}% LTV
+            {loan.collateralType.toUpperCase()} price at {formatPercent(loan.liquidationLtv)} LTV
           </p>
         </Card>
       </div>
@@ -611,7 +642,7 @@ function HistoryTab({ payments, loan }: HistoryTabProps) {
                         </span>
                       </div>
                       <span className="text-label-xs text-fg-muted">
-                        {formatFullCurrency(payment.amountUsd)}
+                        {formatCurrency(payment.amountUsd, 0)}
                       </span>
                     </div>
                   ) : payment.amountUsd > 0 ? (
@@ -690,11 +721,11 @@ function LoanTermsTab({ loan }: LoanTermsTabProps) {
       <Card>
         <CardHeader title="LTV thresholds" />
         <div className="space-y-75">
-          <MetricRow label="Initial LTV" value={`${loan.initialLtv}%`} />
-          <MetricRow label="Margin call LTV" value={`${loan.marginCallLtv}%`} />
-          <MetricRow label="Liquidation LTV" value={`${loan.liquidationLtv}%`} />
-          <MetricRow label="Margin call price" value={formatFullCurrency(loan.marginCallPrice)} />
-          <MetricRow label="Liquidation price" value={formatFullCurrency(loan.liquidationPrice)} />
+          <MetricRow label="Initial LTV" value={formatPercent(loan.initialLtv)} />
+          <MetricRow label="Margin call LTV" value={formatPercent(loan.marginCallLtv)} />
+          <MetricRow label="Liquidation LTV" value={formatPercent(loan.liquidationLtv)} />
+          <MetricRow label="Margin call price" value={formatCurrency(loan.marginCallPrice)} />
+          <MetricRow label="Liquidation price" value={formatCurrency(loan.liquidationPrice)} />
         </div>
       </Card>
 
@@ -758,7 +789,7 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
           <p className="text-body-sm text-fg-muted mb-150">
             The loan you&apos;re looking for doesn&apos;t exist.
           </p>
-          <NextLink href="/borrower">
+          <NextLink href="/borrower-mvp">
             <Button variant="secondary">Back to dashboard</Button>
           </NextLink>
         </div>
@@ -775,7 +806,7 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
           {/* Header */}
           <header className="py-100">
           <NextLink
-            href="/borrower"
+            href="/borrower-mvp"
             className="inline-flex items-center gap-50 text-label-sm text-fg-muted hover:text-fg-primary transition-colors"
           >
             <ArrowLeft className="size-icon-md" />

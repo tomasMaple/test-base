@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { formatFullCurrency, formatCollateralAmount, formatCurrency } from '../formatters'
+import { formatCurrency, formatFullCurrency, formatCollateralAmount, formatNumber, formatPercent } from '../formatters'
 import { Button, Pill, TokenLogo } from '@/components/ui'
 import { Tooltip as BaseTooltip } from '@base-ui-components/react/tooltip'
 import { AlertTriangle, Clock, Info } from 'lucide-react'
@@ -82,7 +82,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
             <tr
               key={loan.id}
               className="border-b border-border-subtle last:border-b-0 hover:bg-primary transition-colors cursor-pointer"
-              onClick={() => router.push(`/borrower/loans/${loan.id}`)}
+              onClick={() => router.push(`/borrower-mvp/loans/${loan.id}`)}
             >
               <td className="p-75">
                 <span className="text-label-sm text-fg-primary">{loan.entityName}</span>
@@ -113,10 +113,10 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                   'text-label-sm font-medium',
                   loan.currentLtv >= loan.marginCallLtv ? 'text-negative' : 'text-positive'
                 )}>
-                  {loan.currentLtv}%
+                  {formatPercent(loan.currentLtv)}
                 </span>
                 <span className="text-label-xs text-fg-muted ml-25">
-                  / {loan.initialLtv}%
+                  / {formatPercent(loan.initialLtv)}
                 </span>
               </td>
               <td className="p-75">
@@ -140,20 +140,20 @@ export function LoansTable({ loans, className }: LoansTableProps) {
               <td className="p-75">
                 <div className="flex flex-col">
                   <span className="text-label-sm text-fg-primary">
-                    {formatFullCurrency(loan.marginCallPrice)}
+                    ${formatFullCurrency(loan.marginCallPrice, false)}
                   </span>
                   <span className="text-label-xs text-fg-muted">
-                    at {loan.marginCallLtv}% LTV
+                    at {formatPercent(loan.marginCallLtv)} LTV
                   </span>
                 </div>
               </td>
               <td className="p-75">
                 <div className="flex flex-col">
                   <span className="text-label-sm text-fg-primary">
-                    {formatFullCurrency(loan.liquidationPrice)}
+                    ${formatFullCurrency(loan.liquidationPrice, false)}
                   </span>
                   <span className="text-label-xs text-fg-muted">
-                    at {loan.liquidationLtv}% LTV
+                    at {formatPercent(loan.liquidationLtv)} LTV
                   </span>
                 </div>
               </td>
@@ -162,7 +162,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                   <div className="flex items-center gap-25">
                     <TokenLogo token={loan.paymentCoin} size="2xs" />
                     <span className="text-label-sm text-fg-primary">
-                      {formatCurrency(loan.interestAmountUsd)}
+                      {formatFullCurrency(loan.interestAmountUsd, false)}
                     </span>
                   </div>
                   <span className="text-label-xs text-fg-muted mt-25">
@@ -186,7 +186,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                   size="sm"
                   onClick={(e) => {
                     e.stopPropagation()
-                    router.push(`/borrower/loans/${loan.id}`)
+                    router.push(`/borrower-mvp/loans/${loan.id}`)
                   }}
                 >
                   View
@@ -259,7 +259,7 @@ export function ClosedLoansTable({ loans, className }: ClosedLoansTableProps) {
               </td>
               <td className="p-75">
                 <span className="text-label-sm text-fg-muted">
-                  {loan.initialLtv}%
+                  {formatPercent(loan.initialLtv)}
                 </span>
               </td>
               <td className="p-75">
