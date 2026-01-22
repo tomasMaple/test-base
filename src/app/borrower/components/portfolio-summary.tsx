@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { formatCurrency, formatFullCurrency } from '../formatters'
 import { Button, Dialog, DialogContent, DialogTitle, Pill, TokenLogo } from '@/components/ui'
 import { Plus } from 'lucide-react'
 import { Loan } from '../types'
@@ -10,31 +11,6 @@ import { Loan } from '../types'
 // =============================================================================
 // HELPERS
 // =============================================================================
-
-function formatCurrency(value: number, includeSymbol: boolean = true): string {
-  const symbol = includeSymbol ? '$' : ''
-  if (value >= 1000000) {
-    return `${symbol}${(value / 1000000).toFixed(2)}M`
-  }
-  if (value >= 1000) {
-    return `${symbol}${(value / 1000).toFixed(2)}K`
-  }
-  return new Intl.NumberFormat('en-US', {
-    style: includeSymbol ? 'currency' : 'decimal',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)
-}
-
-function formatFullCurrency(value: number, includeSymbol: boolean = true): string {
-  return new Intl.NumberFormat('en-US', {
-    style: includeSymbol ? 'currency' : 'decimal',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)
-}
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {

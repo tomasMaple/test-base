@@ -42,6 +42,7 @@ import {
 import { LtvDisplay } from '../../components/ltv-gauge'
 import { getLoanById, getPaymentHistoryForLoan, getBlockExplorerUrl } from '../../mock-data'
 import { Loan, LoanStatus, PaymentHistoryItem, COLLATERAL_TO_NETWORK, BlockchainNetwork } from '../../types'
+import { formatNumber, formatCollateralAmount, formatFullCurrency } from '../../formatters'
 
 // Suppress flushSync warning from Base UI Toast (React 19 compatibility issue)
 const originalError = console.error
@@ -58,29 +59,6 @@ if (typeof window !== 'undefined') {
 // HELPERS
 // =============================================================================
 
-function formatCurrency(value: number, decimals = 0, includeSymbol: boolean = true): string {
-  return new Intl.NumberFormat('en-US', {
-    style: includeSymbol ? 'currency' : 'decimal',
-    currency: 'USD',
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value)
-}
-
-function formatCollateralAmount(amount: number, _type?: string): string {
-  // All collateral types use 6 decimals for consistency
-  return amount.toLocaleString('en-US', {
-    minimumFractionDigits: 6,
-    maximumFractionDigits: 6,
-  })
-}
-
-function formatNumber(value: number, decimals = 0): string {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value)
-}
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -462,11 +440,11 @@ function SummaryTab({ loan }: SummaryTabProps) {
               <TokenLogo token={loan.collateralType} size="lg" />
               <div>
                 <p className="text-label-md font-medium text-fg-primary">
-                  {formatCollateralAmount(loan.collateralAmount, loan.collateralType)}{' '}
+                  {formatCollateralAmount(loan.collateralAmount)}{' '}
                   {loan.collateralType.toUpperCase()}
                 </p>
                 <p className="text-label-xs text-fg-muted">
-                  ≈ {formatCurrency(loan.collateralValueUsd)}
+                  ≈ {formatFullCurrency(loan.collateralValueUsd)}
                 </p>
               </div>
             </div>
@@ -489,7 +467,7 @@ function SummaryTab({ loan }: SummaryTabProps) {
         <Card>
           <CardHeader title="Margin call trigger" />
           <p className="text-heading-h5 font-semibold text-warning mb-25">
-            {formatCurrency(loan.marginCallPrice)}
+            {formatFullCurrency(loan.marginCallPrice)}
           </p>
           <p className="text-label-xs text-fg-muted">
             {loan.collateralType.toUpperCase()} price at {loan.marginCallLtv}% LTV
@@ -499,7 +477,7 @@ function SummaryTab({ loan }: SummaryTabProps) {
         <Card>
           <CardHeader title="Liquidation trigger" />
           <p className="text-heading-h5 font-semibold text-negative mb-25">
-            {formatCurrency(loan.liquidationPrice)}
+            {formatFullCurrency(loan.liquidationPrice)}
           </p>
           <p className="text-label-xs text-fg-muted">
             {loan.collateralType.toUpperCase()} price at {loan.liquidationLtv}% LTV
@@ -634,7 +612,7 @@ function HistoryTab({ payments, loan }: HistoryTabProps) {
                         </span>
                       </div>
                       <span className="text-label-xs text-fg-muted">
-                        {formatCurrency(payment.amountUsd, 0)}
+                        {formatFullCurrency(payment.amountUsd)}
                       </span>
                     </div>
                   ) : payment.amountUsd > 0 ? (
@@ -716,8 +694,8 @@ function LoanTermsTab({ loan }: LoanTermsTabProps) {
           <MetricRow label="Initial LTV" value={`${loan.initialLtv}%`} />
           <MetricRow label="Margin call LTV" value={`${loan.marginCallLtv}%`} />
           <MetricRow label="Liquidation LTV" value={`${loan.liquidationLtv}%`} />
-          <MetricRow label="Margin call price" value={formatCurrency(loan.marginCallPrice)} />
-          <MetricRow label="Liquidation price" value={formatCurrency(loan.liquidationPrice)} />
+          <MetricRow label="Margin call price" value={formatFullCurrency(loan.marginCallPrice)} />
+          <MetricRow label="Liquidation price" value={formatFullCurrency(loan.liquidationPrice)} />
         </div>
       </Card>
 

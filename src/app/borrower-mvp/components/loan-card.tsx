@@ -4,6 +4,7 @@ import * as React from 'react'
 import NextLink from 'next/link'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { formatFullCurrency, formatCollateralAmount, formatCollateralUsd } from '../formatters'
 import { Button, Pill, TokenLogo } from '@/components/ui'
 import { Tooltip as BaseTooltip } from '@base-ui-components/react/tooltip'
 import { AlertTriangle, Clock, TrendingDown, CreditCard, Plus, Info } from 'lucide-react'
@@ -21,30 +22,6 @@ const USE_PRIMARY_VIEW_DETAILS_BUTTON = true
 // =============================================================================
 // HELPERS
 // =============================================================================
-
-function formatFullCurrency(value: number, includeSymbol: boolean = true): string {
-  return new Intl.NumberFormat('en-US', {
-    style: includeSymbol ? 'currency' : 'decimal',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value)
-}
-
-function formatCollateralUsd(value: number): string {
-  if (value >= 1000000) {
-    return `$${(value / 1000000).toFixed(2)}M`
-  }
-  if (value >= 1000) {
-    return `$${(value / 1000).toFixed(2)}K`
-  }
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)
-}
 
 function formatInterestRate(netRate: number, protocolFee: number): string {
   const totalRate = (netRate + protocolFee) * 100
@@ -116,11 +93,11 @@ export function LoanCard({ loan, className }: LoanCardProps) {
   const handleViewDetails = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    router.push(`/borrower/loans/${loan.id}`)
+    router.push(`/borrower-mvp/loans/${loan.id}`)
   }
 
   const handleCardClick = () => {
-    router.push(`/borrower/loans/${loan.id}`)
+    router.push(`/borrower-mvp/loans/${loan.id}`)
   }
 
   const CardContent = (
@@ -310,7 +287,7 @@ export function ClosedLoanCard({ loan, className }: ClosedLoanCardProps) {
       <div className="flex items-center justify-between text-label-sm text-fg-muted">
         <div className="flex items-center gap-100">
           <span>
-            Collateral: {loan.collateralAmount.toLocaleString()} {loan.collateralType.toUpperCase()}
+            Collateral: {formatCollateralAmount(loan.collateralAmount)} {loan.collateralType.toUpperCase()}
           </span>
           <span>•</span>
           <span>

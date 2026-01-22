@@ -7,6 +7,7 @@ import { Button, Pill, TokenLogo } from '@/components/ui'
 import { LtvGauge } from '../components/ltv-gauge'
 import { mockLoans, sortLoansByUrgency, getPaymentHistoryForLoan } from '../mock-data'
 import { Loan, LoanStatus } from '../types'
+import { formatNumber, formatCollateralAmount, formatFullCurrency } from '../formatters'
 
 // =============================================================================
 // STATUS CONFIG
@@ -49,21 +50,6 @@ function CardHeader({ title }: { title: string }) {
 // HELPERS
 // =============================================================================
 
-function formatCurrency(value: number, decimals: number = 0): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value)
-}
-
-function formatNumber(value: number, decimals = 0): string {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value)
-}
 
 // =============================================================================
 // LOAN SELECTOR COMPONENT
@@ -303,13 +289,6 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
     handleReset()
   }, [loan.id])
 
-  // Helper to format collateral amount
-  const formatCollateralAmount = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 6,
-      maximumFractionDigits: 6,
-    }).format(amount)
-  }
 
   // Determine appropriate step for collateral input
   const collateralStep = loan.collateralType === 'btc' || loan.collateralType === 'wbtc' ? 0.01 :
@@ -440,7 +419,7 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
                 value={priceInputDisplay}
                 onChange={handlePriceInputChange}
                 onBlur={handlePriceInputBlur}
-                placeholder={formatCurrency(simulatedPrice).replace('$', '')}
+                placeholder={formatFullCurrency(simulatedPrice).replace('$', '')}
                 className="w-full h-control-sm px-75 rounded-lg border border-border-subtle bg-surface text-fg-primary text-right text-label-sm"
               />
             </div>
@@ -509,7 +488,7 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
         <div className="pt-100 border-t border-border-subtle">
           <div className="flex items-center justify-between mb-50">
             <span className="text-label-sm text-fg-muted">
-              Principal Paydown (of {formatCurrency(loan.principalUsd)})
+              Principal Paydown (of {formatFullCurrency(loan.principalUsd)})
             </span>
           </div>
           {/* Slider + Input on same row */}
@@ -636,7 +615,7 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
               </div>
               <p className="text-label-xs text-fg-muted">
                 ≈ {simulatedLtv < loan.initialLtv
-                    ? formatCurrency(Math.abs((totalSimulatedCollateral - (simulatedPrincipal / (simulatedPrice * (loan.initialLtv / 100)))) * simulatedPrice), 2)
+                    ? formatFullCurrency(Math.abs((totalSimulatedCollateral - (simulatedPrincipal / (simulatedPrice * (loan.initialLtv / 100)))) * simulatedPrice))
                     : '$0.00'}
               </p>
             </div>
@@ -650,7 +629,7 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
                     'text-label-md font-semibold',
                     (simulatedCollateralAdded !== 0 || principalPaydown > 0) ? 'text-negative' : 'text-fg-primary'
                   )}>
-                    {formatCurrency(newMarginCallPrice)}
+                    {formatFullCurrency(newMarginCallPrice)}
                   </p>
                 </div>
                 <div className="space-y-25">
@@ -659,7 +638,7 @@ function LtvCalculator({ loan }: LtvCalculatorProps) {
                     'text-label-md font-semibold',
                     (simulatedCollateralAdded !== 0 || principalPaydown > 0) ? 'text-negative-emphasis' : 'text-fg-primary'
                   )}>
-                    {formatCurrency(newLiquidationPrice)}
+                    {formatFullCurrency(newLiquidationPrice)}
                   </p>
                 </div>
               </div>

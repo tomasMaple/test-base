@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { formatCurrency, formatFullCurrency } from '../formatters'
 import { Button, Dialog, DialogContent, DialogTitle, Pill, TokenLogo } from '@/components/ui'
 import { Plus } from 'lucide-react'
 import { Loan } from '../types'
@@ -10,31 +11,6 @@ import { Loan } from '../types'
 // =============================================================================
 // HELPERS
 // =============================================================================
-
-function formatCurrency(value: number, includeSymbol: boolean = true): string {
-  const symbol = includeSymbol ? '$' : ''
-  if (value >= 1000000) {
-    return `${symbol}${(value / 1000000).toFixed(2)}M`
-  }
-  if (value >= 1000) {
-    return `${symbol}${(value / 1000).toFixed(2)}K`
-  }
-  return new Intl.NumberFormat('en-US', {
-    style: includeSymbol ? 'currency' : 'decimal',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)
-}
-
-function formatFullCurrency(value: number, includeSymbol: boolean = true): string {
-  return new Intl.NumberFormat('en-US', {
-    style: includeSymbol ? 'currency' : 'decimal',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)
-}
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -134,12 +110,17 @@ interface MarginCallLevelsModalProps {
 function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalProps) {
   const router = useRouter()
 
-  // Sort loans by how close they are to margin call (least headroom first)
-  const sortedLoans = [...loans].sort((a, b) => {
-    const aHeadroom = a.marginCallLtv - a.currentLtv
-    const bHeadroom = b.marginCallLtv - b.currentLtv
-    return aHeadroom - bHeadroom
-  })
+  // Filter to only show at-risk loans (<20% headroom) and sort by headroom
+  const atRiskLoans = [...loans]
+    .filter((loan) => {
+      const headroom = loan.marginCallLtv - loan.currentLtv
+      return headroom < 20
+    })
+    .sort((a, b) => {
+      const aHeadroom = a.marginCallLtv - a.currentLtv
+      const bHeadroom = b.marginCallLtv - b.currentLtv
+      return aHeadroom - bHeadroom
+    })
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -147,72 +128,75 @@ function MarginCallLevelsModal({ open, onClose, loans }: MarginCallLevelsModalPr
         <DialogTitle>Margin Call Levels</DialogTitle>
 
         <p className="text-body-sm text-fg-muted mb-150">
-          Price levels at which each loan will trigger a margin call, sorted by proximity to trigger.
+          Loans with margin calls and at risk of margin call.
         </p>
 
         <div className="space-y-100 max-h-[60vh] overflow-y-auto pr-50">
-          {sortedLoans.map((loan) => {
-            const headroom = loan.marginCallLtv - loan.currentLtv
-            const isMarginCalled = headroom <= 0
-            const isClose = headroom > 0 && headroom < 15
-            const loanShortId = loan.id.slice(-4)
+          {atRiskLoans.length === 0 ? (
+            <p className="text-body-sm text-fg-muted text-center py-100">
+              No loans are currently at risk of margin call.
+            </p>
+          ) : (
+            atRiskLoans.map((loan) => {
+              const headroom = loan.marginCallLtv - loan.currentLtv
+              const isMarginCalled = headroom <= 0
+              const loanShortId = loan.id.slice(-4)
 
-            return (
-              <div
-                key={loan.id}
-                className={cn(
-                  'rounded-xl p-100 border cursor-pointer hover:border-border-strong transition-colors',
-                  isMarginCalled
-                    ? 'bg-negative-subtle border-negative'
-                    : isClose
-                      ? 'bg-warning-subtle border-warning'
-                      : 'bg-surface border-border-subtle'
-                )}
-                onClick={() => router.push(`/borrower/loans/${loan.id}`)}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-75">
-                    <TokenLogo token={loan.collateralType} size="md" />
-                    <div>
-                      <p className="text-label-md font-medium text-fg-primary">
-                        {loan.collateralType.toUpperCase()}
+              return (
+                <div
+                  key={loan.id}
+                  className={cn(
+                    'rounded-xl p-100 border cursor-pointer transition-colors',
+                    isMarginCalled
+                      ? 'bg-negative-subtle border-negative'
+                      : 'bg-surface border-border-subtle hover:border-border-strong'
+                  )}
+                  onClick={() => router.push(`/borrower-mvp/loans/${loan.id}`)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-75">
+                      <TokenLogo token={loan.collateralType} size="md" />
+                      <div>
+                        <p className="text-label-md font-medium text-fg-primary">
+                          {loan.collateralType.toUpperCase()}
+                        </p>
+                        <p className="text-label-xs text-fg-muted flex items-center gap-25">
+                          <span>{loan.entityName} ·</span>
+                          <TokenLogo token={loan.paymentCoin} size="3xs" />
+                          <span>{formatCurrency(loan.principalUsd, false)} Loan #{loanShortId}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className={cn(
+                        'text-heading-h6 font-semibold',
+                        isMarginCalled ? 'text-negative' : 'text-fg-primary'
+                      )}>
+                        {formatFullCurrency(loan.marginCallPrice)}
                       </p>
-                      <p className="text-label-xs text-fg-muted flex items-center gap-25">
-                        <span>{loan.entityName} ·</span>
-                        <TokenLogo token={loan.paymentCoin} size="3xs" />
-                        <span>{formatCurrency(loan.principalUsd, false)} Loan #{loanShortId}</span>
+                      <p className="text-label-xs text-fg-muted">
+                        Current: {formatFullCurrency(loan.currentCollateralPrice)}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className={cn(
-                      'text-heading-h6 font-semibold',
-                      isMarginCalled ? 'text-negative' : isClose ? 'text-warning' : 'text-fg-primary'
+                  <div className="mt-75 flex items-center justify-between text-label-xs">
+                    <span className="text-fg-muted">
+                      LTV: <span className={cn(
+                        'font-medium',
+                        isMarginCalled ? 'text-negative' : 'text-fg-primary'
+                      )}>{loan.currentLtv}%</span> / {loan.marginCallLtv}% margin call
+                    </span>
+                    <span className={cn(
+                      'font-medium',
+                      isMarginCalled ? 'text-negative' : 'text-warning'
                     )}>
-                      {formatFullCurrency(loan.marginCallPrice)}
-                    </p>
-                    <p className="text-label-xs text-fg-muted">
-                      Current: {formatFullCurrency(loan.currentCollateralPrice)}
-                    </p>
+                      {isMarginCalled ? 'Margin called' : `${headroom.toFixed(0)}% headroom`}
+                    </span>
                   </div>
                 </div>
-                <div className="mt-75 flex items-center justify-between text-label-xs">
-                  <span className="text-fg-muted">
-                    LTV: <span className={cn(
-                      'font-medium',
-                      loan.currentLtv >= loan.marginCallLtv ? 'text-negative' : 'text-fg-primary'
-                    )}>{loan.currentLtv}%</span> / {loan.marginCallLtv}% margin call
-                  </span>
-                  <span className={cn(
-                    'font-medium',
-                    isMarginCalled ? 'text-negative' : isClose ? 'text-warning' : 'text-positive'
-                  )}>
-                    {isMarginCalled ? 'Margin called' : `${headroom.toFixed(0)}% headroom`}
-                  </span>
-                </div>
-              </div>
-            )
-          })}
+              )
+            })
+          )}
         </div>
       </DialogContent>
     </Dialog>
@@ -351,9 +335,8 @@ function InterestPaymentsModal({ open, onClose, loans }: InterestPaymentsModalPr
                         <div className="flex items-center gap-100">
                           <TokenLogo token={loan.collateralType} size="sm" />
                           <div>
-                            <p className="text-label-sm font-medium text-fg-primary flex items-center gap-50">
-                              <TokenLogo token={loan.paymentCoin} size="3xs" />
-                              <span>{formatCurrency(loan.principalUsd, false)} Loan #{loanShortId}</span>
+                            <p className="text-label-sm font-medium text-fg-primary">
+                              Loan #{loanShortId}
                             </p>
                             <p className={cn(
                               'text-label-xs',

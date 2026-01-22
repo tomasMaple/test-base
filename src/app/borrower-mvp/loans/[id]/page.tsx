@@ -462,8 +462,7 @@ function SummaryTab({ loan }: SummaryTabProps) {
               <TokenLogo token={loan.collateralType} size="lg" />
               <div>
                 <p className="text-label-md font-medium text-fg-primary">
-                  {formatCollateralAmount(loan.collateralAmount, loan.collateralType)}{' '}
-                  {loan.collateralType.toUpperCase()}
+                  {formatCollateralAmount(loan.collateralAmount, loan.collateralType)}
                 </p>
                 <p className="text-label-xs text-fg-muted">
                   ≈ {formatCurrency(loan.collateralValueUsd)}
@@ -781,7 +780,7 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
           <p className="text-body-sm text-fg-muted mb-150">
             The loan you&apos;re looking for doesn&apos;t exist.
           </p>
-          <NextLink href="/borrower">
+          <NextLink href="/borrower-mvp">
             <Button variant="secondary">Back to dashboard</Button>
           </NextLink>
         </div>
@@ -798,7 +797,7 @@ export default function LoanDetailPage({ params }: LoanDetailPageProps) {
           {/* Header */}
           <header className="py-100">
           <NextLink
-            href="/borrower"
+            href="/borrower-mvp"
             className="inline-flex items-center gap-50 text-label-sm text-fg-muted hover:text-fg-primary transition-colors"
           >
             <ArrowLeft className="size-icon-md" />

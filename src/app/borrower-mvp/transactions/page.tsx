@@ -15,7 +15,8 @@ import {
   getCurrentLoans,
   getPastLoans,
 } from '../mock-data'
-import { PaymentHistoryItem, COLLATERAL_TO_NETWORK } from '../types'
+import { PaymentHistoryItem, COLLATERAL_TO_NETWORK, Loan } from '../types'
+import { formatNumber, formatCollateralAmount } from '../formatters'
 
 type TransactionWithEntity = PaymentHistoryItem & { entityName: string }
 
@@ -38,20 +39,6 @@ function formatDate(date: Date): string {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-  })
-}
-
-function formatNumber(value: number, decimals = 0): string {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value)
-}
-
-function formatCollateralAmount(amount: number): string {
-  return amount.toLocaleString('en-US', {
-    minimumFractionDigits: 6,
-    maximumFractionDigits: 6,
   })
 }
 
@@ -555,7 +542,7 @@ export default function TransactionsPage() {
                     >
                       {/* Loan ID - clickable */}
                       <button
-                        onClick={() => router.push(`/borrower/loans/${tx.loanId}`)}
+                        onClick={() => router.push(`/borrower-mvp/loans/${tx.loanId}`)}
                         className="text-label-sm text-brand hover:underline text-left cursor-pointer font-medium"
                       >
                         #{loanLast4}

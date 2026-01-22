@@ -25,6 +25,7 @@ import {
   mockLoans,
 } from '../mock-data'
 import { PaymentHistoryItem, COLLATERAL_TO_NETWORK, Loan } from '../types'
+import { formatNumber, formatCollateralAmount } from '../formatters'
 
 type TransactionWithEntity = PaymentHistoryItem & { entityName: string }
 
@@ -54,19 +55,6 @@ function formatDateISO(date: Date): string {
   return date.toISOString().split('T')[0]
 }
 
-function formatNumber(value: number, decimals = 0): string {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value)
-}
-
-function formatCollateralAmount(amount: number): string {
-  return amount.toLocaleString('en-US', {
-    minimumFractionDigits: 6,
-    maximumFractionDigits: 6,
-  })
-}
 
 // Helper to format transaction type label
 function formatTransactionType(type: PaymentHistoryItem['type']): string {

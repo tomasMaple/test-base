@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { formatCurrency, formatFullCurrency, formatCollateralAmount, formatNumber } from '../formatters'
 import { Button, Pill, TokenLogo } from '@/components/ui'
 import { Tooltip as BaseTooltip } from '@base-ui-components/react/tooltip'
 import { AlertTriangle, Clock, Info } from 'lucide-react'
@@ -11,14 +12,6 @@ import type { Loan, LoanStatus } from '../types'
 // =============================================================================
 // HELPER FUNCTIONS
 // =============================================================================
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'decimal',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value)
-}
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -89,7 +82,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
             <tr
               key={loan.id}
               className="border-b border-border-subtle last:border-b-0 hover:bg-primary transition-colors cursor-pointer"
-              onClick={() => router.push(`/borrower/loans/${loan.id}`)}
+              onClick={() => router.push(`/borrower-mvp/loans/${loan.id}`)}
             >
               <td className="p-75">
                 <span className="text-label-sm text-fg-primary">{loan.entityName}</span>
@@ -98,16 +91,21 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                 <div className="flex items-center gap-25">
                   <TokenLogo token={loan.paymentCoin} size="xs" />
                   <span className="text-label-sm text-fg-primary">
-                    ${formatCurrency(loan.principalUsd)}
+                    {formatCurrency(loan.principalUsd)}
                   </span>
                 </div>
               </td>
               <td className="p-75">
-                <div className="flex items-center gap-25">
+                <div className="flex items-center gap-25 whitespace-nowrap">
                   <TokenLogo token={loan.collateralType} size="xs" />
-                  <span className="text-label-sm text-fg-primary">
-                    {loan.collateralAmount.toLocaleString()}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-label-sm text-fg-primary">
+                      {formatCollateralAmount(loan.collateralAmount)}
+                    </span>
+                    <span className="text-label-xs text-fg-muted">
+                      ≈ {formatCurrency(loan.collateralValueUsd)}
+                    </span>
+                  </div>
                 </div>
               </td>
               <td className="p-75">
@@ -142,7 +140,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
               <td className="p-75">
                 <div className="flex flex-col">
                   <span className="text-label-sm text-fg-primary">
-                    ${formatCurrency(loan.marginCallPrice)}
+                    ${formatFullCurrency(loan.marginCallPrice, false)}
                   </span>
                   <span className="text-label-xs text-fg-muted">
                     at {loan.marginCallLtv}% LTV
@@ -152,7 +150,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
               <td className="p-75">
                 <div className="flex flex-col">
                   <span className="text-label-sm text-fg-primary">
-                    ${formatCurrency(loan.liquidationPrice)}
+                    ${formatFullCurrency(loan.liquidationPrice, false)}
                   </span>
                   <span className="text-label-xs text-fg-muted">
                     at {loan.liquidationLtv}% LTV
@@ -164,7 +162,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                   <div className="flex items-center gap-25">
                     <TokenLogo token={loan.paymentCoin} size="2xs" />
                     <span className="text-label-sm text-fg-primary">
-                      {formatCurrency(loan.interestAmountUsd)}
+                      {formatFullCurrency(loan.interestAmountUsd, false)}
                     </span>
                   </div>
                   <span className="text-label-xs text-fg-muted mt-25">
@@ -188,7 +186,7 @@ export function LoansTable({ loans, className }: LoansTableProps) {
                   size="sm"
                   onClick={(e) => {
                     e.stopPropagation()
-                    router.push(`/borrower/loans/${loan.id}`)
+                    router.push(`/borrower-mvp/loans/${loan.id}`)
                   }}
                 >
                   View
@@ -247,15 +245,15 @@ export function ClosedLoansTable({ loans, className }: ClosedLoansTableProps) {
                 <div className="flex items-center gap-25">
                   <TokenLogo token={loan.paymentCoin} size="xs" />
                   <span className="text-label-sm text-fg-muted">
-                    ${formatCurrency(loan.principalUsd)}
+                    {formatCurrency(loan.principalUsd)}
                   </span>
                 </div>
               </td>
               <td className="p-75">
-                <div className="flex items-center gap-25">
+                <div className="flex items-center gap-25 whitespace-nowrap">
                   <TokenLogo token={loan.collateralType} size="xs" />
                   <span className="text-label-sm text-fg-muted">
-                    {loan.collateralAmount.toLocaleString()}
+                    {formatCollateralAmount(loan.collateralAmount)}
                   </span>
                 </div>
               </td>
